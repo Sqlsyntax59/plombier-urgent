@@ -93,6 +93,125 @@ export type Database = {
           }
         ]
       }
+      leads: {
+        Row: {
+          id: string
+          problem_type: ProblemType
+          description: string
+          photo_url: string | null
+          client_phone: string
+          client_email: string | null
+          client_city: string | null
+          latitude: number | null
+          longitude: number | null
+          vertical_id: string | null
+          status: LeadStatus
+          cascade_count: number
+          satisfaction: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          problem_type: ProblemType
+          description: string
+          photo_url?: string | null
+          client_phone: string
+          client_email?: string | null
+          client_city?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          vertical_id?: string | null
+          status?: LeadStatus
+          cascade_count?: number
+          satisfaction?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          problem_type?: ProblemType
+          description?: string
+          photo_url?: string | null
+          client_phone?: string
+          client_email?: string | null
+          client_city?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          vertical_id?: string | null
+          status?: LeadStatus
+          cascade_count?: number
+          satisfaction?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_vertical_id_fkey"
+            columns: ["vertical_id"]
+            isOneToOne: false
+            referencedRelation: "verticals"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      lead_assignments: {
+        Row: {
+          id: string
+          lead_id: string
+          artisan_id: string
+          cascade_position: number
+          status: AssignmentStatus
+          notification_channel: NotificationChannel | null
+          notification_external_id: string | null
+          notification_error: string | null
+          notified_at: string
+          responded_at: string | null
+          expires_at: string | null
+        }
+        Insert: {
+          id?: string
+          lead_id: string
+          artisan_id: string
+          cascade_position?: number
+          status?: AssignmentStatus
+          notification_channel?: NotificationChannel | null
+          notification_external_id?: string | null
+          notification_error?: string | null
+          notified_at?: string
+          responded_at?: string | null
+          expires_at?: string | null
+        }
+        Update: {
+          id?: string
+          lead_id?: string
+          artisan_id?: string
+          cascade_position?: number
+          status?: AssignmentStatus
+          notification_channel?: NotificationChannel | null
+          notification_external_id?: string | null
+          notification_error?: string | null
+          notified_at?: string
+          responded_at?: string | null
+          expires_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_assignments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_assignments_artisan_id_fkey"
+            columns: ["artisan_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -101,10 +220,19 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      problem_type: ProblemType
+      lead_status: LeadStatus
+      assignment_status: AssignmentStatus
+      notification_channel: NotificationChannel
     }
   }
 }
+
+// Enum types
+export type ProblemType = 'fuite' | 'wc_bouche' | 'ballon_eau_chaude' | 'canalisation' | 'robinetterie' | 'autre'
+export type LeadStatus = 'pending' | 'assigned' | 'accepted' | 'completed' | 'cancelled' | 'unassigned'
+export type AssignmentStatus = 'pending' | 'accepted' | 'expired' | 'rejected'
+export type NotificationChannel = 'whatsapp' | 'sms' | 'email'
 
 // Helper types
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
@@ -115,3 +243,5 @@ export type Updatable<T extends keyof Database['public']['Tables']> = Database['
 export type Vertical = Tables<'verticals'>
 export type Profile = Tables<'profiles'>
 export type ProfileRole = Profile['role']
+export type Lead = Tables<'leads'>
+export type LeadAssignment = Tables<'lead_assignments'>

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { leadSubmitSchema, type LeadSubmitInput } from "@/lib/validations/lead";
+import { triggerLeadWorkflow } from "@/lib/n8n/trigger";
 
 export type LeadResult = {
   success: boolean;
@@ -66,8 +67,11 @@ export async function createLead(data: LeadSubmitInput): Promise<LeadResult> {
     };
   }
 
-  // TODO: Declencher le webhook n8n pour notification artisan (Epic 4)
-  // await triggerN8nNotification(lead.id);
+  // Déclencher le workflow n8n pour notification artisan
+  // Note: On n'attend pas le résultat pour ne pas bloquer le client
+  triggerLeadWorkflow(lead.id).catch((err) => {
+    console.error("Erreur trigger n8n workflow:", err);
+  });
 
   return {
     success: true,

@@ -69,17 +69,17 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Notification & Attribution des Leads
-  epic-4: backlog
-  4-1-configuration-n8n-workflow-base: backlog
-  4-2-algorithme-attribution-prioritaire: backlog
-  4-3-notification-whatsapp-artisan: backlog
-  4-4-fallback-sms-whatsapp-echoue: backlog
-  4-5-fallback-email-sms-echoue: backlog
-  4-6-acceptation-lead-artisan: backlog
-  4-7-timer-2-minutes-redistribution: backlog
-  4-8-cascade-jusqu-a-3-artisans: backlog
-  4-9-decompte-credit-acceptation: backlog
-  4-10-message-lead-deja-attribue: backlog
+  epic-4: done
+  4-1-configuration-n8n-workflow-base: done
+  4-2-algorithme-attribution-prioritaire: done
+  4-3-notification-whatsapp-artisan: done
+  4-4-fallback-sms-whatsapp-echoue: done
+  4-5-fallback-email-sms-echoue: done
+  4-6-acceptation-lead-artisan: done
+  4-7-timer-2-minutes-redistribution: done
+  4-8-cascade-jusqu-a-3-artisans: done
+  4-9-decompte-credit-acceptation: done
+  4-10-message-lead-deja-attribue: done
   epic-4-retrospective: optional
 
   # Epic 5: Dashboard Artisan
