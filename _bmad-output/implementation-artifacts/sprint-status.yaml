@@ -1,0 +1,128 @@
+# generated: 2026-01-28
+# project: SaaS Artisans Urgents
+# project_key: artisans-urgents
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-01-28
+project: SaaS Artisans Urgents
+project_key: artisans-urgents
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Setup Projet & Fondations
+  epic-1: in-progress
+  1-1-initialisation-projet-nextjs: done
+  1-2-configuration-supabase-schema-initial: ready-for-dev
+  1-3-installation-shadcn-ui-composants-base: ready-for-dev
+  1-4-structure-fichiers-layout-base: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Inscription & Profil Artisan
+  epic-2: backlog
+  2-1-formulaire-inscription-artisan: backlog
+  2-2-acceptation-cgv: backlog
+  2-3-configuration-whatsapp-artisan: backlog
+  2-4-authentification-artisan-magic-link-password: backlog
+  2-5-page-publique-artisan: backlog
+  2-6-gestion-profil-artisan: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Soumission de Demande Client
+  epic-3: backlog
+  3-1-landing-page-cta-urgence: backlog
+  3-2-selection-type-panne: backlog
+  3-3-description-photo-optionnelle: backlog
+  3-4-saisie-coordonnees-client: backlog
+  3-5-affichage-fourchette-prix-indicative: backlog
+  3-6-soumission-creation-lead: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Notification & Attribution des Leads
+  epic-4: backlog
+  4-1-configuration-n8n-workflow-base: backlog
+  4-2-algorithme-attribution-prioritaire: backlog
+  4-3-notification-whatsapp-artisan: backlog
+  4-4-fallback-sms-whatsapp-echoue: backlog
+  4-5-fallback-email-sms-echoue: backlog
+  4-6-acceptation-lead-artisan: backlog
+  4-7-timer-2-minutes-redistribution: backlog
+  4-8-cascade-jusqu-a-3-artisans: backlog
+  4-9-decompte-credit-acceptation: backlog
+  4-10-message-lead-deja-attribue: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Dashboard Artisan
+  epic-5: backlog
+  5-1-liste-leads-artisan: backlog
+  5-2-detail-lead: backlog
+  5-3-affichage-solde-credits: backlog
+  5-4-historique-leads: backlog
+  5-5-acces-coordonnees-client: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Paiement & Crédits
+  epic-6: backlog
+  6-1-page-achat-credits: backlog
+  6-2-integration-lemonsqueezy-checkout: backlog
+  6-3-webhook-lemonsqueezy-credit-leads: backlog
+  6-4-facture-automatique: backlog
+  6-5-historique-achats: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Suivi Client
+  epic-7: backlog
+  7-1-confirmation-sms-client: backlog
+  7-2-notification-whatsapp-nom-artisan: backlog
+  7-3-suivi-automatique-j3: backlog
+  7-4-traitement-reponse-suivi-j3: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Dashboard Admin
+  epic-8: backlog
+  8-1-dashboard-metriques-admin: backlog
+  8-2-liste-gestion-artisans: backlog
+  8-3-desactivation-manuelle-artisan: backlog
+  8-4-desactivation-automatique-3-leads-rates: backlog
+  8-5-gestion-reclamations: backlog
+  8-6-attribution-credits-gratuits: backlog
+  8-7-historique-leads-filtres: backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: Multi-Tenant & Verticales
+  epic-9: backlog
+  9-1-table-configuration-verticales: backlog
+  9-2-association-artisan-verticale: backlog
+  9-3-isolation-leads-verticale: backlog
+  9-4-grille-tarifaire-verticale: backlog
+  epic-9-retrospective: optional
