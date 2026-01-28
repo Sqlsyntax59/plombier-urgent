@@ -33,6 +33,12 @@ export default function ArtisanLayout({
           >
             Mon Profil
           </Link>
+          <Link
+            href="/artisan/credits"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-accent transition-colors text-primary font-medium"
+          >
+            Acheter des crédits
+          </Link>
         </nav>
         <div className="p-4 border-t">
           <span className="text-xs text-muted-foreground">Espace Artisan</span>
