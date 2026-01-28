@@ -1,13 +1,23 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Clock, Phone, MapPin, ChevronRight } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Phone, MapPin, ChevronRight, Filter, TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createClient } from "@/lib/supabase/client";
+
+type PeriodFilter = "7d" | "30d" | "all";
+type StatusFilter = "all" | "accepted" | "pending" | "expired";
 
 // Labels français pour les types de panne
 const PROBLEM_TYPE_LABELS: Record<string, string> = {
@@ -71,6 +81,8 @@ function LeadsPageContent() {
 
   const [leads, setLeads] = useState<LeadWithAssignment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   useEffect(() => {
     async function fetchLeads() {
@@ -147,10 +159,35 @@ function LeadsPageContent() {
 
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] : null;
 
-  // Séparer les leads par statut
-  const acceptedLeads = leads.filter((l) => l.assignment_status === "accepted");
-  const pendingLeads = leads.filter((l) => l.assignment_status === "pending");
-  const expiredLeads = leads.filter((l) => l.assignment_status === "expired");
+  // Filtrer par période
+  const filteredByPeriod = useMemo(() => {
+    if (periodFilter === "all") return leads;
+
+    const now = new Date();
+    const daysAgo = periodFilter === "7d" ? 7 : 30;
+    const cutoffDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+
+    return leads.filter((l) => new Date(l.created_at) >= cutoffDate);
+  }, [leads, periodFilter]);
+
+  // Filtrer par statut
+  const filteredLeads = useMemo(() => {
+    if (statusFilter === "all") return filteredByPeriod;
+    return filteredByPeriod.filter((l) => l.assignment_status === statusFilter);
+  }, [filteredByPeriod, statusFilter]);
+
+  // Stats de conversion
+  const stats = useMemo(() => {
+    const total = filteredByPeriod.length;
+    const accepted = filteredByPeriod.filter((l) => l.assignment_status === "accepted").length;
+    const rate = total > 0 ? Math.round((accepted / total) * 100) : 0;
+    return { total, accepted, rate };
+  }, [filteredByPeriod]);
+
+  // Séparer les leads par statut (pour affichage groupé quand "all")
+  const acceptedLeads = filteredLeads.filter((l) => l.assignment_status === "accepted");
+  const pendingLeads = filteredLeads.filter((l) => l.assignment_status === "pending");
+  const expiredLeads = filteredLeads.filter((l) => l.assignment_status === "expired");
 
   return (
     <div className="space-y-6">
@@ -183,6 +220,56 @@ function LeadsPageContent() {
         </div>
       )}
 
+      {/* Filtres et Stats */}
+      {!loading && leads.length > 0 && (
+        <>
+          {/* Stats de conversion */}
+          <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium">Taux de conversion</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">{stats.rate}%</div>
+                  <div className="text-xs text-gray-500">
+                    {stats.accepted} acceptés sur {stats.total}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Filtres */}
+          <div className="flex flex-wrap gap-3 items-center">
+            <Filter className="h-4 w-4 text-gray-500" />
+            <Select value={periodFilter} onValueChange={(v) => setPeriodFilter(v as PeriodFilter)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Période" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7d">7 derniers jours</SelectItem>
+                <SelectItem value="30d">30 derniers jours</SelectItem>
+                <SelectItem value="all">Tout l'historique</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Statut" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tous les statuts</SelectItem>
+                <SelectItem value="accepted">Acceptés</SelectItem>
+                <SelectItem value="pending">En attente</SelectItem>
+                <SelectItem value="expired">Expirés</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </>
+      )}
+
       {loading ? (
         <div className="flex items-center justify-center min-h-[200px]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -196,6 +283,23 @@ function LeadsPageContent() {
             <p className="text-sm text-muted-foreground">
               Vos leads apparaîtront ici une fois que vous en recevrez.
             </p>
+          </CardContent>
+        </Card>
+      ) : filteredLeads.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center">
+            <p className="text-muted-foreground">
+              Aucun lead ne correspond à ces filtres.
+            </p>
+            <Button
+              variant="link"
+              onClick={() => {
+                setPeriodFilter("all");
+                setStatusFilter("all");
+              }}
+            >
+              Réinitialiser les filtres
+            </Button>
           </CardContent>
         </Card>
       ) : (
