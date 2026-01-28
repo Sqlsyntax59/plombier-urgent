@@ -66,3 +66,18 @@ export const whatsappConfigSchema = z.object({
 });
 
 export type WhatsAppConfigInput = z.infer<typeof whatsappConfigSchema>;
+
+// Schema pour connexion avec mot de passe
+export const loginPasswordSchema = z.object({
+  email: z.string().email("Adresse email invalide"),
+  password: z.string().min(1, "Le mot de passe est requis"),
+});
+
+export type LoginPasswordInput = z.infer<typeof loginPasswordSchema>;
+
+// Schema pour magic link
+export const magicLinkSchema = z.object({
+  email: z.string().email("Adresse email invalide"),
+});
+
+export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
