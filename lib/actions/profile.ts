@@ -93,9 +93,12 @@ export type PublicProfile = {
   trade: string | null;
   radius_km: number | null;
   google_business_url: string | null;
-  // Metriques calculees (placeholder pour l'instant)
+  // Metriques calculees
   is_reactive: boolean;
   response_time_avg: number | null;
+  // Ratings Epic 7
+  average_rating: number | null;
+  total_reviews: number;
 };
 
 // Recuperer le profil public d'un artisan par son slug
@@ -107,7 +110,7 @@ export async function getPublicProfile(
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
-      "first_name, city, trade, radius_km, google_business_url"
+      "first_name, city, trade, radius_km, google_business_url, average_rating, total_reviews"
     )
     .eq("slug", slug)
     .eq("role", "artisan")
@@ -123,6 +126,8 @@ export async function getPublicProfile(
     ...profile,
     is_reactive: true, // Placeholder
     response_time_avg: null, // Sera calcule depuis leads
+    average_rating: profile.average_rating || null,
+    total_reviews: profile.total_reviews || 0,
   };
 }
 

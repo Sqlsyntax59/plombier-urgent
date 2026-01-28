@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Award, ExternalLink, Clock } from "lucide-react";
+import { MapPin, Award, ExternalLink, Clock, Star } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +75,27 @@ export default async function PublicArtisanPage({
 
             <CardTitle className="text-2xl">{profile.first_name}</CardTitle>
             <p className="text-muted-foreground">{tradeName}</p>
+
+            {/* Rating */}
+            {profile.total_reviews > 0 && (
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-5 w-5 ${
+                        star <= Math.round(profile.average_rating || 0)
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {profile.average_rating?.toFixed(1)} ({profile.total_reviews} avis)
+                </span>
+              </div>
+            )}
 
             {/* Badges */}
             <div className="flex justify-center gap-2 mt-3">
