@@ -83,29 +83,30 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Dashboard Artisan
-  epic-5: backlog
-  5-1-liste-leads-artisan: backlog
-  5-2-detail-lead: backlog
-  5-3-affichage-solde-credits: backlog
-  5-4-historique-leads: backlog
-  5-5-acces-coordonnees-client: backlog
+  epic-5: done
+  5-1-liste-leads-artisan: done
+  5-2-detail-lead: done
+  5-3-affichage-solde-credits: done
+  5-4-historique-leads: done
+  5-5-acces-coordonnees-client: done
   epic-5-retrospective: optional
 
-  # Epic 6: Paiement & Crédits
-  epic-6: backlog
-  6-1-page-achat-credits: backlog
-  6-2-integration-lemonsqueezy-checkout: backlog
-  6-3-webhook-lemonsqueezy-credit-leads: backlog
+  # Epic 6: Paiement & Crédits (LemonSqueezy)
+  epic-6: done
+  6-1-page-achat-credits: done
+  6-2-integration-lemonsqueezy-checkout: done
+  6-3-webhook-lemonsqueezy-credit-leads: done
   6-4-facture-automatique: backlog
   6-5-historique-achats: backlog
   epic-6-retrospective: optional
 
-  # Epic 7: Suivi Client
-  epic-7: backlog
-  7-1-confirmation-sms-client: backlog
-  7-2-notification-whatsapp-nom-artisan: backlog
-  7-3-suivi-automatique-j3: backlog
-  7-4-traitement-reponse-suivi-j3: backlog
+  # Epic 7: Suivi Client J+3 & Ratings
+  epic-7: done
+  7-1-confirmation-sms-client: done
+  7-2-notification-whatsapp-nom-artisan: done
+  7-3-suivi-automatique-j3: done
+  7-4-traitement-reponse-suivi-j3: done
+  7-5-ratings-artisan: done
   epic-7-retrospective: optional
 
   # Epic 8: Dashboard Admin
