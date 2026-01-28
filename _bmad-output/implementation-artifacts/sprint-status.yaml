@@ -41,17 +41,17 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: Setup Projet & Fondations
-  epic-1: in-progress
+  epic-1: done
   1-1-initialisation-projet-nextjs: done
   1-2-configuration-supabase-schema-initial: done
   1-3-installation-shadcn-ui-composants-base: done
-  1-4-structure-fichiers-layout-base: backlog
+  1-4-structure-fichiers-layout-base: done
   epic-1-retrospective: optional
 
   # Epic 2: Inscription & Profil Artisan
-  epic-2: backlog
-  2-1-formulaire-inscription-artisan: backlog
-  2-2-acceptation-cgv: backlog
+  epic-2: in-progress
+  2-1-formulaire-inscription-artisan: done
+  2-2-acceptation-cgv: done
   2-3-configuration-whatsapp-artisan: backlog
   2-4-authentification-artisan-magic-link-password: backlog
   2-5-page-publique-artisan: backlog
