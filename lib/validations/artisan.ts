@@ -81,3 +81,44 @@ export const magicLinkSchema = z.object({
 });
 
 export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
+
+// Schema complet pour mise a jour profil artisan
+export const profileUpdateSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, "Le prenom doit contenir au moins 2 caracteres")
+    .max(50, "Le prenom ne peut pas depasser 50 caracteres"),
+  lastName: z
+    .string()
+    .min(2, "Le nom doit contenir au moins 2 caracteres")
+    .max(50, "Le nom ne peut pas depasser 50 caracteres"),
+  phone: z
+    .string()
+    .regex(
+      /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/,
+      "Numero de telephone invalide (format francais attendu)"
+    ),
+  whatsappPhone: z
+    .string()
+    .regex(
+      /^(?:(?:\+|00)33|0)\s*[67](?:[\s.-]*\d{2}){4}$/,
+      "Numero WhatsApp invalide (format mobile francais 06/07 attendu)"
+    )
+    .optional()
+    .or(z.literal("")),
+  city: z
+    .string()
+    .min(2, "La ville doit contenir au moins 2 caracteres")
+    .max(100, "La ville ne peut pas depasser 100 caracteres"),
+  radiusKm: z
+    .number()
+    .min(1, "Le rayon doit etre d'au moins 1 km")
+    .max(100, "Le rayon ne peut pas depasser 100 km"),
+  googleBusinessUrl: z
+    .string()
+    .url("URL invalide")
+    .optional()
+    .or(z.literal("")),
+});
+
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;

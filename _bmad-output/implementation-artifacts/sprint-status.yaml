@@ -49,13 +49,13 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: Inscription & Profil Artisan
-  epic-2: in-progress
+  epic-2: done
   2-1-formulaire-inscription-artisan: done
   2-2-acceptation-cgv: done
   2-3-configuration-whatsapp-artisan: done
   2-4-authentification-artisan-magic-link-password: done
   2-5-page-publique-artisan: done
-  2-6-gestion-profil-artisan: backlog
+  2-6-gestion-profil-artisan: done
   epic-2-retrospective: optional
 
   # Epic 3: Soumission de Demande Client
