@@ -59,13 +59,13 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Soumission de Demande Client
-  epic-3: backlog
-  3-1-landing-page-cta-urgence: backlog
-  3-2-selection-type-panne: backlog
-  3-3-description-photo-optionnelle: backlog
-  3-4-saisie-coordonnees-client: backlog
-  3-5-affichage-fourchette-prix-indicative: backlog
-  3-6-soumission-creation-lead: backlog
+  epic-3: done
+  3-1-landing-page-cta-urgence: done
+  3-2-selection-type-panne: done
+  3-3-description-photo-optionnelle: done
+  3-4-saisie-coordonnees-client: done
+  3-5-affichage-fourchette-prix-indicative: done
+  3-6-soumission-creation-lead: done
   epic-3-retrospective: optional
 
   # Epic 4: Notification & Attribution des Leads
