@@ -43,8 +43,8 @@ development_status:
   # Epic 1: Setup Projet & Fondations
   epic-1: in-progress
   1-1-initialisation-projet-nextjs: done
-  1-2-configuration-supabase-schema-initial: ready-for-dev
-  1-3-installation-shadcn-ui-composants-base: ready-for-dev
+  1-2-configuration-supabase-schema-initial: done
+  1-3-installation-shadcn-ui-composants-base: done
   1-4-structure-fichiers-layout-base: backlog
   epic-1-retrospective: optional
 
