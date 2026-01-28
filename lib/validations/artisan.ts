@@ -54,3 +54,15 @@ export const artisanUpdateSchema = artisanSignUpSchema
   .partial();
 
 export type ArtisanUpdateInput = z.infer<typeof artisanUpdateSchema>;
+
+// Schema pour configuration WhatsApp
+export const whatsappConfigSchema = z.object({
+  whatsappPhone: z
+    .string()
+    .regex(
+      /^(?:(?:\+|00)33|0)\s*[67](?:[\s.-]*\d{2}){4}$/,
+      "Numero WhatsApp invalide (format mobile francais 06/07 attendu)"
+    ),
+});
+
+export type WhatsAppConfigInput = z.infer<typeof whatsappConfigSchema>;
