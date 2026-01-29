@@ -1,0 +1,606 @@
+{
+  "name": "[PlombierUrgent] Lead Created - Cascade",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-created",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Lead Created",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "lead-created"
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "cascadeOrder",
+              "value": 1
+            },
+            {
+              "name": "maxCascade",
+              "value": 3
+            }
+          ],
+          "string": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.leadId }}"
+            },
+            {
+              "name": "problemType",
+              "value": "={{ $json.problemType }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $json.description }}"
+            },
+            {
+              "name": "clientPhone",
+              "value": "={{ $json.clientPhone }}"
+            },
+            {
+              "name": "clientCity",
+              "value": "={{ $json.clientCity || 'Non specifie' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-variables",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"find_artisan\",\n  \"params\": {\n    \"lead_id\": \"{{ $json.leadId }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "find-artisan-1",
+      "name": "Find Artisan #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "artisan-found",
+              "leftValue": "={{ $json.data.artisan }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-artisan-found-1",
+      "name": "Artisan Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"create_assignment\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\",\n    \"artisan_id\": \"{{ $json.data.artisan.artisan_id }}\",\n    \"cascade_order\": 1\n  }\n}",
+        "options": {}
+      },
+      "id": "create-assignment-1",
+      "name": "Create Assignment #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "assignmentId",
+              "value": "={{ $json.data.assignment_id }}"
+            },
+            {
+              "name": "artisanId",
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_id }}"
+            },
+            {
+              "name": "artisanName",
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_name }}"
+            },
+            {
+              "name": "telegramChatId",
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.telegram_chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-artisan-1",
+      "name": "Set Artisan Data #1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1100, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/generate-accept-url",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"assignmentId\": \"{{ $json.assignmentId }}\",\n  \"artisanId\": \"{{ $json.artisanId }}\"\n}",
+        "options": {}
+      },
+      "id": "generate-accept-url-1",
+      "name": "Generate Accept URL #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      },
+      "disabled": true,
+      "notes": "URL generee cote n8n avec Code node"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\nconst baseUrl = 'https://shower-perfectly-numerous-restoration.trycloudflare.com';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
+      },
+      "id": "code-build-message-1",
+      "name": "Build Message Data #1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegramChatId }}",
+        "text": "=🚨 *NOUVEAU LEAD URGENT*\n\n📍 *Type:* {{ $json.problemType }}\n🏙️ *Ville:* {{ $json.clientCity }}\n\n📝 *Description:*\n{{ $json.description }}\n\n⏱️ Vous avez *2 minutes* pour accepter ce lead.\n\n💰 *1 credit sera debite* si vous acceptez.",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "✅ ACCEPTER LE LEAD",
+                  "url": "={{ $json.acceptUrl }}"
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "telegram-send-1",
+      "name": "Send Telegram #1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1540, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-bot",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "minutes"
+      },
+      "id": "wait-1",
+      "name": "Wait 2 min #1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1760, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"check_lead_status\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "check-status-1",
+      "name": "Check Lead Status #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1980, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-accepted",
+              "leftValue": "={{ $json.data.is_accepted }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-accepted-1",
+      "name": "Lead Accepted? #1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2200, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"expire_assignment\",\n  \"params\": {\n    \"assignment_id\": \"{{ $('Set Artisan Data #1').item.json.assignmentId }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "expire-assignment-1",
+      "name": "Expire Assignment #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"find_artisan\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "find-artisan-2",
+      "name": "Find Artisan #2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2640, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n8n-callback-auth",
+          "name": "N8N Callback Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "artisan-found-2",
+              "leftValue": "={{ $json.data.artisan }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-artisan-found-2",
+      "name": "Artisan #2 Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2860, 300]
+    },
+    {
+      "parameters": {},
+      "id": "no-more-artisans",
+      "name": "No Artisans Available",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [3080, 500]
+    },
+    {
+      "parameters": {},
+      "id": "lead-accepted-end",
+      "name": "Lead Accepted - End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [2420, 100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "update-status",
+              "name": "status",
+              "value": "unassigned",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "mark-unassigned",
+      "name": "Mark Unassigned",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [3300, 500],
+      "notesInFlow": true,
+      "notes": "TODO: Update lead status in DB"
+    }
+  ],
+  "connections": {
+    "Webhook Lead Created": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Find Artisan #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Artisan #1": {
+      "main": [
+        [
+          {
+            "node": "Artisan Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Artisan Found?": {
+      "main": [
+        [
+          {
+            "node": "Create Assignment #1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Artisans Available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Assignment #1": {
+      "main": [
+        [
+          {
+            "node": "Set Artisan Data #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Artisan Data #1": {
+      "main": [
+        [
+          {
+            "node": "Build Message Data #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Message Data #1": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram #1": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 min #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 min #1": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Status #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Status #1": {
+      "main": [
+        [
+          {
+            "node": "Lead Accepted? #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Accepted? #1": {
+      "main": [
+        [
+          {
+            "node": "Lead Accepted - End",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Expire Assignment #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expire Assignment #1": {
+      "main": [
+        [
+          {
+            "node": "Find Artisan #2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Artisan #2": {
+      "main": [
+        [
+          {
+            "node": "Artisan #2 Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Artisan #2 Found?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "No Artisans Available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Artisans Available": {
+      "main": [
+        [
+          {
+            "node": "Mark Unassigned",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1",
+  "meta": {
+    "instanceId": "plombier-urgent"
+  },
+  "tags": [
+    {
+      "name": "PlombierUrgent"
+    }
+  ]
+}
