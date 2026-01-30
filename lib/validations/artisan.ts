@@ -8,6 +8,28 @@ export const TRADES = [
 
 export const tradeValues = TRADES.map((t) => t.value) as [string, ...string[]];
 
+// Specialisations par metier
+export const SPECIALIZATIONS: Record<string, { value: string; label: string }[]> = {
+  plombier: [
+    { value: "sanitaire", label: "Sanitaire (WC, lavabos, douches)" },
+    { value: "depannage", label: "Depannage urgent" },
+    { value: "debouchage", label: "Debouchage canalisations" },
+    { value: "fuite", label: "Recherche et reparation de fuites" },
+    { value: "installation", label: "Installation neuve" },
+    { value: "renovation", label: "Renovation salle de bain" },
+  ],
+  "plombier-chauffagiste": [
+    { value: "sanitaire", label: "Sanitaire (WC, lavabos, douches)" },
+    { value: "depannage", label: "Depannage urgent" },
+    { value: "chaudiere-gaz", label: "Chaudiere gaz" },
+    { value: "chaudiere-fioul", label: "Chaudiere fioul" },
+    { value: "pompe-chaleur", label: "Pompe a chaleur" },
+    { value: "plancher-chauffant", label: "Plancher chauffant" },
+    { value: "radiateurs", label: "Radiateurs" },
+    { value: "ballon-eau-chaude", label: "Ballon d'eau chaude" },
+  ],
+};
+
 // Schema d'inscription artisan
 export const artisanSignUpSchema = z.object({
   firstName: z
@@ -39,6 +61,9 @@ export const artisanSignUpSchema = z.object({
   trade: z.enum(tradeValues, {
     message: "Veuillez selectionner un metier",
   }),
+  specializations: z
+    .array(z.string())
+    .min(1, "Selectionnez au moins une specialisation"),
   acceptCgv: z
     .boolean()
     .refine((val) => val === true, {

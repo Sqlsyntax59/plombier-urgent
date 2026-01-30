@@ -30,6 +30,7 @@ import {
   artisanSignUpSchema,
   type ArtisanSignUpInput,
   TRADES,
+  SPECIALIZATIONS,
 } from "@/lib/validations/artisan";
 import { signUpArtisan } from "@/lib/actions/auth";
 
@@ -47,6 +48,7 @@ export default function InscriptionPage() {
       phone: "",
       city: "",
       trade: undefined,
+      specializations: [],
       acceptCgv: false,
     },
   });
@@ -200,7 +202,10 @@ export default function InscriptionPage() {
                     <FormItem>
                       <FormLabel>Metier</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("specializations", []);
+                        }}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -220,6 +225,51 @@ export default function InscriptionPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Specialisations */}
+                {form.watch("trade") && SPECIALIZATIONS[form.watch("trade")] && (
+                  <FormField
+                    control={form.control}
+                    name="specializations"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Specialisations</FormLabel>
+                        <div className="grid grid-cols-1 gap-2 mt-2">
+                          {SPECIALIZATIONS[form.watch("trade")]?.map((spec) => (
+                            <FormField
+                              key={spec.value}
+                              control={form.control}
+                              name="specializations"
+                              render={({ field }) => (
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(spec.value)}
+                                      onCheckedChange={(checked) => {
+                                        const current = field.value || [];
+                                        if (checked) {
+                                          field.onChange([...current, spec.value]);
+                                        } else {
+                                          field.onChange(
+                                            current.filter((v: string) => v !== spec.value)
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal text-sm">
+                                    {spec.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {/* CGV */}
                 <FormField

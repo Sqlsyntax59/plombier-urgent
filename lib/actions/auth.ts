@@ -28,7 +28,7 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
     };
   }
 
-  const { email, password, firstName, lastName, phone, city, trade } = parsed.data;
+  const { email, password, firstName, lastName, phone, city, trade, specializations } = parsed.data;
 
   const supabase = await createClient();
 
@@ -75,6 +75,7 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
       phone,
       city,
       trade,
+      specializations,
       email,
       role: "artisan",
       cgv_accepted_at: new Date().toISOString(),

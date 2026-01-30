@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Award, ExternalLink, Clock, Star } from "lucide-react";
+import { MapPin, Award, Clock, Star } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -138,20 +138,6 @@ export default async function PublicArtisanPage({
                   </p>
                 </div>
               </div>
-            )}
-
-            {/* Lien Google Business */}
-            {profile.google_business_url && (
-              <Button variant="outline" className="w-full gap-2" asChild>
-                <a
-                  href={profile.google_business_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Voir les avis Google
-                </a>
-              </Button>
             )}
 
             {/* CTA */}

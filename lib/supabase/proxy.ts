@@ -57,8 +57,17 @@ export async function updateSession(request: NextRequest) {
     "/artisan/lead-accepted",
     "/artisan/lead-error",
     "/demande",
+    "/cgv",
     "/api/n8n",
     "/api/lead/accept-simple",
+  ];
+
+  // Routes artisan protégées (dashboard)
+  const artisanProtectedPaths = [
+    "/artisan/dashboard",
+    "/artisan/leads",
+    "/artisan/credits",
+    "/artisan/profil",
   ];
 
   const isPublicRoute = publicRoutes.some(
@@ -67,7 +76,15 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname.startsWith(route + "/")
   );
 
-  if (!user && !isPublicRoute) {
+  // Page profil artisan public /artisan/[slug] (ex: /artisan/jean-paris-a3b8)
+  const isArtisanPublicProfile =
+    request.nextUrl.pathname.startsWith("/artisan/") &&
+    !artisanProtectedPaths.some((path) =>
+      request.nextUrl.pathname.startsWith(path)
+    ) &&
+    !isPublicRoute;
+
+  if (!user && !isPublicRoute && !isArtisanPublicProfile) {
     // no user, redirect to login
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
