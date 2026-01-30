@@ -41,3 +41,5 @@ vercel.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.claude/
+.mcp.json
