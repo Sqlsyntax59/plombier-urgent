@@ -69,7 +69,13 @@ export async function createLead(data: LeadSubmitInput): Promise<LeadResult> {
 
   // Déclencher le workflow n8n pour notification artisan
   // Note: On n'attend pas le résultat pour ne pas bloquer le client
-  triggerLeadWorkflow(lead.id).catch((err) => {
+  triggerLeadWorkflow({
+    leadId: lead.id,
+    clientPhone: normalizedPhone,
+    clientCity: clientCity || undefined,
+    problemType,
+    description,
+  }).catch((err) => {
     console.error("Erreur trigger n8n workflow:", err);
   });
 

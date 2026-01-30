@@ -9,16 +9,19 @@ interface TriggerResult {
   error?: string;
 }
 
+export interface LeadData {
+  leadId: string;
+  clientPhone: string;
+  clientCity?: string;
+  problemType: string;
+  description: string;
+}
+
 /**
  * Déclenche le workflow n8n pour traiter un nouveau lead.
- * Le workflow n8n doit être configuré pour:
- * 1. Recevoir le leadId
- * 2. Appeler /api/webhooks/n8n/trigger-lead pour récupérer les données
- * 3. Exécuter l'algorithme d'attribution
- * 4. Envoyer les notifications (WhatsApp → SMS → Email)
- * 5. Appeler /api/webhooks/n8n/notification-status pour confirmer
+ * Envoie toutes les données nécessaires pour la notification Telegram.
  */
-export async function triggerLeadWorkflow(leadId: string): Promise<TriggerResult> {
+export async function triggerLeadWorkflow(data: LeadData): Promise<TriggerResult> {
   if (!N8N_WEBHOOK_URL) {
     console.warn("N8N_WEBHOOK_URL non configuré - workflow non déclenché");
     return { success: true }; // Silently succeed in dev
@@ -31,14 +34,12 @@ export async function triggerLeadWorkflow(leadId: string): Promise<TriggerResult
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        event: "lead.created",
-        leadId,
+        leadId: data.leadId,
+        phone: data.clientPhone,
+        address: data.clientCity || "Non précisée",
+        urgencyType: data.problemType,
+        description: data.description,
         timestamp: new Date().toISOString(),
-        callbackUrls: {
-          triggerLead: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/n8n/trigger-lead`,
-          notificationStatus: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/n8n/notification-status`,
-          acceptLead: `${process.env.NEXT_PUBLIC_APP_URL}/api/leads/accept`,
-        },
       }),
     });
 

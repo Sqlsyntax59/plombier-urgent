@@ -29,7 +29,7 @@
             {
               "id": "client-name",
               "name": "clientName",
-              "value": "={{ $json.clientName }}",
+              "value": "=Client",
               "type": "string"
             },
             {
@@ -53,7 +53,7 @@
             {
               "id": "description",
               "name": "description",
-              "value": "={{ $json.urgencyType }} - {{ $json.address }}",
+              "value": "={{ $json.description }}",
               "type": "string"
             }
           ]
