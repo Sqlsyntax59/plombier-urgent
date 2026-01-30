@@ -19,7 +19,7 @@ import { createLead } from "@/lib/actions/lead";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { PROBLEM_TYPES, PRICE_RANGES } from "@/lib/validations/lead";
+import { PROBLEM_TYPES, PRICE_RANGES, GUIDED_QUESTIONS, type GuidedAnswers } from "@/lib/validations/lead";
 
 type FormData = {
   problemType: string;
@@ -28,6 +28,7 @@ type FormData = {
   clientPhone: string;
   clientEmail: string;
   clientCity: string;
+  guidedAnswers: GuidedAnswers;
 };
 
 export default function DemandePage() {
@@ -39,6 +40,7 @@ export default function DemandePage() {
     clientPhone: "",
     clientEmail: "",
     clientCity: "",
+    guidedAnswers: {},
   });
   const [descriptionError, setDescriptionError] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export default function DemandePage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSelectProblemType = (type: string) => {
-    setFormData({ ...formData, problemType: type });
+    setFormData({ ...formData, problemType: type, guidedAnswers: {} });
     setCurrentStep(2);
   };
 
@@ -68,6 +70,17 @@ export default function DemandePage() {
     } else {
       setDescriptionError(null);
     }
+  };
+
+  const handleGuidedAnswer = (questionId: string, value: string | boolean) => {
+    setFormData({
+      ...formData,
+      guidedAnswers: { ...formData.guidedAnswers, [questionId]: value },
+    });
+  };
+
+  const getGuidedQuestions = () => {
+    return GUIDED_QUESTIONS[formData.problemType] || [];
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,6 +164,7 @@ export default function DemandePage() {
       clientPhone: formData.clientPhone,
       clientEmail: formData.clientEmail,
       clientCity: formData.clientCity,
+      guidedAnswers: formData.guidedAnswers,
     });
 
     setIsSubmitting(false);
@@ -256,17 +270,98 @@ export default function DemandePage() {
                   </p>
                 </div>
               )}
+
+              {/* Questions guidées dynamiques */}
+              {getGuidedQuestions().length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Quelques questions pour mieux vous aider :
+                  </p>
+                  {getGuidedQuestions().map((q) => (
+                    <div key={q.id} className="space-y-2">
+                      <Label className="text-sm">{q.label}</Label>
+                      {q.type === "select" && q.options && (
+                        <div className="flex flex-wrap gap-2">
+                          {q.options.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() => handleGuidedAnswer(q.id, option)}
+                              className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                                formData.guidedAnswers[q.id] === option
+                                  ? "bg-primary text-primary-foreground border-primary"
+                                  : "bg-background border-border hover:border-primary"
+                              }`}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {q.type === "boolean" && (
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleGuidedAnswer(q.id, true)}
+                            className={`flex-1 px-4 py-2 text-sm rounded-lg border transition-colors ${
+                              formData.guidedAnswers[q.id] === true
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-background border-border hover:border-primary"
+                            }`}
+                          >
+                            Oui
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleGuidedAnswer(q.id, false)}
+                            className={`flex-1 px-4 py-2 text-sm rounded-lg border transition-colors ${
+                              formData.guidedAnswers[q.id] === false
+                                ? "bg-muted border-muted-foreground/30"
+                                : "bg-background border-border hover:border-primary"
+                            }`}
+                          >
+                            Non
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Séparateur */}
+              {getGuidedQuestions().length > 0 && (
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Précisions
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Description */}
               <div className="space-y-2">
                 <Label htmlFor="description">
-                  Description <span className="text-destructive">*</span>
+                  Détails supplémentaires <span className="text-destructive">*</span>
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Decrivez votre probleme en detail (ex: fuite sous l'evier de la cuisine depuis ce matin...)"
+                  placeholder={
+                    formData.problemType === "fuite"
+                      ? "Ex: La fuite a commencé ce matin, il y a une flaque sous l'évier..."
+                      : formData.problemType === "wc_bouche"
+                      ? "Ex: Les WC sont bouchés depuis hier soir, j'ai essayé une ventouse sans succès..."
+                      : formData.problemType === "ballon_eau_chaude"
+                      ? "Ex: Plus d'eau chaude depuis ce matin, le ballon fait un bruit bizarre..."
+                      : "Décrivez votre problème en quelques mots..."
+                  }
                   value={formData.description}
                   onChange={(e) => handleDescriptionChange(e.target.value)}
-                  className="min-h-[120px] resize-none"
+                  className="min-h-[100px] resize-none"
                 />
                 <div className="flex justify-between text-xs">
                   {descriptionError ? (
@@ -306,13 +401,10 @@ export default function DemandePage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
-                    <Camera className="h-8 w-8 text-muted-foreground mb-2" />
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+                    <Camera className="h-6 w-6 text-muted-foreground mb-1" />
                     <span className="text-sm text-muted-foreground">
                       Ajouter une photo
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      Max 5MB
                     </span>
                     <input
                       type="file"

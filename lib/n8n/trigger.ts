@@ -15,6 +15,10 @@ export interface LeadData {
   clientCity?: string;
   problemType: string;
   description: string;
+  // Nouvelles données enrichies (optionnelles pour rétrocompatibilité)
+  fieldSummary?: string;
+  isUrgent?: boolean;
+  urgencyReason?: string | null;
 }
 
 /**
@@ -39,6 +43,10 @@ export async function triggerLeadWorkflow(data: LeadData): Promise<TriggerResult
         address: data.clientCity || "Non précisée",
         urgencyType: data.problemType,
         description: data.description,
+        // Données enrichies pour la synthèse terrain
+        fieldSummary: data.fieldSummary || data.description,
+        isUrgent: data.isUrgent || false,
+        urgencyReason: data.urgencyReason || null,
         timestamp: new Date().toISOString(),
       }),
     });

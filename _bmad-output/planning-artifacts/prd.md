@@ -424,6 +424,49 @@ classification:
 - **FR5:** Client peut fournir son numéro de téléphone
 - **FR6:** Client peut voir une fourchette de prix indicative selon le type de panne sélectionné
 
+### Descriptif Guidé (Guided Intake)
+
+**Objectif :** Obtenir des informations exploitables terrain sans alourdir l'UX.
+
+- **FR6.1:** Client répond à 2-3 questions guidées dynamiques selon le type de panne sélectionné
+- **FR6.2:** Questions simples : boutons select (choix unique) ou oui/non (boolean)
+- **FR6.3:** Champ description libre avec placeholder contextuel selon le type de panne
+- **FR6.4:** Système génère automatiquement une synthèse terrain lisible pour l'artisan
+- **FR6.5:** Système détecte les urgences via règles simples (ex: fuite continue, WC qui déborde)
+- **FR6.6:** Artisan reçoit dans sa notification : synthèse structurée + indicateur urgence si applicable
+
+**Questions par type de panne :**
+
+| Type | Questions |
+|------|-----------|
+| Fuite | Localisation, Coule en continu ?, Eau coupée ? |
+| WC bouché | Déborde ?, Ventouse essayée ?, Autres WC dispo ? |
+| Ballon eau chaude | Symptôme, Fuite visible ?, Plus de 10 ans ? |
+| Canalisation | Symptôme, Blocage total ?, Plusieurs évacuations ? |
+| Robinetterie | Symptôme, Coupure possible ? |
+| Autre | Catégorie, Urgence ressentie ? |
+
+**Règles d'urgence :**
+
+| Condition | Raison affichée |
+|-----------|-----------------|
+| Fuite + coule en continu | "Fuite continue non maîtrisée" |
+| WC + eau déborde | "WC qui déborde" |
+| Ballon + fuite visible | "Fuite sur ballon d'eau chaude" |
+| Canalisation + blocage total | "Canalisation totalement bouchée" |
+| Autre + urgence signalée | "Urgence signalée par le client" |
+
+**Exemple de synthèse terrain :**
+
+```
+📍 Fuite d'eau
+• Où se situe la fuite ? : Sous évier/lavabo
+• L'eau coule-t-elle en continu ? ✓ Oui
+• Avez-vous coupé l'arrivée d'eau ? ✗ Non
+
+💬 "Grosse fuite sous l'évier de la cuisine depuis 1h"
+```
+
 ### Confirmation et Suivi (Client)
 
 - **FR7:** Client reçoit une confirmation immédiate de sa demande (SMS)

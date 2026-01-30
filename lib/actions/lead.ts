@@ -1,7 +1,13 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { leadSubmitSchema, type LeadSubmitInput } from "@/lib/validations/lead";
+import {
+  leadSubmitSchema,
+  type LeadSubmitInput,
+  type GuidedAnswers,
+  checkUrgency,
+  generateFieldSummary,
+} from "@/lib/validations/lead";
 import { triggerLeadWorkflow } from "@/lib/n8n/trigger";
 
 export type LeadResult = {
@@ -11,7 +17,9 @@ export type LeadResult = {
 };
 
 // Creer un nouveau lead (demande client)
-export async function createLead(data: LeadSubmitInput): Promise<LeadResult> {
+export async function createLead(
+  data: LeadSubmitInput & { guidedAnswers?: GuidedAnswers }
+): Promise<LeadResult> {
   // Validation serveur
   const parsed = leadSubmitSchema.safeParse(data);
   if (!parsed.success) {
@@ -29,6 +37,13 @@ export async function createLead(data: LeadSubmitInput): Promise<LeadResult> {
     clientEmail,
     clientCity,
   } = parsed.data;
+
+  // Récupérer les réponses guidées (optionnel)
+  const guidedAnswers = data.guidedAnswers || {};
+
+  // Calculer urgence et synthèse terrain
+  const urgency = checkUrgency(problemType, guidedAnswers);
+  const fieldSummary = generateFieldSummary(problemType, guidedAnswers, description);
 
   const supabase = await createClient();
 
@@ -75,6 +90,10 @@ export async function createLead(data: LeadSubmitInput): Promise<LeadResult> {
     clientCity: clientCity || undefined,
     problemType,
     description,
+    // Données enrichies pour la synthèse terrain
+    fieldSummary,
+    isUrgent: urgency.isUrgent,
+    urgencyReason: urgency.reason,
   }).catch((err) => {
     console.error("Erreur trigger n8n workflow:", err);
   });
