@@ -55,6 +55,8 @@ export async function updateSession(request: NextRequest) {
     "/artisan/inscription",
     "/artisan/login",
     "/demande",
+    "/api/n8n",
+    "/api/lead/accept-simple",
   ];
 
   const isPublicRoute = publicRoutes.some(

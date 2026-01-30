@@ -17,7 +17,9 @@ function verifyN8nSecret(request: NextRequest): boolean {
     return false;
   }
 
-  return authHeader === `Bearer ${expectedSecret}`;
+  // Accepter les deux formats: "Bearer <token>" ou juste "<token>"
+  const tokenWithBearer = `Bearer ${expectedSecret}`;
+  return authHeader === tokenWithBearer || authHeader === expectedSecret;
 }
 
 type CallbackAction =

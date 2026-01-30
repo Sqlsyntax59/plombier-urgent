@@ -16,40 +16,49 @@
     },
     {
       "parameters": {
-        "values": {
-          "number": [
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
             {
-              "name": "cascadeOrder",
-              "value": 1
-            },
-            {
-              "name": "maxCascade",
-              "value": 3
-            }
-          ],
-          "string": [
-            {
+              "id": "lead-id",
               "name": "leadId",
-              "value": "={{ $json.leadId }}"
+              "value": "={{ $json.body.leadId }}",
+              "type": "string"
             },
             {
+              "id": "client-name",
+              "name": "clientName",
+              "value": "={{ $json.body.clientName }}",
+              "type": "string"
+            },
+            {
+              "id": "phone",
+              "name": "phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "problem-type",
               "name": "problemType",
-              "value": "={{ $json.problemType }}"
+              "value": "={{ $json.body.urgencyType }}",
+              "type": "string"
             },
             {
-              "name": "description",
-              "value": "={{ $json.description }}"
-            },
-            {
-              "name": "clientPhone",
-              "value": "={{ $json.clientPhone }}"
-            },
-            {
+              "id": "address",
               "name": "clientCity",
-              "value": "={{ $json.clientCity || 'Non specifie' }}"
+              "value": "={{ $json.body.address }}",
+              "type": "string"
+            },
+            {
+              "id": "description",
+              "name": "description",
+              "value": "={{ $json.body.urgencyType }} - {{ $json.body.address }}",
+              "type": "string"
             }
           ]
         },
+        "includeOtherFields": false,
         "options": {}
       },
       "id": "set-variables",
@@ -61,12 +70,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"find_artisan\",\n  \"params\": {\n    \"lead_id\": \"{{ $json.leadId }}\"\n  }\n}",
+        "jsonBody": "={{ JSON.stringify({ action: 'find_artisan', params: { lead_id: $json.leadId } }) }}",
         "options": {}
       },
       "id": "find-artisan-1",
@@ -76,7 +85,7 @@
       "position": [440, 300],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
+          "id": "Y5ChCuhYe5dOVFsO",
           "name": "N8N Callback Auth"
         }
       }
@@ -85,23 +94,25 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict"
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "conditions": [
             {
               "id": "artisan-found",
-              "leftValue": "={{ $json.data.artisan }}",
+              "leftValue": "={{ $json.data.artisan.artisan_id }}",
               "rightValue": "",
               "operator": {
-                "type": "object",
-                "operation": "exists"
+                "type": "string",
+                "operation": "notEquals"
               }
             }
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "id": "if-artisan-found-1",
@@ -113,12 +124,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"create_assignment\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\",\n    \"artisan_id\": \"{{ $json.data.artisan.artisan_id }}\",\n    \"cascade_order\": 1\n  }\n}",
+        "jsonBody": "={{ JSON.stringify({ action: 'create_assignment', params: { lead_id: $('Set Variables').item.json.leadId, artisan_id: $('Find Artisan #1').item.json.data.artisan.artisan_id, cascade_order: 1 } }) }}",
         "options": {}
       },
       "id": "create-assignment-1",
@@ -128,33 +139,44 @@
       "position": [880, 200],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
+          "id": "Y5ChCuhYe5dOVFsO",
           "name": "N8N Callback Auth"
         }
       }
     },
     {
       "parameters": {
-        "values": {
-          "string": [
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
             {
+              "id": "assignment-id",
               "name": "assignmentId",
-              "value": "={{ $json.data.assignment_id }}"
+              "value": "={{ $json.data.assignment_id }}",
+              "type": "string"
             },
             {
+              "id": "artisan-id",
               "name": "artisanId",
-              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_id }}"
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_id }}",
+              "type": "string"
             },
             {
-              "name": "artisanName",
-              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_name }}"
-            },
-            {
+              "id": "telegram-chat-id",
               "name": "telegramChatId",
-              "value": "={{ $('Find Artisan #1').item.json.data.artisan.telegram_chat_id }}"
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.telegram_chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "artisan-name",
+              "name": "artisanName",
+              "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_name }}",
+              "type": "string"
             }
           ]
         },
+        "includeOtherFields": false,
         "options": {}
       },
       "id": "set-artisan-1",
@@ -165,32 +187,7 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/generate-accept-url",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"assignmentId\": \"{{ $json.assignmentId }}\",\n  \"artisanId\": \"{{ $json.artisanId }}\"\n}",
-        "options": {}
-      },
-      "id": "generate-accept-url-1",
-      "name": "Generate Accept URL #1",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [1320, 200],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
-          "name": "N8N Callback Auth"
-        }
-      },
-      "disabled": true,
-      "notes": "URL generee cote n8n avec Code node"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\nconst baseUrl = 'https://shower-perfectly-numerous-restoration.trycloudflare.com';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
+        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// IMPORTANT: Remplacer par URL Cloudflare Tunnel actuelle\nconst baseUrl = $env.CALLBACK_URL || 'https://YOUR-TUNNEL.trycloudflare.com';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
       },
       "id": "code-build-message-1",
       "name": "Build Message Data #1",
@@ -200,20 +197,13 @@
     },
     {
       "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
         "chatId": "={{ $json.telegramChatId }}",
-        "text": "=🚨 *NOUVEAU LEAD URGENT*\n\n📍 *Type:* {{ $json.problemType }}\n🏙️ *Ville:* {{ $json.clientCity }}\n\n📝 *Description:*\n{{ $json.description }}\n\n⏱️ Vous avez *2 minutes* pour accepter ce lead.\n\n💰 *1 credit sera debite* si vous acceptez.",
+        "text": "=\ud83d\udea8 *NOUVEAU LEAD URGENT*\n\n\ud83d\udccd *Type:* {{ $json.problemType }}\n\ud83c\udfd9\ufe0f *Ville:* {{ $json.clientCity }}\n\n\ud83d\udcdd *Description:*\n{{ $json.description }}\n\n\u23f1\ufe0f Vous avez *2 minutes* pour accepter ce lead.\n\n\ud83d\udcb0 *1 credit sera debite* si vous acceptez.\n\n\ud83d\udc49 [ACCEPTER CE LEAD]({{ $json.acceptUrl }})",
+        "replyMarkup": "none",
         "additionalFields": {
-          "parse_mode": "Markdown",
-          "reply_markup": {
-            "inline_keyboard": [
-              [
-                {
-                  "text": "✅ ACCEPTER LE LEAD",
-                  "url": "={{ $json.acceptUrl }}"
-                }
-              ]
-            ]
-          }
+          "parse_mode": "Markdown"
         }
       },
       "id": "telegram-send-1",
@@ -242,12 +232,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"check_lead_status\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\"\n  }\n}",
+        "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
         "options": {}
       },
       "id": "check-status-1",
@@ -257,7 +247,7 @@
       "position": [1980, 200],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
+          "id": "Y5ChCuhYe5dOVFsO",
           "name": "N8N Callback Auth"
         }
       }
@@ -266,9 +256,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict"
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "conditions": [
             {
@@ -283,6 +274,7 @@
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "id": "if-accepted-1",
@@ -294,12 +286,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"expire_assignment\",\n  \"params\": {\n    \"assignment_id\": \"{{ $('Set Artisan Data #1').item.json.assignmentId }}\"\n  }\n}",
+        "jsonBody": "={{ JSON.stringify({ action: 'expire_assignment', params: { assignment_id: $('Set Artisan Data #1').item.json.assignmentId } }) }}",
         "options": {}
       },
       "id": "expire-assignment-1",
@@ -309,7 +301,7 @@
       "position": [2420, 300],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
+          "id": "Y5ChCuhYe5dOVFsO",
           "name": "N8N Callback Auth"
         }
       }
@@ -317,12 +309,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://shower-perfectly-numerous-restoration.trycloudflare.com/api/n8n/callback",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"action\": \"find_artisan\",\n  \"params\": {\n    \"lead_id\": \"{{ $('Set Variables').item.json.leadId }}\"\n  }\n}",
+        "jsonBody": "={{ JSON.stringify({ action: 'find_artisan', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
         "options": {}
       },
       "id": "find-artisan-2",
@@ -332,7 +324,7 @@
       "position": [2640, 300],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "n8n-callback-auth",
+          "id": "Y5ChCuhYe5dOVFsO",
           "name": "N8N Callback Auth"
         }
       }
@@ -341,23 +333,25 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict"
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "conditions": [
             {
               "id": "artisan-found-2",
-              "leftValue": "={{ $json.data.artisan }}",
+              "leftValue": "={{ $json.data.artisan.artisan_id }}",
               "rightValue": "",
               "operator": {
-                "type": "object",
-                "operation": "exists"
+                "type": "string",
+                "operation": "notEquals"
               }
             }
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "id": "if-artisan-found-2",
@@ -407,184 +401,58 @@
   ],
   "connections": {
     "Webhook Lead Created": {
-      "main": [
-        [
-          {
-            "node": "Set Variables",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Set Variables", "type": "main", "index": 0}]]
     },
     "Set Variables": {
-      "main": [
-        [
-          {
-            "node": "Find Artisan #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Find Artisan #1", "type": "main", "index": 0}]]
     },
     "Find Artisan #1": {
-      "main": [
-        [
-          {
-            "node": "Artisan Found?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Artisan Found?", "type": "main", "index": 0}]]
     },
     "Artisan Found?": {
       "main": [
-        [
-          {
-            "node": "Create Assignment #1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "No Artisans Available",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{"node": "Create Assignment #1", "type": "main", "index": 0}],
+        [{"node": "No Artisans Available", "type": "main", "index": 0}]
       ]
     },
     "Create Assignment #1": {
-      "main": [
-        [
-          {
-            "node": "Set Artisan Data #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Set Artisan Data #1", "type": "main", "index": 0}]]
     },
     "Set Artisan Data #1": {
-      "main": [
-        [
-          {
-            "node": "Build Message Data #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Build Message Data #1", "type": "main", "index": 0}]]
     },
     "Build Message Data #1": {
-      "main": [
-        [
-          {
-            "node": "Send Telegram #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Send Telegram #1", "type": "main", "index": 0}]]
     },
     "Send Telegram #1": {
-      "main": [
-        [
-          {
-            "node": "Wait 2 min #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Wait 2 min #1", "type": "main", "index": 0}]]
     },
     "Wait 2 min #1": {
-      "main": [
-        [
-          {
-            "node": "Check Lead Status #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Check Lead Status #1", "type": "main", "index": 0}]]
     },
     "Check Lead Status #1": {
-      "main": [
-        [
-          {
-            "node": "Lead Accepted? #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Lead Accepted? #1", "type": "main", "index": 0}]]
     },
     "Lead Accepted? #1": {
       "main": [
-        [
-          {
-            "node": "Lead Accepted - End",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Expire Assignment #1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{"node": "Lead Accepted - End", "type": "main", "index": 0}],
+        [{"node": "Expire Assignment #1", "type": "main", "index": 0}]
       ]
     },
     "Expire Assignment #1": {
-      "main": [
-        [
-          {
-            "node": "Find Artisan #2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Find Artisan #2", "type": "main", "index": 0}]]
     },
     "Find Artisan #2": {
-      "main": [
-        [
-          {
-            "node": "Artisan #2 Found?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Artisan #2 Found?", "type": "main", "index": 0}]]
     },
     "Artisan #2 Found?": {
       "main": [
         [],
-        [
-          {
-            "node": "No Artisans Available",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{"node": "No Artisans Available", "type": "main", "index": 0}]
       ]
     },
     "No Artisans Available": {
-      "main": [
-        [
-          {
-            "node": "Mark Unassigned",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{"node": "Mark Unassigned", "type": "main", "index": 0}]]
     }
   },
   "active": false,
@@ -594,13 +462,10 @@
     "saveManualExecutions": true,
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "1",
+  "versionId": "2",
   "meta": {
-    "instanceId": "plombier-urgent"
+    "instanceId": "plombier-urgent",
+    "notes": "IMPORTANT: Remplacer CALLBACK_URL par l'URL Cloudflare Tunnel actuelle avant import"
   },
-  "tags": [
-    {
-      "name": "PlombierUrgent"
-    }
-  ]
+  "tags": [{"name": "PlombierUrgent"}]
 }
