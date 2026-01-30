@@ -52,6 +52,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Cast des relations (Supabase renvoie des objets pour .single())
+    const artisan = feedback.artisan as unknown as { first_name: string; city: string } | null;
+    const lead = feedback.lead as unknown as { problem_type: string; client_city: string; created_at: string } | null;
+
     // Marquer comme ouvert si pas encore
     if (!feedback.submitted_at) {
       await supabase
@@ -77,10 +81,10 @@ export async function GET(request: NextRequest) {
       success: true,
       feedback: {
         id: feedback.id,
-        artisan_name: feedback.artisan?.first_name || "Votre artisan",
-        artisan_city: feedback.artisan?.city,
-        problem_type: feedback.lead?.problem_type,
-        intervention_date: feedback.lead?.created_at,
+        artisan_name: artisan?.first_name || "Votre artisan",
+        artisan_city: artisan?.city,
+        problem_type: lead?.problem_type,
+        intervention_date: lead?.created_at,
       },
     });
 
