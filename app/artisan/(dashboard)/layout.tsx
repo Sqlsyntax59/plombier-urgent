@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArtisanHeader } from "@/components/artisan-header";
 
 export default function ArtisanLayout({
   children,
@@ -47,12 +48,7 @@ export default function ArtisanLayout({
 
       {/* Contenu principal */}
       <div className="flex-1 flex flex-col">
-        <header className="h-16 border-b bg-card flex items-center justify-between px-6">
-          <h1 className="font-semibold">Tableau de bord</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Artisan</span>
-          </div>
-        </header>
+        <ArtisanHeader />
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
