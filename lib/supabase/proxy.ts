@@ -54,6 +54,8 @@ export async function updateSession(request: NextRequest) {
     "/auth",
     "/artisan/inscription",
     "/artisan/login",
+    "/artisan/lead-accepted",
+    "/artisan/lead-error",
     "/demande",
     "/api/n8n",
     "/api/lead/accept-simple",
