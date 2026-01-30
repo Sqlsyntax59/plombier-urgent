@@ -23,7 +23,7 @@
             {
               "id": "lead-id",
               "name": "leadId",
-              "value": "={{ $json.leadId }}",
+              "value": "={{ $json.body.leadId }}",
               "type": "string"
             },
             {
@@ -35,25 +35,25 @@
             {
               "id": "phone",
               "name": "phone",
-              "value": "={{ $json.phone }}",
+              "value": "={{ $json.body.phone }}",
               "type": "string"
             },
             {
               "id": "problem-type",
               "name": "problemType",
-              "value": "={{ $json.urgencyType }}",
+              "value": "={{ $json.body.urgencyType }}",
               "type": "string"
             },
             {
               "id": "address",
               "name": "clientCity",
-              "value": "={{ $json.address }}",
+              "value": "={{ $json.body.address }}",
               "type": "string"
             },
             {
               "id": "description",
               "name": "description",
-              "value": "={{ $json.description }}",
+              "value": "={{ $json.body.description }}",
               "type": "string"
             }
           ]
