@@ -125,7 +125,7 @@ export default function ProfilPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Formulaire principal */}
-        <Card className="lg:col-span-2 border-0 shadow-lg">
+        <Card className="lg:col-span-2 bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
           <CardContent className="p-6">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -133,7 +133,7 @@ export default function ProfilPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <User className="h-4 w-4 text-blue-600" />
+                      <User className="h-4 w-4 text-blue-700" />
                     </div>
                     <h3 className="font-semibold text-slate-800">Identité</h3>
                   </div>
@@ -177,7 +177,7 @@ export default function ProfilPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                      <Phone className="h-4 w-4 text-green-600" />
+                      <Phone className="h-4 w-4 text-green-700" />
                     </div>
                     <h3 className="font-semibold text-slate-800">Contact</h3>
                   </div>
@@ -230,7 +230,7 @@ export default function ProfilPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                      <MapPin className="h-4 w-4 text-purple-600" />
+                      <MapPin className="h-4 w-4 text-purple-700" />
                     </div>
                     <h3 className="font-semibold text-slate-800">Localisation</h3>
                   </div>
@@ -288,7 +288,7 @@ export default function ProfilPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                      <Globe className="h-4 w-4 text-amber-600" />
+                      <Globe className="h-4 w-4 text-amber-700" />
                     </div>
                     <h3 className="font-semibold text-slate-800">Visibilité</h3>
                   </div>
@@ -355,7 +355,7 @@ export default function ProfilPage() {
         {/* Sidebar */}
         <div className="space-y-4">
           {/* Page publique */}
-          <Card className="border-0 shadow-lg overflow-hidden">
+          <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] overflow-hidden">
             <div className="h-2 bg-gradient-to-r from-blue-500 to-cyan-500" />
             <CardContent className="p-5">
               <h3 className="font-semibold text-slate-800 mb-3">Page publique</h3>
@@ -384,7 +384,7 @@ export default function ProfilPage() {
           </Card>
 
           {/* Conseils */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-orange-50">
+          <Card className="bg-amber-50/80 backdrop-blur-sm border border-amber-200/60 shadow-lg shadow-amber-900/[0.05]">
             <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Lightbulb className="h-5 w-5 text-amber-500" />

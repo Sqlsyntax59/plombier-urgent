@@ -27,9 +27,9 @@ interface UserProfile {
 }
 
 const PACK_ICONS: Record<string, { icon: typeof Zap; color: string; bg: string }> = {
-  starter: { icon: Zap, color: "text-blue-500", bg: "from-blue-500 to-cyan-500" },
-  pro: { icon: Star, color: "text-purple-500", bg: "from-purple-500 to-pink-500" },
-  enterprise: { icon: Crown, color: "text-amber-500", bg: "from-amber-500 to-orange-500" },
+  starter: { icon: Zap, color: "text-blue-700", bg: "from-blue-500 to-cyan-500" },
+  pro: { icon: Star, color: "text-purple-700", bg: "from-purple-500 to-pink-500" },
+  enterprise: { icon: Crown, color: "text-amber-700", bg: "from-amber-500 to-orange-500" },
 };
 
 export default function CreditsPage() {
@@ -107,7 +107,7 @@ export default function CreditsPage() {
       </div>
 
       {/* Solde actuel */}
-      <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500 text-white overflow-hidden">
+      <Card className="border-2 border-blue-400/50 shadow-xl shadow-blue-600/20 bg-gradient-to-r from-blue-600 to-cyan-500 text-white overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -134,7 +134,7 @@ export default function CreditsPage() {
           return (
             <Card
               key={pack.id}
-              className={`relative border-0 shadow-lg overflow-hidden transition-all hover:shadow-xl hover:scale-[1.02] ${
+              className={`relative bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] overflow-hidden transition-all duration-200 hover:shadow-xl hover:scale-[1.02] hover:border-blue-200 ${
                 pack.popular ? "ring-2 ring-purple-500" : ""
               }`}
             >
@@ -215,7 +215,7 @@ export default function CreditsPage() {
       </div>
 
       {/* Info */}
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-50 to-slate-100">
+      <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
         <CardContent className="p-6">
           <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-blue-500" />
@@ -229,8 +229,8 @@ export default function CreditsPage() {
               { icon: Shield, title: "4. Convertissez", desc: "Transformez les leads en clients" },
             ].map((step) => (
               <div key={step.title} className="p-4 bg-white rounded-xl">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
-                  <step.icon className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
+                  <step.icon className="h-5 w-5 text-blue-700" />
                 </div>
                 <p className="font-semibold text-slate-800">{step.title}</p>
                 <p className="text-sm text-slate-500">{step.desc}</p>

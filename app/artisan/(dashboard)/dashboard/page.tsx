@@ -148,11 +148,11 @@ export default function ArtisanDashboardPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Crédits */}
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50 overflow-hidden">
+        <Card className="bg-white/90 backdrop-blur-sm border border-blue-200/60 shadow-lg shadow-blue-900/[0.08] overflow-hidden">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                <Zap className="h-5 w-5 text-blue-600" />
+                <Zap className="h-5 w-5 text-blue-700" />
               </div>
               {lowCredits && (
                 <span className="px-2 py-0.5 bg-orange-100 text-orange-600 text-xs font-semibold rounded-full">
@@ -168,11 +168,11 @@ export default function ArtisanDashboardPage() {
         </Card>
 
         {/* Leads ce mois */}
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 overflow-hidden">
+        <Card className="bg-white/90 backdrop-blur-sm border border-green-200/60 shadow-lg shadow-green-900/[0.08] overflow-hidden">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-                <Users className="h-5 w-5 text-green-600" />
+                <Users className="h-5 w-5 text-green-700" />
               </div>
             </div>
             <p className="text-3xl font-bold text-green-600">
@@ -183,11 +183,11 @@ export default function ArtisanDashboardPage() {
         </Card>
 
         {/* Taux de conversion */}
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50 overflow-hidden">
+        <Card className="bg-white/90 backdrop-blur-sm border border-purple-200/60 shadow-lg shadow-purple-900/[0.08] overflow-hidden">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                <TrendingUp className="h-5 w-5 text-purple-600" />
+                <TrendingUp className="h-5 w-5 text-purple-700" />
               </div>
             </div>
             <p className="text-3xl font-bold text-purple-600">
@@ -198,11 +198,11 @@ export default function ArtisanDashboardPage() {
         </Card>
 
         {/* Total leads acceptés */}
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-yellow-50 overflow-hidden">
+        <Card className="bg-white/90 backdrop-blur-sm border border-amber-200/60 shadow-lg shadow-amber-900/[0.08] overflow-hidden">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
-                <Target className="h-5 w-5 text-amber-600" />
+                <Target className="h-5 w-5 text-amber-700" />
               </div>
             </div>
             <p className="text-3xl font-bold text-amber-600">
@@ -216,10 +216,10 @@ export default function ArtisanDashboardPage() {
       {/* Actions rapides */}
       <div className="grid sm:grid-cols-2 gap-4">
         <Link href="/artisan/leads">
-          <Card className="group border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer overflow-hidden">
+          <Card className="group bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] hover:shadow-xl hover:border-blue-200 hover:scale-[1.01] transition-all duration-200 cursor-pointer overflow-hidden">
             <CardContent className="p-6 flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Users className="h-7 w-7 text-blue-600" />
+                <Users className="h-7 w-7 text-blue-700" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
@@ -235,10 +235,10 @@ export default function ArtisanDashboardPage() {
         </Link>
 
         <Link href="/artisan/profil">
-          <Card className="group border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer overflow-hidden">
+          <Card className="group bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] hover:shadow-xl hover:border-blue-200 hover:scale-[1.01] transition-all duration-200 cursor-pointer overflow-hidden">
             <CardContent className="p-6 flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Clock className="h-7 w-7 text-green-600" />
+                <Clock className="h-7 w-7 text-green-700" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-slate-800 group-hover:text-green-600 transition-colors">
@@ -255,7 +255,7 @@ export default function ArtisanDashboardPage() {
       </div>
 
       {/* Conseils */}
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-50 to-slate-100">
+      <Card className="bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
         <CardContent className="p-6">
           <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-blue-500" />

@@ -44,12 +44,12 @@ const PROBLEM_TYPE_LABELS: Record<string, string> = {
 };
 
 const PROBLEM_TYPE_ICONS: Record<string, { icon: typeof Droplets; color: string; bg: string }> = {
-  fuite: { icon: Droplets, color: "text-blue-500", bg: "bg-blue-50" },
-  wc_bouche: { icon: Wrench, color: "text-amber-500", bg: "bg-amber-50" },
-  ballon_eau_chaude: { icon: Flame, color: "text-orange-500", bg: "bg-orange-50" },
-  canalisation: { icon: Droplets, color: "text-cyan-500", bg: "bg-cyan-50" },
-  robinetterie: { icon: Wrench, color: "text-purple-500", bg: "bg-purple-50" },
-  autre: { icon: Zap, color: "text-red-500", bg: "bg-red-50" },
+  fuite: { icon: Droplets, color: "text-blue-700", bg: "bg-blue-100" },
+  wc_bouche: { icon: Wrench, color: "text-amber-700", bg: "bg-amber-100" },
+  ballon_eau_chaude: { icon: Flame, color: "text-orange-700", bg: "bg-orange-100" },
+  canalisation: { icon: Droplets, color: "text-cyan-700", bg: "bg-cyan-100" },
+  robinetterie: { icon: Wrench, color: "text-purple-700", bg: "bg-purple-100" },
+  autre: { icon: Zap, color: "text-red-700", bg: "bg-red-100" },
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -239,7 +239,7 @@ function LeadsPageContent() {
       {!loading && leads.length > 0 && (
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Stats card */}
-          <Card className="flex-1 border-0 shadow-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white overflow-hidden">
+          <Card className="flex-1 border-2 border-blue-400/50 shadow-xl shadow-blue-600/15 bg-gradient-to-r from-blue-500 to-cyan-500 text-white overflow-hidden">
             <CardContent className="p-5">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
@@ -294,7 +294,7 @@ function LeadsPageContent() {
           <p className="mt-4 text-slate-500">Chargement des leads...</p>
         </div>
       ) : leads.length === 0 ? (
-        <Card className="border-0 shadow-lg">
+        <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
           <CardContent className="py-16 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center">
               <Inbox className="h-8 w-8 text-slate-400" />
@@ -308,7 +308,7 @@ function LeadsPageContent() {
           </CardContent>
         </Card>
       ) : filteredLeads.length === 0 ? (
-        <Card className="border-0 shadow-lg">
+        <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
           <CardContent className="py-12 text-center">
             <p className="text-slate-500 mb-4">Aucun lead ne correspond à ces filtres.</p>
             <Button
@@ -329,7 +329,7 @@ function LeadsPageContent() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-700" />
                 </div>
                 <h2 className="font-semibold text-slate-800">
                   Acceptés ({acceptedLeads.length})
@@ -348,7 +348,7 @@ function LeadsPageContent() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
-                  <Clock className="h-4 w-4 text-orange-500" />
+                  <Clock className="h-4 w-4 text-orange-600" />
                 </div>
                 <h2 className="font-semibold text-slate-800">
                   En attente ({pendingLeads.length})
@@ -404,7 +404,7 @@ function LeadCard({
   return (
     <Link href={`/artisan/leads/${lead.id}`}>
       <Card
-        className={`group border-0 shadow-md hover:shadow-xl transition-all cursor-pointer ${
+        className={`group bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] hover:shadow-xl hover:border-blue-200 hover:scale-[1.01] transition-all duration-200 cursor-pointer ${
           expired ? "opacity-50" : ""
         }`}
       >
