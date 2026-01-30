@@ -22,12 +22,12 @@ import {
 import { useState, useEffect } from "react";
 
 const panneTypes = [
-  { icon: Droplets, label: "Fuite d'eau", color: "text-blue-500", bg: "bg-blue-50" },
-  { icon: Wrench, label: "WC bouché", color: "text-amber-500", bg: "bg-amber-50" },
-  { icon: Flame, label: "Ballon d'eau chaude", color: "text-orange-500", bg: "bg-orange-50" },
-  { icon: Droplets, label: "Canalisation", color: "text-cyan-500", bg: "bg-cyan-50" },
-  { icon: Wrench, label: "Robinetterie", color: "text-purple-500", bg: "bg-purple-50" },
-  { icon: Zap, label: "Autre urgence", color: "text-red-500", bg: "bg-red-50" },
+  { icon: Droplets, label: "Fuite d'eau", color: "text-blue-700", bg: "bg-blue-100" },
+  { icon: Wrench, label: "WC bouché", color: "text-amber-700", bg: "bg-amber-100" },
+  { icon: Flame, label: "Ballon d'eau chaude", color: "text-orange-700", bg: "bg-orange-100" },
+  { icon: Droplets, label: "Canalisation", color: "text-cyan-700", bg: "bg-cyan-100" },
+  { icon: Wrench, label: "Robinetterie", color: "text-purple-700", bg: "bg-purple-100" },
+  { icon: Zap, label: "Autre urgence", color: "text-red-700", bg: "bg-red-100" },
 ];
 
 const stats = [
@@ -87,7 +87,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-100 via-blue-50/50 to-white">
       {/* Header moderne */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-slate-100">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -236,7 +236,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
               {panneTypes.map((panne) => (
                 <Link key={panne.label} href="/demande">
-                  <Card className="group cursor-pointer border-2 border-transparent hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300">
+                  <Card className="group cursor-pointer bg-white/90 backdrop-blur-sm border border-slate-200/80 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/15 hover:scale-[1.02] transition-all duration-200">
                     <CardContent className="p-6 text-center">
                       <div className={`w-14 h-14 mx-auto mb-4 rounded-2xl ${panne.bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                         <panne.icon className={`h-7 w-7 ${panne.color}`} />
@@ -270,7 +270,7 @@ export default function HomePage() {
                   {index < steps.length - 1 && (
                     <div className="hidden md:block absolute top-8 left-[60%] w-full h-0.5 bg-gradient-to-r from-blue-200 to-transparent" />
                   )}
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 relative">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-lg shadow-slate-900/[0.08] border border-slate-200/80 relative">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-xl flex items-center justify-center mb-4">
                       {step.number}
                     </div>
@@ -294,7 +294,7 @@ export default function HomePage() {
             </div>
 
             <div className="max-w-2xl mx-auto">
-              <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-slate-50">
+              <Card className="border-2 border-blue-100 shadow-xl shadow-blue-600/10 bg-gradient-to-br from-white to-blue-50/30">
                 <CardContent className="p-8 md:p-10 text-center">
                   <div className="flex justify-center gap-1 mb-6">
                     {[...Array(5)].map((_, i) => (
@@ -367,8 +367,8 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="flex items-center gap-4 p-4">
-                <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
-                  <Shield className="h-6 w-6 text-green-600" />
+                <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+                  <Shield className="h-6 w-6 text-green-700" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-slate-900">Artisans assurés</h3>
@@ -376,8 +376,8 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                  <Clock className="h-6 w-6 text-blue-600" />
+                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+                  <Clock className="h-6 w-6 text-blue-700" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-slate-900">Disponible 24h/24</h3>
@@ -385,8 +385,8 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
-                  <Star className="h-6 w-6 text-amber-500" />
+                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+                  <Star className="h-6 w-6 text-amber-600" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-slate-900">4.9/5 sur Google</h3>

@@ -49,7 +49,7 @@ export default function ArtisanLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-blue-50/40 to-white">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -61,7 +61,7 @@ export default function ArtisanLayout({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 lg:translate-x-0",
+          "fixed top-0 left-0 z-50 h-full w-72 bg-white/95 backdrop-blur-sm border-r border-slate-200/80 flex flex-col transition-transform duration-300 lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -95,15 +95,15 @@ export default function ArtisanLayout({
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
                   isActive
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                    ? "bg-blue-100 text-blue-800 shadow-sm"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                   item.highlight && !isActive && "text-blue-600"
                 )}
               >
                 <item.icon
                   className={cn(
                     "h-5 w-5",
-                    isActive ? "text-blue-600" : item.highlight ? "text-blue-500" : "text-slate-400"
+                    isActive ? "text-blue-700" : item.highlight ? "text-blue-600" : "text-slate-500"
                   )}
                 />
                 <span className="flex-1">{item.label}</span>

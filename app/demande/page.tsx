@@ -40,12 +40,12 @@ type FormData = {
 };
 
 const problemTypeIcons: Record<string, { icon: typeof Droplets; color: string; bg: string }> = {
-  fuite: { icon: Droplets, color: "text-blue-500", bg: "bg-blue-50 border-blue-200" },
-  wc_bouche: { icon: Wrench, color: "text-amber-500", bg: "bg-amber-50 border-amber-200" },
-  ballon_eau_chaude: { icon: Flame, color: "text-orange-500", bg: "bg-orange-50 border-orange-200" },
-  canalisation: { icon: Droplets, color: "text-cyan-500", bg: "bg-cyan-50 border-cyan-200" },
-  robinetterie: { icon: Wrench, color: "text-purple-500", bg: "bg-purple-50 border-purple-200" },
-  autre: { icon: Zap, color: "text-red-500", bg: "bg-red-50 border-red-200" },
+  fuite: { icon: Droplets, color: "text-blue-700", bg: "bg-blue-100 border-blue-300" },
+  wc_bouche: { icon: Wrench, color: "text-amber-700", bg: "bg-amber-100 border-amber-300" },
+  ballon_eau_chaude: { icon: Flame, color: "text-orange-700", bg: "bg-orange-100 border-orange-300" },
+  canalisation: { icon: Droplets, color: "text-cyan-700", bg: "bg-cyan-100 border-cyan-300" },
+  robinetterie: { icon: Wrench, color: "text-purple-700", bg: "bg-purple-100 border-purple-300" },
+  autre: { icon: Zap, color: "text-red-700", bg: "bg-red-100 border-red-300" },
 };
 
 export default function DemandePage() {
@@ -199,7 +199,7 @@ export default function DemandePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-blue-50/50 to-white">
       {/* Header moderne */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-slate-100">
         <div className="container mx-auto px-4 h-16 flex items-center gap-4">
@@ -278,7 +278,7 @@ export default function DemandePage() {
 
         {/* Étape 2: Description et photo */}
         {currentStep === 2 && (
-          <Card className="border-0 shadow-xl animate-in fade-in slide-in-from-right-4 duration-300">
+          <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-xl shadow-slate-900/[0.08] animate-in fade-in slide-in-from-right-4 duration-300">
             <CardContent className="p-6 space-y-5">
               {/* Fourchette de prix */}
               {getPriceRange() && (
@@ -423,7 +423,7 @@ export default function DemandePage() {
 
         {/* Étape 3: Coordonnées */}
         {currentStep === 3 && (
-          <Card className="border-0 shadow-xl animate-in fade-in slide-in-from-right-4 duration-300">
+          <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-xl shadow-slate-900/[0.08] animate-in fade-in slide-in-from-right-4 duration-300">
             <CardContent className="p-6 space-y-5">
               {/* Recap */}
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
@@ -550,7 +550,7 @@ export default function DemandePage() {
               <span className="font-medium text-slate-800">Gardez votre téléphone à portée de main.</span>
             </p>
 
-            <Card className="border-0 shadow-lg mb-8">
+            <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08] mb-8">
               <CardContent className="p-5">
                 <div className="flex items-center gap-4">
                   {formData.problemType && (
@@ -586,9 +586,9 @@ export default function DemandePage() {
         {!isSubmitted && (
           <div className="grid grid-cols-3 gap-4 mt-8">
             {[
-              { icon: Clock, label: "Réponse rapide", color: "text-blue-500", bg: "bg-blue-50" },
-              { icon: Phone, label: "Contact direct", color: "text-green-500", bg: "bg-green-50" },
-              { icon: Shield, label: "Artisans vérifiés", color: "text-purple-500", bg: "bg-purple-50" },
+              { icon: Clock, label: "Réponse rapide", color: "text-blue-700", bg: "bg-blue-100" },
+              { icon: Phone, label: "Contact direct", color: "text-green-700", bg: "bg-green-100" },
+              { icon: Shield, label: "Artisans vérifiés", color: "text-purple-700", bg: "bg-purple-100" },
             ].map((item) => (
               <div key={item.label} className="text-center">
                 <div className={`w-12 h-12 mx-auto mb-2 rounded-xl ${item.bg} flex items-center justify-center`}>

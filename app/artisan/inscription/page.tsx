@@ -88,7 +88,7 @@ export default function InscriptionPage() {
   const availableSpecs = selectedTrade ? SPECIALIZATIONS[selectedTrade] : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/30 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50/50 to-cyan-50/40 flex flex-col">
       {/* Header */}
       <header className="h-16 flex items-center px-6">
         <Link href="/" className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export default function InscriptionPage() {
             ))}
           </div>
 
-          <Card className="border-0 shadow-xl">
+          <Card className="bg-white/95 backdrop-blur-sm border border-slate-200/80 shadow-xl shadow-slate-900/[0.1]">
             <CardContent className="p-6">
               <Form {...form}>
                 <form
