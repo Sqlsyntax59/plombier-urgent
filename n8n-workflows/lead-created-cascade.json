@@ -55,6 +55,24 @@
               "name": "description",
               "value": "={{ $json.body.description }}",
               "type": "string"
+            },
+            {
+              "id": "field-summary",
+              "name": "fieldSummary",
+              "value": "={{ $json.body.fieldSummary || $json.body.description }}",
+              "type": "string"
+            },
+            {
+              "id": "is-urgent",
+              "name": "isUrgent",
+              "value": "={{ $json.body.isUrgent || false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "urgency-reason",
+              "name": "urgencyReason",
+              "value": "={{ $json.body.urgencyReason || '' }}",
+              "type": "string"
             }
           ]
         },
@@ -187,7 +205,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// URL de production Vercel\nconst baseUrl = 'https://plombier-urgent.vercel.app';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
+        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// URL de production Vercel\nconst baseUrl = 'https://plombier-urgent.vercel.app';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  fieldSummary: setVars.fieldSummary,\n  isUrgent: setVars.isUrgent,\n  urgencyReason: setVars.urgencyReason,\n  clientCity: setVars.clientCity\n};"
       },
       "id": "code-build-message-1",
       "name": "Build Message Data #1",
@@ -200,7 +218,7 @@
         "resource": "message",
         "operation": "sendMessage",
         "chatId": "={{ $json.telegramChatId }}",
-        "text": "=\ud83d\udea8 *NOUVEAU LEAD URGENT*\n\n\ud83d\udccd *Type:* {{ $json.problemType }}\n\ud83c\udfd9\ufe0f *Ville:* {{ $json.clientCity }}\n\n\ud83d\udcdd *Description:*\n{{ $json.description }}\n\n\u23f1\ufe0f Vous avez *2 minutes* pour accepter ce lead.\n\n\ud83d\udcb0 *1 credit sera debite* si vous acceptez.\n\n\ud83d\udc49 [ACCEPTER CE LEAD]({{ $json.acceptUrl }})",
+        "text": "={{ $json.isUrgent ? '\ud83d\udea8\ud83d\udea8 *URGENCE - ' + $json.urgencyReason + '*\n\n' : '\ud83d\udea8 *NOUVEAU LEAD*\n\n' }}\ud83c\udfd9\ufe0f *Ville:* {{ $json.clientCity }}\n\n{{ $json.fieldSummary }}\n\n\u23f1\ufe0f Vous avez *2 minutes* pour accepter ce lead.\n\n\ud83d\udcb0 *1 credit sera debite* si vous acceptez.\n\n\ud83d\udc49 [ACCEPTER CE LEAD]({{ $json.acceptUrl }})",
         "replyMarkup": "none",
         "additionalFields": {
           "parse_mode": "Markdown"
