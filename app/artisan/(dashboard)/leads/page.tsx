@@ -390,13 +390,17 @@ function LeadCard({
 
             <div className="flex items-center gap-3">
               {showPhone && lead.client_phone && (
-                <a
-                  href={`tel:${lead.client_phone}`}
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = `tel:${lead.client_phone}`;
+                  }}
                   className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
                 >
                   <Phone className="h-4 w-4 text-blue-600" />
-                </a>
+                </button>
               )}
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </div>
