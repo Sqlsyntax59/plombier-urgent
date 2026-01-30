@@ -65,8 +65,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleOrderCreated(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   event: LemonSqueezyWebhookEvent
 ) {
   const { data, meta } = event;
@@ -186,8 +187,9 @@ async function handleOrderCreated(
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleOrderRefunded(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   event: LemonSqueezyWebhookEvent
 ) {
   const { data } = event;
