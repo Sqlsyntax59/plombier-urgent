@@ -1,6 +1,6 @@
 # Suivi d'Avancement - SaaS Artisans Urgents
 
-> Derniere mise a jour : 2026-01-30
+> Derniere mise a jour : 2026-01-31
 
 ## Statut Global
 
@@ -33,6 +33,7 @@
 - [x] FR38: Connexion magic link / mot de passe
 - [x] **BONUS**: Specialisations par metier (checkboxes)
 - [x] **BONUS**: Header avec email + deconnexion
+- [x] **BONUS**: UI V3 - Gradient mesh premium + contraste ameliore
 
 ### Epic 3: Soumission Demande Client
 - [x] FR1: Formulaire demande urgence
@@ -87,11 +88,11 @@
 
 | Date | Commit | Description |
 |------|--------|-------------|
+| 31/01 | `e02e24c` | **UI V3**: Gradient mesh premium (slate→blue→purple→white) |
+| 31/01 | `ddc1c74` | UI: Hover effects + icon contrast renforce |
+| 31/01 | `06d9692` | UI: Backgrounds + card contrast ameliore |
 | 30/01 | `1d0ef95` | Header artisan avec email + logout |
 | 30/01 | `73ace12` | Page CGV + specialisations artisan |
-| 30/01 | `e19ddba` | Fix markdown linting PRD |
-| 29/01 | `9e82789` | field_summary dans dashboard |
-| 29/01 | `2701134` | Telegram avec fieldSummary |
 
 ---
 
@@ -131,6 +132,32 @@
 
 ---
 
+## UI/Design
+
+### Version Actuelle: UI V3 (tag: `ui-v3`)
+
+**Gradient Background (toutes pages):**
+```
+bg-gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white
+```
+
+**Design Tokens:**
+- Cards: `bg-white/90 backdrop-blur-sm border-slate-200/80 shadow-lg shadow-slate-900/[0.08]`
+- Icons: Couleurs `-700` pour contraste (ex: `text-blue-700`, `text-amber-700`)
+- Hover: `hover:shadow-xl hover:scale-[1.02] hover:border-blue-200 transition-all`
+
+**Pages Redesignees:**
+- [x] Landing (`/`)
+- [x] Demande (`/demande`)
+- [x] Login artisan (`/artisan/login`)
+- [x] Inscription (`/artisan/inscription`)
+- [x] Dashboard layout (`/artisan/(dashboard)/*`)
+- [x] Credits (`/artisan/credits`)
+- [x] Leads (`/artisan/leads`)
+- [x] Profil (`/artisan/profil`)
+
+---
+
 ## Prochaines Etapes
 
 1. **Geolocalisation artisans** - API Adresse gouv.fr
@@ -162,4 +189,4 @@
 
 ---
 
-*Document genere le 30/01/2026*
+*Document mis a jour le 31/01/2026*
