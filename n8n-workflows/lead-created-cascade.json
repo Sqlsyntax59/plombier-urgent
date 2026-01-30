@@ -70,7 +70,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "url": "=https://plombier-urgent.vercel.app/api/n8n/callback",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
@@ -124,7 +124,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "url": "=https://plombier-urgent.vercel.app/api/n8n/callback",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
@@ -187,7 +187,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// URL de production Vercel (configurer CALLBACK_URL dans n8n)\nconst baseUrl = $env.CALLBACK_URL || 'https://plombier-urgent.vercel.app';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
+        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// URL de production Vercel\nconst baseUrl = 'https://plombier-urgent.vercel.app';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  clientCity: setVars.clientCity\n};"
       },
       "id": "code-build-message-1",
       "name": "Build Message Data #1",
@@ -232,7 +232,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "url": "=https://plombier-urgent.vercel.app/api/n8n/callback",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
@@ -286,7 +286,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "url": "=https://plombier-urgent.vercel.app/api/n8n/callback",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
@@ -309,7 +309,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$env.CALLBACK_URL}}/api/n8n/callback",
+        "url": "=https://plombier-urgent.vercel.app/api/n8n/callback",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
@@ -465,7 +465,7 @@
   "versionId": "2",
   "meta": {
     "instanceId": "plombier-urgent",
-    "notes": "PRODUCTION: Configurer CALLBACK_URL = https://plombier-urgent.vercel.app dans n8n"
+    "notes": "PRODUCTION: URLs hardcodees vers https://plombier-urgent.vercel.app"
   },
   "tags": [{"name": "PlombierUrgent"}]
 }
