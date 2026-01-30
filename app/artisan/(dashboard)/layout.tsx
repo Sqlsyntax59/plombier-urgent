@@ -49,7 +49,7 @@ export default function ArtisanLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-blue-50/40 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div

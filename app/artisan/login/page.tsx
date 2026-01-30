@@ -74,7 +74,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50/50 to-cyan-50/40 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white flex flex-col">
       {/* Header */}
       <header className="h-16 flex items-center px-6">
         <Link href="/" className="flex items-center gap-2">

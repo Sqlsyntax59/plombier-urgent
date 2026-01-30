@@ -87,7 +87,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-100 via-blue-50/50 to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white">
       {/* Header moderne */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-slate-100">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
