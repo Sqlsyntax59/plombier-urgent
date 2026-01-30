@@ -42,7 +42,7 @@ classification:
 ### User Success (Particulier B2C)
 
 | Métrique | Cible |
-|----------|-------|
+| ---------- | ------- |
 | Taux de réponse artisan < 5 min | ≥ 80% |
 | Taux de mise en contact réelle | ≥ 90% |
 | Satisfaction client J+1 | ≥ 70% |
@@ -51,7 +51,7 @@ classification:
 ### User Success (Artisan B2B)
 
 | Métrique | Cible |
-|----------|-------|
+| ---------- | ------- |
 | Conversion lead → intervention | ≥ 33% (objectif LT: 50%) |
 | Revenus générés / pack 5 leads | ≥ 300€ |
 | Taux de rechargement crédits | ≥ 40% |
@@ -60,7 +60,7 @@ classification:
 ### Business Success
 
 | Métrique | Cible |
-|----------|-------|
+| ---------- | ------- |
 | MRR à 2 mois | ≥ 1 000€ |
 | Leads vendus/mois | ≥ 50 |
 | Artisans payants actifs | ≥ 10 |
@@ -70,7 +70,7 @@ classification:
 ### Technical Success
 
 | Métrique | Cible |
-|----------|-------|
+| ---------- | ------- |
 | Uptime plateforme | ≥ 99% |
 | Temps notification artisan | < 10 sec |
 | Délivrabilité messages | ≥ 95% |
@@ -458,7 +458,7 @@ classification:
 
 **Exemple de synthèse terrain :**
 
-```
+```text
 📍 Fuite d'eau
 • Où se situe la fuite ? : Sous évier/lavabo
 • L'eau coule-t-elle en continu ? ✓ Oui
