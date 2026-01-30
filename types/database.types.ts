@@ -131,6 +131,7 @@ export type Database = {
           id: string
           problem_type: ProblemType
           description: string
+          field_summary: string | null
           photo_url: string | null
           client_phone: string
           client_email: string | null
@@ -148,6 +149,7 @@ export type Database = {
           id?: string
           problem_type: ProblemType
           description: string
+          field_summary?: string | null
           photo_url?: string | null
           client_phone: string
           client_email?: string | null
@@ -165,6 +167,7 @@ export type Database = {
           id?: string
           problem_type?: ProblemType
           description?: string
+          field_summary?: string | null
           photo_url?: string | null
           client_phone?: string
           client_email?: string | null

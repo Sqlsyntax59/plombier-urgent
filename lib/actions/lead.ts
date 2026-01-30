@@ -64,6 +64,7 @@ export async function createLead(
     .insert({
       problem_type: problemType,
       description,
+      field_summary: fieldSummary || null,
       photo_url: photoUrl || null,
       client_phone: normalizedPhone,
       client_email: clientEmail || null,

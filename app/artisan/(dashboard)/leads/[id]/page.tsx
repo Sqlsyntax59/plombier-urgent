@@ -30,6 +30,7 @@ interface LeadDetails {
   id: string;
   problem_type: string;
   description: string;
+  field_summary: string | null;
   photo_url: string | null;
   client_phone: string;
   client_email: string | null;
@@ -177,11 +178,20 @@ export default function LeadDetailPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Description */}
-          <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Description</h3>
-            <p className="text-gray-900">{lead.description}</p>
-          </div>
+          {/* Synthèse terrain (si disponible) */}
+          {lead.field_summary ? (
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Détails du problème</h3>
+              <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-line text-gray-900">
+                {lead.field_summary}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Description</h3>
+              <p className="text-gray-900">{lead.description}</p>
+            </div>
+          )}
 
           {/* Photo */}
           {lead.photo_url && (
