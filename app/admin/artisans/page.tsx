@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
@@ -10,6 +10,7 @@ import {
   UserX,
   Gift,
   RefreshCw,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,23 @@ import {
 
 type StatusFilter = "all" | "active" | "inactive" | "suspended";
 
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+    </div>
+  );
+}
+
 export default function AdminArtisansPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <AdminArtisansContent />
+    </Suspense>
+  );
+}
+
+function AdminArtisansContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialStatus = (searchParams.get("status") as StatusFilter) || "all";
