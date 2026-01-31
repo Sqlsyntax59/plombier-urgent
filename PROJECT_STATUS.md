@@ -1,8 +1,8 @@
 # Plombier Urgent - Statut du Projet
 
 **Dernière mise à jour:** 2026-01-31
-**Version:** v1.0.0-mvp
-**Statut global:** MVP COMPLET EN PRODUCTION
+**Version:** v1.1.0
+**Statut global:** MVP + ADMIN DASHBOARD
 
 ---
 
@@ -31,10 +31,10 @@
 | 5 | Dashboard Artisan | ✅ DONE | `3d176d8` |
 | 6 | Paiement & Crédits (LemonSqueezy) | ✅ DONE | `4a1bfad` |
 | 7 | Suivi Client J+3 & Ratings | ✅ DONE | `495dfe9` |
-| 8 | Dashboard Admin | ❌ TODO | Non commencé |
+| 8 | Dashboard Admin | ✅ DONE | `pending` |
 | 9 | Multi-Tenant & Verticales | ❌ BACKLOG | Prévu post-MVP |
 
-**Progress MVP:** 7/7 (100%)
+**Progress:** 8/9 Epics (89%)
 
 ---
 
@@ -60,6 +60,16 @@
 ---
 
 ## Features Récentes (Janvier 2026)
+
+### 31 janvier 2026
+- ✅ Epic 8: Dashboard Admin complet
+  - Dashboard métriques temps réel (artisans, leads, CA, temps réponse)
+  - Liste artisans avec filtres, recherche, pagination
+  - Actions admin: activer/désactiver/suspendre artisans
+  - Attribution crédits gratuits
+  - Gestion réclamations clients (feedbacks négatifs)
+  - Historique leads avec filtres et export CSV
+  - Désactivation auto après 3 leads ratés consécutifs
 
 ### 30 janvier 2026
 - ✅ UI V3 complète (PR #1 mergée)
@@ -139,16 +149,17 @@
 - [ ] Vérifier LemonSqueezy en prod (webhooks actifs?)
 - [ ] Tests E2E flows critiques
 
-### P1 - Epic 8 (Admin Dashboard)
-- [ ] Page métriques (leads/jour, taux réponse, artisans actifs)
-- [ ] Modération artisans (disable, reset crédits)
-- [ ] Historique leads avec filtres
-- [ ] Opérations manuelles crédits
+### P1 - Epic 8 (Admin Dashboard) ✅ DONE
+- [x] Page métriques (leads/jour, taux réponse, artisans actifs)
+- [x] Modération artisans (disable, reset crédits)
+- [x] Historique leads avec filtres et export CSV
+- [x] Opérations manuelles crédits (attribution gratuite)
+- [x] Gestion réclamations clients
 
 ### P2 - Améliorations
 - [ ] Lead scoring (urgence, photo, description)
 - [ ] Badge "Artisan Réactif"
-- [ ] Alertes artisan (3 leads manqués = pause)
+- [x] Alertes artisan (3 leads manqués = suspension auto)
 - [ ] README.md projet à jour
 
 ### P3 - Growth (post-MVP)
