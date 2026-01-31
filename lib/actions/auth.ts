@@ -106,7 +106,7 @@ export async function loginWithPassword(
   const { email, password } = parsed.data;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -122,6 +122,19 @@ export async function loginWithPassword(
       success: false,
       error: error.message,
     };
+  }
+
+  // Vérifier le rôle pour rediriger vers le bon dashboard
+  if (authData.user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", authData.user.id)
+      .single();
+
+    if (profile?.role === "admin" || profile?.role === "super_admin") {
+      redirect("/admin/dashboard");
+    }
   }
 
   redirect("/artisan/dashboard");
