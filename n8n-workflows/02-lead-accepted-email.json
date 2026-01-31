@@ -1,0 +1,80 @@
+{
+  "name": "Lead Accepted - Email Client",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-accepted",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Lead Accepted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Plombier Urgent <noreply@resend.dev>\",\n  \"to\": \"{{ $json.client_email }}\",\n  \"subject\": \"Un plombier a accepté votre demande !\",\n  \"html\": \"<h2>Bonne nouvelle !</h2><p>Un artisan plombier a accepté de prendre en charge votre demande urgente.</p><h3>Coordonnées de l'artisan :</h3><ul><li><strong>Nom :</strong> {{ $json.artisan_name }}</li><li><strong>Téléphone :</strong> {{ $json.artisan_phone }}</li><li><strong>Email :</strong> {{ $json.artisan_email }}</li></ul><p>L'artisan vous contactera dans les plus brefs délais.</p><br><p>Cordialement,<br>L'équipe Plombier Urgent</p>\"\n}",
+        "options": {}
+      },
+      "id": "http-resend",
+      "name": "Send Email Resend",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Email sent to client' }) }}"
+      },
+      "id": "respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [750, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Lead Accepted": {
+      "main": [
+        [
+          {
+            "node": "Send Email Resend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Resend": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "name": "Followup J+3 - Email Feedback",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily Trigger 10h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://tired-meals-boil.loca.lt/api/webhooks/n8n/followup",
+        "options": {}
+      },
+      "id": "get-eligible-leads",
+      "name": "Get Eligible Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "leads",
+        "options": {}
+      },
+      "id": "split-leads",
+      "name": "Split Leads",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tired-meals-boil.loca.lt/api/webhooks/n8n/followup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"lead_id\": \"{{ $json.id }}\"\n}",
+        "options": {}
+      },
+      "id": "create-feedback-entry",
+      "name": "Create Feedback Entry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Plombier Urgent <noreply@resend.dev>\",\n  \"to\": \"{{ $json.client_email }}\",\n  \"subject\": \"Comment s'est passée votre intervention ?\",\n  \"html\": \"<h2>Votre avis compte !</h2><p>Bonjour,</p><p>Votre intervention de plomberie urgente a eu lieu il y a 3 jours. Nous aimerions connaître votre niveau de satisfaction.</p><p><a href='{{ $json.feedback_url }}' style='display:inline-block;padding:12px 24px;background:#2563eb;color:white;text-decoration:none;border-radius:6px;'>Donner mon avis (30 secondes)</a></p><p>Votre retour nous aide à améliorer notre service et permet aux autres clients de choisir le bon artisan.</p><br><p>Merci,<br>L'équipe Plombier Urgent</p>\"\n}",
+        "options": {}
+      },
+      "id": "send-feedback-email",
+      "name": "Send Feedback Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1050, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Header Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Daily Trigger 10h": {
+      "main": [
+        [
+          {
+            "node": "Get Eligible Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Eligible Leads": {
+      "main": [
+        [
+          {
+            "node": "Split Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Leads": {
+      "main": [
+        [
+          {
+            "node": "Create Feedback Entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Feedback Entry": {
+      "main": [
+        [
+          {
+            "node": "Send Feedback Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
