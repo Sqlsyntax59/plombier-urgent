@@ -492,8 +492,8 @@ export async function getReclamations(filters?: {
     .from("client_feedbacks")
     .select(`
       *,
-      lead:leads(*),
-      artisan:profiles(id, first_name, last_name, phone)
+      lead:leads!lead_id(*),
+      artisan:profiles!artisan_id(id, first_name, last_name, phone)
     `, { count: "exact" })
     .eq("satisfied", false)
     .not("submitted_at", "is", null)
