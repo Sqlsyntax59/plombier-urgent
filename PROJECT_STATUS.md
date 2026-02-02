@@ -16,7 +16,7 @@
 | **n8n VPS** | ✅ Configuré | https://vmi3051008.contaboserver.net |
 | **Telegram Bot** | ✅ Actif | Notifications artisans |
 | **LemonSqueezy** | ⚠️ À vérifier | Paiements artisans |
-| **WhatsApp Cloud** | ❌ Non migré | Encore sur Telegram (dev) |
+| **WhatsApp Cloud** | ⚠️ En cours | Sandbox testé OK, template à créer |
 
 ---
 
@@ -70,6 +70,11 @@
   - Gestion réclamations clients (feedbacks négatifs)
   - Historique leads avec filtres et export CSV
   - Désactivation auto après 3 leads ratés consécutifs
+- ⚠️ Migration WhatsApp Cloud API
+  - Workflow n8n créé (01-lead-created-whatsapp.json)
+  - Credential configuré dans n8n
+  - Test sandbox réussi (hello_world template)
+  - TODO: Créer template personnalisé `lead_notification`
 
 ### 30 janvier 2026
 - ✅ UI V3 complète (PR #1 mergée)
@@ -134,9 +139,10 @@
 
 | # | Nom | Trigger | Status |
 |---|-----|---------|--------|
-| 1 | Lead Created - Telegram | Webhook POST | ✅ Actif |
-| 2 | Lead Accepted - Email | Webhook POST | ✅ Config |
-| 3 | Followup J+3 - Feedback | Schedule | ✅ Config |
+| 1 | Lead Created - Telegram | Webhook POST | ⏸️ Désactivé |
+| 2 | Lead Created - WhatsApp | Webhook POST | ✅ Testé (hello_world) |
+| 3 | Lead Accepted - Email | Webhook POST | ✅ Config |
+| 4 | Followup J+3 - Feedback | Schedule | ✅ Config |
 
 **Fichiers:** `n8n-workflows/*.json`
 
@@ -145,7 +151,7 @@
 ## TODO - Prochaines étapes
 
 ### P0 - Bloqueurs production
-- [ ] Migrer Telegram → WhatsApp Cloud API
+- [~] Migrer Telegram → WhatsApp Cloud API (sandbox OK, template à créer)
 - [ ] Vérifier LemonSqueezy en prod (webhooks actifs?)
 - [ ] Tests E2E flows critiques
 
