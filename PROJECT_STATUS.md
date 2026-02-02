@@ -1,8 +1,8 @@
 # Plombier Urgent - Statut du Projet
 
-**Dernière mise à jour:** 2026-01-31
-**Version:** v1.1.0
-**Statut global:** MVP + ADMIN DASHBOARD
+**Dernière mise à jour:** 2026-02-03
+**Version:** v1.2.0
+**Statut global:** MVP COMPLET - EN ATTENTE VALIDATION WHATSAPP
 
 ---
 
@@ -12,11 +12,13 @@
 |---------|--------|--------------|
 | **Vercel** | ✅ Déployé | https://plombier-urgent.vercel.app |
 | **GitHub** | ✅ Public | https://github.com/Sqlsyntax59/plombier-urgent |
-| **Supabase** | ✅ Production | Connecté (env vars configurées) |
+| **Supabase** | ✅ Production | 10 migrations, RLS activé |
 | **n8n VPS** | ✅ Configuré | https://vmi3051008.contaboserver.net |
-| **Telegram Bot** | ✅ Actif | Notifications artisans |
-| **LemonSqueezy** | ⚠️ À vérifier | Paiements artisans |
-| **WhatsApp Cloud** | ⚠️ En cours | Sandbox testé OK, template à créer |
+| **Telegram Bot** | ⏸️ Désactivé | Remplacé par WhatsApp |
+| **LemonSqueezy** | ⚠️ À vérifier | Webhooks à tester en prod |
+| **WhatsApp Cloud** | ⏳ En attente | Template `lead_notification` soumis à Meta |
+| **Firebase Storage** | ✅ Actif | Upload photos clients |
+| **Resend** | ✅ Configuré | Emails transactionnels
 
 ---
 
@@ -31,10 +33,10 @@
 | 5 | Dashboard Artisan | ✅ DONE | `3d176d8` |
 | 6 | Paiement & Crédits (LemonSqueezy) | ✅ DONE | `4a1bfad` |
 | 7 | Suivi Client J+3 & Ratings | ✅ DONE | `495dfe9` |
-| 8 | Dashboard Admin | ✅ DONE | `pending` |
+| 8 | Dashboard Admin | ✅ DONE | `5f1a6df` |
 | 9 | Multi-Tenant & Verticales | ❌ BACKLOG | Prévu post-MVP |
 
-**Progress:** 8/9 Epics (89%)
+**Progress:** 8/9 Epics (89%) - MVP Fonctionnel
 
 ---
 
@@ -59,7 +61,17 @@
 
 ---
 
-## Features Récentes (Janvier 2026)
+## Features Récentes
+
+### 3 février 2026
+- ✅ Audit complet du projet (PRD, architecture, epics)
+- ✅ README.md mis à jour avec documentation complète
+- ✅ Migration WhatsApp Cloud API avancée
+  - Workflow n8n complet (`01-lead-created-whatsapp.json`)
+  - Template `lead_notification` soumis à Meta Business
+  - 4 paramètres body + bouton CTA dynamique
+  - Credential `WhatsApp Cloud API` configuré dans n8n
+- ⏳ En attente validation template Meta (quelques heures à 24h)
 
 ### 31 janvier 2026
 - ✅ Epic 8: Dashboard Admin complet
@@ -70,11 +82,6 @@
   - Gestion réclamations clients (feedbacks négatifs)
   - Historique leads avec filtres et export CSV
   - Désactivation auto après 3 leads ratés consécutifs
-- ⚠️ Migration WhatsApp Cloud API
-  - Workflow n8n créé (01-lead-created-whatsapp.json)
-  - Credential configuré dans n8n
-  - Test sandbox réussi (hello_world template)
-  - TODO: Créer template personnalisé `lead_notification`
 
 ### 30 janvier 2026
 - ✅ UI V3 complète (PR #1 mergée)
@@ -139,21 +146,27 @@
 
 | # | Nom | Trigger | Status |
 |---|-----|---------|--------|
-| 1 | Lead Created - Telegram | Webhook POST | ⏸️ Désactivé |
-| 2 | Lead Created - WhatsApp | Webhook POST | ✅ Testé (hello_world) |
-| 3 | Lead Accepted - Email | Webhook POST | ✅ Config |
-| 4 | Followup J+3 - Feedback | Schedule | ✅ Config |
+| 1 | Lead Created - Telegram | Webhook POST | ⏸️ Désactivé (remplacé) |
+| 2 | Lead Created - WhatsApp | Webhook POST | ⏳ Prêt (attente template Meta) |
+| 3 | Lead Accepted - Email | Webhook POST | ✅ Configuré |
+| 4 | Followup J+3 - Feedback | Schedule | ✅ Configuré |
 
-**Fichiers:** `n8n-workflows/*.json`
+**Fichiers locaux:** `n8n-workflows/*.json`
+- `01-lead-created-whatsapp.json` - Flow complet avec template `lead_notification`
+- `test-whatsapp-hello-world.json` - Test sandbox
 
 ---
 
 ## TODO - Prochaines étapes
 
 ### P0 - Bloqueurs production
-- [~] Migrer Telegram → WhatsApp Cloud API (sandbox OK, template à créer)
-- [ ] Vérifier LemonSqueezy en prod (webhooks actifs?)
-- [ ] Tests E2E flows critiques
+- [x] Migrer Telegram → WhatsApp Cloud API
+  - [x] Workflow n8n créé
+  - [x] Template `lead_notification` soumis à Meta
+  - [ ] Attendre validation Meta (en cours)
+  - [ ] Activer workflow après validation
+- [ ] Vérifier LemonSqueezy en prod (tester un achat réel)
+- [ ] Tests E2E flows critiques (lead → notif → accept)
 
 ### P1 - Epic 8 (Admin Dashboard) ✅ DONE
 - [x] Page métriques (leads/jour, taux réponse, artisans actifs)
@@ -166,12 +179,13 @@
 - [ ] Lead scoring (urgence, photo, description)
 - [ ] Badge "Artisan Réactif"
 - [x] Alertes artisan (3 leads manqués = suspension auto)
-- [ ] README.md projet à jour
+- [x] README.md projet à jour
 
-### P3 - Growth (post-MVP)
-- [ ] Multi-verticales (électricien, serrurier)
-- [ ] App mobile artisans
+### P3 - Growth (post-MVP) - Epic 9
+- [ ] Multi-verticales (électricien, serrurier, vitrier)
+- [ ] App mobile artisans (React Native)
 - [ ] Chatbot WhatsApp conversationnel
+- [ ] Lead scoring AI
 
 ---
 
@@ -202,4 +216,4 @@ npx supabase db push
 
 ---
 
-*Ce fichier est mis à jour manuellement. Dernière révision: 2026-01-31*
+*Ce fichier est mis à jour manuellement. Dernière révision: 2026-02-03*
