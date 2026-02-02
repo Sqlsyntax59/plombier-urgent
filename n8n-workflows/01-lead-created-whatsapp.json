@@ -12,12 +12,96 @@
       "name": "Webhook Lead Created",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [250, 300]
+      "position": [250, 300],
+      "webhookId": "lead-created-whatsapp"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v22.0/966230919908567/messages",
+        "url": "={{ $json.body.appUrl || 'https://plombier-urgent.vercel.app' }}/api/leads/assign",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"leadId\": \"{{ $json.body.leadId }}\",\n  \"mode\": \"first\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "assign-artisan",
+      "name": "Assign Artisan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-success",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-artisan-found",
+      "name": "Artisan Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [750, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook Lead Created').item.json.body.appUrl || 'https://plombier-urgent.vercel.app' }}/api/notifications/prepare",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"assignmentId\": \"{{ $json.assignmentId }}\",\n  \"channel\": \"whatsapp\"\n}",
+        "options": {}
+      },
+      "id": "prepare-notification",
+      "name": "Prepare WhatsApp Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/{{ $env.WHATSAPP_PHONE_ID || '966230919908567' }}/messages",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
@@ -31,17 +115,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.body.artisan_phone.replace(/[^0-9]/g, '') }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"hello_world\",\n    \"language\": {\n      \"code\": \"en_US\"\n    }\n  }\n}",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.message.to.replace(/[^0-9]/g, '') }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"lead_notification\",\n    \"language\": {\n      \"code\": \"fr\"\n    },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          {\n            \"type\": \"text\",\n            \"text\": \"{{ $json.message.raw.artisanFirstName }}\"\n          },\n          {\n            \"type\": \"text\",\n            \"text\": \"{{ $json.message.raw.problemTypeLabel }}\"\n          },\n          {\n            \"type\": \"text\",\n            \"text\": \"{{ $json.message.raw.city }}\"\n          },\n          {\n            \"type\": \"text\",\n            \"text\": \"{{ $json.message.raw.description.substring(0, 100) }}\"\n          }\n        ]\n      },\n      {\n        \"type\": \"button\",\n        \"sub_type\": \"url\",\n        \"index\": \"0\",\n        \"parameters\": [\n          {\n            \"type\": \"text\",\n            \"text\": \"{{ $('Assign Artisan').item.json.assignmentId }}\"\n          }\n        ]\n      }\n    ]\n  }\n}",
         "options": {}
       },
-      "id": "whatsapp-send",
-      "name": "Send WhatsApp",
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp Template",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [500, 300],
+      "position": [1250, 200],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "whatsapp-auth",
+          "id": "whatsapp-cloud-api",
           "name": "WhatsApp Cloud API"
         }
       }
@@ -49,27 +133,41 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ success: true, message: 'WhatsApp notification sent', whatsapp_response: $json }) }}"
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"WhatsApp notification sent\",\n  \"artisan\": {\n    \"id\": \"{{ $('Assign Artisan').item.json.artisan.id }}\",\n    \"name\": \"{{ $('Assign Artisan').item.json.artisan.firstName }}\"\n  },\n  \"whatsappMessageId\": \"{{ $json.messages[0].id }}\"\n}"
       },
-      "id": "respond-ok",
-      "name": "Respond OK",
+      "id": "respond-success",
+      "name": "Respond Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [750, 300]
+      "position": [1500, 200]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ success: false, error: $json.error?.message || 'WhatsApp send failed' }) }}",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"{{ $json.error || 'No artisan available' }}\",\n  \"noArtisanAvailable\": {{ $json.noArtisanAvailable || false }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-no-artisan",
+      "name": "Respond No Artisan",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1000, 450]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"WhatsApp send failed\",\n  \"details\": {{ JSON.stringify($json) }}\n}",
         "options": {
           "responseCode": 500
         }
       },
-      "id": "respond-error",
-      "name": "Respond Error",
+      "id": "respond-whatsapp-error",
+      "name": "Respond WhatsApp Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [750, 450]
+      "position": [1500, 400]
     }
   ],
   "connections": {
@@ -77,18 +175,58 @@
       "main": [
         [
           {
-            "node": "Send WhatsApp",
+            "node": "Assign Artisan",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send WhatsApp": {
+    "Assign Artisan": {
       "main": [
         [
           {
-            "node": "Respond OK",
+            "node": "Artisan Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Artisan Found?": {
+      "main": [
+        [
+          {
+            "node": "Prepare WhatsApp Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond No Artisan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare WhatsApp Data": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Template": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
             "type": "main",
             "index": 0
           }
@@ -100,7 +238,9 @@
   "settings": {
     "executionOrder": "v1",
     "timezone": "Europe/Paris",
-    "saveManualExecutions": true
+    "saveManualExecutions": true,
+    "errorWorkflow": ""
   },
-  "tags": ["plombier-urgent", "whatsapp", "notifications"]
+  "tags": ["plombier-urgent", "whatsapp", "notifications", "production"],
+  "pinData": {}
 }
