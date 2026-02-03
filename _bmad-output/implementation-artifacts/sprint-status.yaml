@@ -96,8 +96,8 @@ development_status:
   6-1-page-achat-credits: done
   6-2-integration-lemonsqueezy-checkout: done
   6-3-webhook-lemonsqueezy-credit-leads: done
-  6-4-facture-automatique: backlog
-  6-5-historique-achats: backlog
+  6-4-facture-automatique: done
+  6-5-historique-achats: done
   epic-6-retrospective: optional
 
   # Epic 7: Suivi Client J+3 & Ratings

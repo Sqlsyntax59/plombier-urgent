@@ -1,0 +1,484 @@
+{
+  "timestamp": "2026-02-02T23:51:58.616Z",
+  "baseUrl": "https://plombier-urgent.vercel.app",
+  "availability": {
+    "ok": true,
+    "statusCode": 200,
+    "responseTime": 132,
+    "httpsValid": true
+  },
+  "routes": {
+    "discovered": [
+      "/",
+      "/artisan/login",
+      "/artisan/inscription",
+      "/demande",
+      "/cgv",
+      "/admin/login",
+      "/auth/forgot-password",
+      "/auth/sign-up"
+    ],
+    "tested": [
+      {
+        "url": "/",
+        "status": 200,
+        "ok": true
+      },
+      {
+        "url": "/artisan/login",
+        "status": 200,
+        "ok": true
+      },
+      {
+        "url": "/artisan/inscription",
+        "status": 200,
+        "ok": true
+      },
+      {
+        "url": "/demande",
+        "status": 200,
+        "ok": true
+      },
+      {
+        "url": "/cgv",
+        "status": 200,
+        "ok": true
+      },
+      {
+        "url": "/admin/login",
+        "status": 200,
+        "ok": true
+      }
+    ],
+    "errors4xx": [],
+    "errors5xx": []
+  },
+  "brokenLinks": [],
+  "networkRequests": {
+    "endpoints": [
+      {
+        "url": "https://plombier-urgent.vercel.app/",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=nn07o",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1no0g",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=ji0c4",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1y7kg",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=11l9m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=ivliq",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=47kwi",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1gidw",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1qh0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=q5u00",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1gidw",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1yrh2",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=di988",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1qh0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=73jfd",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=lj2xa",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1b42q",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=eglv2",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=163ms",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1p27f",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=13oqj",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=x0k0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=17gy5",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1ymsf",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/cgv",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1odgt",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1a77d",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1m1z0",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1rcc3",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/admin/login",
+        "method": "GET",
+        "status": 307
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/login",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=ne5al",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/forgot-password?_rsc=ne5al",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=ay3vs",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=1uor5",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=1qqfn",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=dm7u8",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/sign-up?_rsc=gg4jb",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/forgot-password?_rsc=1qqfn",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/forgot-password?_rsc=uxilk",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/auth/forgot-password?_rsc=1ez2h",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1r34m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=nn07o",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=1no0g",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande?_rsc=ji0c4",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1pn8p",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=1y7kg",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=11l9m",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login?_rsc=47kwi",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=ivliq",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/demande",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=13oqj",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=x0k0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=17gy5",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1ymsf",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/login",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1gidw",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1gidw",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=q5u00",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1yrh2",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=1qh0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=1qh0e",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/?_rsc=73jfd",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=lj2xa",
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "url": "https://plombier-urgent.vercel.app/artisan/inscription?_rsc=di988",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "errors": []
+  },
+  "auth": {
+    "loginPageAccessible": true,
+    "loginTested": true,
+    "loginSuccess": true,
+    "protectedPageAccess": true
+  },
+  "consoleErrors": [
+    {
+      "page": "auth",
+      "message": "TypeError: Failed to fetch\n    at https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:24:38344\n    at tD (https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:24:43284)\n    at tB (https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:24:42812)\n    at https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:37:14906\n    at rf._useSession (https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:37:12424)\n    at async rf._getUser (https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:37:14737)\n    at async https://plombier-urgent.vercel.app/_next/static/chunks/4f0ec6a6c5306247.js:37:14531",
+      "type": "error"
+    }
+  ],
+  "security": {
+    "https": true,
+    "csp": null,
+    "cookiesSecure": true,
+    "xFrameOptions": "DENY",
+    "strictTransportSecurity": "max-age=63072000; includeSubDomains; preload"
+  },
+  "verdict": "GO",
+  "reasons": []
+}
