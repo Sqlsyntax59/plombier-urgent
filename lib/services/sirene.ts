@@ -2,8 +2,8 @@
  * Service de vérification SIRET via API INSEE Sirene
  * Story 2.1 V2 - Anti-travail dissimulé
  *
- * Endpoint: GET https://api.insee.fr/entreprises/sirene/V3.11/siret/{siret}
- * Auth: Bearer INSEE_SIRENE_TOKEN
+ * Endpoint: GET https://api.insee.fr/api-sirene/3.11/siret/{siret}
+ * Auth: X-INSEE-Api-Key-Integration header
  */
 
 export interface SireneResult {
@@ -29,7 +29,7 @@ interface SireneResponse {
   etablissement: SireneEtablissement;
 }
 
-const SIRENE_API_URL = "https://api.insee.fr/entreprises/sirene/V3.11/siret";
+const SIRENE_API_URL = "https://api.insee.fr/api-sirene/3.11/siret";
 const TIMEOUT_MS = 10000;
 
 /**
@@ -62,7 +62,7 @@ export async function verifySiret(siret: string): Promise<SireneResult> {
     const response = await fetch(`${SIRENE_API_URL}/${siret}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        "X-INSEE-Api-Key-Integration": token,
         Accept: "application/json",
       },
       signal: controller.signal,
