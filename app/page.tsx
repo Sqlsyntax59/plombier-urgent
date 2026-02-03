@@ -26,37 +26,37 @@ const panneTypes = [
     label: "Fuite d'eau",
     description: "Fuite visible ou cachée",
     gradient: "from-blue-500 to-cyan-400",
-    image: "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&q=80",
   },
   {
     label: "WC bouché",
     description: "Débouchage express",
     gradient: "from-amber-500 to-orange-400",
-    image: "https://images.unsplash.com/photo-1585412727339-54e4bae3bbf9?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=800&q=80",
   },
   {
     label: "Ballon d'eau chaude",
     description: "Panne ou remplacement",
     gradient: "from-red-500 to-orange-400",
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1585128792020-803d29415281?w=800&q=80",
   },
   {
     label: "Canalisation",
     description: "Bouchée ou cassée",
     gradient: "from-emerald-500 to-teal-400",
-    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
   },
   {
     label: "Robinetterie",
     description: "Réparation ou changement",
     gradient: "from-violet-500 to-purple-400",
-    image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&q=80",
   },
   {
     label: "Autre urgence",
     description: "Toute intervention",
     gradient: "from-rose-500 to-pink-400",
-    image: "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
   },
 ];
 
