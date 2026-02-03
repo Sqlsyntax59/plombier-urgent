@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { findBestArtisan, getNextArtisanInCascade } from "@/lib/services/attribution";
 
 /**
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Récupérer les infos du lead
     const { data: lead, error: leadError } = await supabase

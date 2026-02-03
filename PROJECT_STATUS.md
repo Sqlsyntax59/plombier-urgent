@@ -3,6 +3,21 @@
 **Dernière mise à jour:** 2026-02-03
 **Version:** v1.2.0
 **Statut global:** MVP COMPLET - EN ATTENTE VALIDATION WHATSAPP
+**Maturité:** 89% (8/9 Epics)
+
+---
+
+## Métriques Code
+
+| Métrique | Valeur |
+|----------|--------|
+| Fichiers TypeScript | 115 |
+| Lignes de code | ~6,011 |
+| Composants React | 31 |
+| Routes API | 16 |
+| Migrations SQL | 23 |
+| Workflows n8n | 6 |
+| Tests unitaires | ❌ 0% couverture |
 
 ---
 
@@ -12,7 +27,7 @@
 |---------|--------|--------------|
 | **Vercel** | ✅ Déployé | https://plombier-urgent.vercel.app |
 | **GitHub** | ✅ Public | https://github.com/Sqlsyntax59/plombier-urgent |
-| **Supabase** | ✅ Production | 10 migrations, RLS activé |
+| **Supabase** | ✅ Production | 23 migrations, RLS activé |
 | **n8n VPS** | ✅ Configuré | https://vmi3051008.contaboserver.net |
 | **Telegram Bot** | ⏸️ Désactivé | Remplacé par WhatsApp |
 | **LemonSqueezy** | ⚠️ À vérifier | Webhooks à tester en prod |
@@ -143,26 +158,27 @@
 
 ## Base de Données
 
-### Migrations (10 fichiers)
+### Migrations (23 fichiers)
 ```
-20260128000001: verticals
-20260128000002: profiles
-20260128000003: artisan_fields
-20260128000004: cgv_accepted_at
-20260128000005: public_profile_fields
-20260128000006: leads
-20260128000007: price_ranges
-20260128000008: lead_assignments
-20260128000009: credit_purchases
-20260128000010: client_feedback
+20260128000001-010: Setup initial (verticals, profiles, leads, etc.)
+20260130000001-005: field_summary, specializations, RLS policies
+20260131000001-003: Admin dashboard, credit_transactions
+20260202000001-005: Verification artisan, sirene, assurance
 ```
 
-### Tables principales
-- `profiles` - Artisans avec crédits
-- `leads` - Demandes clients (+ field_summary)
-- `lead_assignments` - Attribution avec cascade
+### Tables principales (10 tables)
+- `verticals` - Verticales métiers (plomberie, électricité...)
+- `profiles` - Artisans avec crédits, vérification SIRET
+- `leads` - Demandes clients (+ field_summary, isUrgent)
+- `lead_assignments` - Attribution avec cascade 2min
+- `credit_transactions` - Historique crédits
 - `credit_purchases` - Paiements LemonSqueezy
-- `client_feedback` - Notes J+3
+- `price_ranges` - Fourchettes prix indicatives
+- `client_feedback` - Notes clients J+3
+
+### RPC Functions
+- `calculate_distance(lat1, lng1, lat2, lng2)` - Distance géographique
+- `assign_lead_to_artisan(lead_id, artisan_id)` - Attribution transactionnelle
 
 ---
 

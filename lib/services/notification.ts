@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import type { ProblemType } from "@/types/database.types";
 
 // Labels français pour les types de panne
@@ -63,7 +63,7 @@ export async function prepareWhatsAppNotification(
   assignmentId: string,
   baseUrl: string
 ): Promise<WhatsAppMessageData> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Récupérer l'assignment avec le lead et l'artisan
   const { data: assignment, error: assignmentError } = await supabase
@@ -158,7 +158,7 @@ export async function prepareSMSNotification(
   assignmentId: string,
   baseUrl: string
 ): Promise<SMSMessageData> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: assignment, error } = await supabase
     .from("lead_assignments")
@@ -220,7 +220,7 @@ export async function prepareEmailNotification(
   assignmentId: string,
   baseUrl: string
 ): Promise<EmailMessageData> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: assignment, error } = await supabase
     .from("lead_assignments")

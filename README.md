@@ -2,6 +2,18 @@
 
 Plateforme de mise en relation entre clients et artisans plombiers pour interventions urgentes.
 
+**Version:** v1.2.0 | **Statut:** MVP 89% | **Production:** https://plombier-urgent.vercel.app
+
+## Métriques Projet
+
+| Métrique | Valeur |
+|----------|--------|
+| Fichiers TypeScript | 115 |
+| Lignes de code | ~6,011 |
+| Composants React | 31 |
+| Routes API | 16 |
+| Migrations SQL | 23 |
+
 ## Stack Technique
 
 | Couche | Technologies |
@@ -11,7 +23,10 @@ Plateforme de mise en relation entre clients et artisans plombiers pour interven
 | Database | Supabase PostgreSQL + RLS |
 | Auth | Supabase Auth (magic link + password) |
 | Paiements | LemonSqueezy |
-| Notifications | n8n + Telegram (migration WhatsApp en cours) |
+| Notifications | n8n + WhatsApp Cloud API (template en attente Meta) |
+| Emails | Resend |
+| Storage | Firebase Storage (photos clients) |
+| Validation | API INSEE Sirene (SIRET) |
 
 ## Fonctionnalités
 
@@ -67,24 +82,34 @@ N8N_WEBHOOK_URL=
 ## Structure du Projet
 
 ```
-app/
-├── (public)/           # Pages publiques (landing, demande)
-├── admin/              # Dashboard admin
-├── artisan/            # Espace artisan (dashboard, leads, profil)
-├── api/                # API Routes
-│   ├── leads/          # Gestion leads
-│   ├── webhooks/       # Webhooks (n8n, LemonSqueezy)
-│   └── feedback/       # Retours clients J+3
-└── auth/               # Authentification
+plombier-urgent/
+├── app/                    # Next.js App Router (48 fichiers)
+│   ├── (public)/          # Pages publiques (landing, demande, CGV)
+│   ├── admin/             # Dashboard admin (6 pages)
+│   ├── artisan/           # Espace artisan (dashboard, leads, profil, crédits)
+│   ├── api/               # 16 routes API
+│   ├── auth/              # Authentification Supabase
+│   └── feedback/          # Retour clients J+3
+├── components/            # 31 composants React (UI + métier)
+├── lib/                   # 19 fichiers utilitaires
+│   ├── actions/          # Server Actions (7 fichiers)
+│   ├── services/         # Services métier (3 fichiers)
+│   └── validations/      # Schémas Zod
+├── supabase/
+│   └── migrations/       # 23 migrations SQL
+├── n8n-workflows/        # 6 workflows JSON
+└── docs/                 # Documentation
 ```
 
 ## Workflows n8n
 
-| Workflow | Description |
-|----------|-------------|
-| Lead Created | Notification artisans (Telegram/WhatsApp) |
-| Lead Accepted | Confirmation au client |
-| Followup J+3 | Relance client pour notation |
+| Workflow | Fichier | Statut |
+|----------|---------|--------|
+| Lead Created - WhatsApp | `01-lead-created-whatsapp.json` | ⏳ Attente Meta |
+| Lead Created - Telegram | `01-lead-created-telegram.json` | ⏸️ Désactivé |
+| Lead Accepted - Email | `02-lead-accepted-email.json` | ✅ Actif |
+| Followup J+3 | `03-followup-j3-feedback.json` | ✅ Actif |
+| Cascade Attribution | `lead-created-cascade.json` | ✅ Actif |
 
 Les fichiers JSON sont dans `n8n-workflows/`.
 

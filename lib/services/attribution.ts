@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import type { Profile, Lead } from "@/types/database.types";
 
 interface AttributionResult {
@@ -40,7 +40,7 @@ export async function findBestArtisan(
 ): Promise<AttributionResult> {
   const { leadId, verticalId, cascadePosition, excludeArtisanIds = [] } = criteria;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // 1. Récupérer les artisans déjà notifiés pour ce lead
   const { data: existingAssignments } = await supabase
@@ -140,7 +140,7 @@ export async function findBestArtisan(
 export async function getNextArtisanInCascade(
   leadId: string
 ): Promise<AttributionResult> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Récupérer le lead pour avoir la verticale et le cascade_count
   const { data: lead, error: leadError } = await supabase
@@ -182,7 +182,7 @@ export async function expirePendingAssignments(): Promise<{
   expired: number;
   error?: string;
 }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const now = new Date().toISOString();
 
