@@ -101,7 +101,7 @@ export async function findBestArtisan(
     .insert({
       lead_id: leadId,
       artisan_id: artisan.id,
-      cascade_position: cascadePosition,
+      cascade_order: cascadePosition,
       status: "pending",
       expires_at: expiresAt.toISOString(),
     })
