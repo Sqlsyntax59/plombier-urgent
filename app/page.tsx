@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Phone,
@@ -15,51 +16,47 @@ import {
   ArrowRight,
   Wrench,
   Droplets,
-  Flame,
   Users,
-  ThermometerSun,
-  PipetteIcon,
-  CircleDot,
   Sparkles,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 const panneTypes = [
   {
-    icon: Droplets,
     label: "Fuite d'eau",
     description: "Fuite visible ou cachée",
-    gradient: "from-blue-500 to-cyan-400"
+    gradient: "from-blue-500 to-cyan-400",
+    image: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&q=80",
   },
   {
-    icon: CircleDot,
     label: "WC bouché",
     description: "Débouchage express",
-    gradient: "from-amber-500 to-orange-400"
+    gradient: "from-amber-500 to-orange-400",
+    image: "https://images.unsplash.com/photo-1564540586988-aa4e53c3d799?w=800&q=80",
   },
   {
-    icon: ThermometerSun,
     label: "Ballon d'eau chaude",
     description: "Panne ou remplacement",
-    gradient: "from-red-500 to-orange-400"
+    gradient: "from-red-500 to-orange-400",
+    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80",
   },
   {
-    icon: PipetteIcon,
     label: "Canalisation",
     description: "Bouchée ou cassée",
-    gradient: "from-emerald-500 to-teal-400"
+    gradient: "from-emerald-500 to-teal-400",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
   },
   {
-    icon: Wrench,
     label: "Robinetterie",
     description: "Réparation ou changement",
-    gradient: "from-violet-500 to-purple-400"
+    gradient: "from-violet-500 to-purple-400",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
   },
   {
-    icon: Zap,
     label: "Autre urgence",
     description: "Toute intervention",
-    gradient: "from-rose-500 to-pink-400"
+    gradient: "from-rose-500 to-pink-400",
+    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
   },
 ];
 
@@ -376,18 +373,31 @@ export default function HomePage() {
                   className="group relative"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300 group-hover:translate-y-[-4px]">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 mb-5 rounded-2xl bg-gradient-to-br ${panne.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                      <panne.icon className="h-7 w-7 md:h-8 md:w-8 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300 group-hover:translate-y-[-4px]">
+                    {/* Image container */}
+                    <div className="relative h-48 md:h-56 overflow-hidden">
+                      <Image
+                        src={panne.image}
+                        alt={panne.label}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                      {/* Gradient overlay */}
+                      <div className={`absolute inset-0 bg-gradient-to-t ${panne.gradient} opacity-40 group-hover:opacity-60 transition-opacity`} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-transparent to-transparent" />
                     </div>
-                    <h3 className="font-bold text-lg md:text-xl text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-cyan-300 transition-all">
-                      {panne.label}
-                    </h3>
-                    <p className="text-slate-500 text-sm">{panne.description}</p>
-                    <div className="mt-4 flex items-center text-sm text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span>Demander un devis</span>
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="font-bold text-xl md:text-2xl text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-cyan-300 transition-all">
+                        {panne.label}
+                      </h3>
+                      <p className="text-slate-400 text-sm mb-4">{panne.description}</p>
+                      <div className="flex items-center text-sm font-medium text-blue-400 group-hover:text-cyan-300 transition-colors">
+                        <span>Demander un devis</span>
+                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </Link>
