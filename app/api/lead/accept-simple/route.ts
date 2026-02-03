@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     .from("lead_assignments")
     .update({
       status: "accepted",
-      accepted_at: new Date().toISOString()
+      responded_at: new Date().toISOString()
     })
     .eq("id", assignmentId);
 
