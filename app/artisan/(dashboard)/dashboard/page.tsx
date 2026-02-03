@@ -16,7 +16,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { VerificationBanner } from "@/components/ui/verification-banner";
 import { createClient } from "@/lib/supabase/client";
+import type { VerificationStatus } from "@/types/database.types";
 
 interface DashboardStats {
   credits: number;
@@ -29,6 +31,7 @@ export default function ArtisanDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
 
   useEffect(() => {
     async function fetchStats() {
@@ -40,14 +43,15 @@ export default function ArtisanDashboardPage() {
         return;
       }
 
-      // Récupérer crédits et prénom du profil
+      // Récupérer crédits, prénom et statut vérification du profil
       const { data: profile } = await supabase
         .from("profiles")
-        .select("credits, first_name")
+        .select("credits, first_name, verification_status")
         .eq("id", user.id)
         .single();
 
       setFirstName(profile?.first_name || null);
+      setVerificationStatus((profile?.verification_status as VerificationStatus) || "registered");
 
       // Compter leads acceptés ce mois
       const startOfMonth = new Date();
@@ -101,6 +105,9 @@ export default function ArtisanDashboardPage() {
 
   return (
     <div className="space-y-6 max-w-5xl">
+      {/* Bannière de vérification */}
+      {!loading && <VerificationBanner status={verificationStatus} />}
+
       {/* En-tête avec salutation */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

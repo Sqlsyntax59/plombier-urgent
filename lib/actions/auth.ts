@@ -9,6 +9,7 @@ import {
   type LoginPasswordInput,
   type MagicLinkInput,
 } from "@/lib/validations/artisan";
+import { verifySiret } from "@/lib/services/sirene";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
@@ -28,7 +29,7 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
     };
   }
 
-  const { email, password, firstName, lastName, phone, city, trade, specializations } = parsed.data;
+  const { email, password, firstName, lastName, phone, city, trade, siret, specializations } = parsed.data;
 
   const supabase = await createClient();
 
@@ -65,7 +66,10 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
     };
   }
 
-  // 2. Mettre a jour le profil avec les infos supplementaires
+  // 2. Verifier le SIRET via API INSEE (JAMAIS de rollback si erreur)
+  const sireneResult = await verifySiret(siret);
+
+  // 3. Mettre a jour le profil avec les infos supplementaires
   // Note: Le trigger handle_new_user cree automatiquement le profil vide
   const { error: profileError } = await supabase
     .from("profiles")
@@ -79,6 +83,11 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
       email,
       role: "artisan",
       cgv_accepted_at: new Date().toISOString(),
+      // Champs verification SIRET
+      siret,
+      siret_verified: sireneResult.verified,
+      company_name: sireneResult.companyName,
+      verification_status: "registered", // Toujours registered a l'inscription
     })
     .eq("id", authData.user.id);
 
@@ -87,7 +96,16 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
     // On ne bloque pas l'inscription, le profil peut etre complete plus tard
   }
 
-  // 3. Redirection vers configuration WhatsApp
+  // Log pour debug (mode degrade vs verification OK)
+  if (sireneResult.degraded) {
+    console.warn(`[SignUp] SIRET ${siret} - mode degrade (API down)`);
+  } else if (!sireneResult.verified && sireneResult.error) {
+    console.warn(`[SignUp] SIRET ${siret} - non verifie: ${sireneResult.error}`);
+  } else {
+    console.log(`[SignUp] SIRET ${siret} - verifie OK (${sireneResult.companyName})`);
+  }
+
+  // 4. Redirection vers configuration WhatsApp
   redirect("/artisan/whatsapp");
 }
 

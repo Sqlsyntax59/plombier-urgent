@@ -69,6 +69,29 @@ export async function acceptLead(
   artisanId: string
 ): Promise<AcceptLeadResult> {
   try {
+    // GUARD: Vérifier que l'artisan est vérifié
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("verification_status")
+      .eq("id", artisanId)
+      .single();
+
+    if (profileError || !profile) {
+      return {
+        success: false,
+        error: "Profil introuvable",
+        errorCode: "PROFILE_NOT_FOUND",
+      };
+    }
+
+    if (profile.verification_status !== "verified") {
+      return {
+        success: false,
+        error: "Votre compte doit être vérifié pour accepter un lead",
+        errorCode: "NOT_VERIFIED",
+      };
+    }
+
     const { data, error } = await supabaseAdmin.rpc("accept_lead", {
       p_assignment_id: assignmentId,
       p_artisan_id: artisanId,

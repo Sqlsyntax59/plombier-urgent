@@ -1,5 +1,34 @@
 import { z } from "zod";
 
+// SIRET validation regex (14 digits)
+export const SIRET_REGEX = /^\d{14}$/;
+
+// Schema SIRET
+export const siretSchema = z
+  .string()
+  .regex(SIRET_REGEX, "Le SIRET doit contenir exactement 14 chiffres");
+
+// Schema assurance (page vérification)
+export const insuranceSchema = z.object({
+  insuranceProvider: z
+    .string()
+    .min(2, "Le nom de l'assureur doit contenir au moins 2 caractères")
+    .max(100, "Le nom de l'assureur ne peut pas dépasser 100 caractères"),
+  insurancePolicyNumber: z
+    .string()
+    .min(5, "Le numéro de police doit contenir au moins 5 caractères")
+    .max(50, "Le numéro de police ne peut pas dépasser 50 caractères"),
+  insuranceValidUntil: z
+    .string()
+    .refine((date) => {
+      const parsed = new Date(date);
+      return !isNaN(parsed.getTime()) && parsed > new Date();
+    }, "La date de validité doit être dans le futur"),
+  insuranceAttestationPath: z.string().optional(),
+});
+
+export type InsuranceInput = z.infer<typeof insuranceSchema>;
+
 // Metiers disponibles (MVP - vertical plombier)
 export const TRADES = [
   { value: "plombier", label: "Plombier" },
@@ -61,6 +90,7 @@ export const artisanSignUpSchema = z.object({
   trade: z.enum(tradeValues, {
     message: "Veuillez selectionner un metier",
   }),
+  siret: siretSchema,
   specializations: z
     .array(z.string())
     .min(1, "Selectionnez au moins une specialisation"),

@@ -13,6 +13,7 @@ import {
   Phone,
   MapPin,
   Briefcase,
+  Building2,
   ArrowRight,
   Shield,
   Zap,
@@ -67,6 +68,7 @@ export default function InscriptionPage() {
       phone: "",
       city: "",
       trade: undefined,
+      siret: "",
       specializations: [],
       acceptCgv: false,
     },
@@ -376,6 +378,39 @@ export default function InscriptionPage() {
                         />
                       )}
                     </div>
+                  </div>
+
+                  {/* Section Entreprise */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
+                        <Building2 className="h-3.5 w-3.5 text-indigo-600" />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-700">Entreprise</span>
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="siret"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-600 text-sm">
+                            Numéro SIRET
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="12345678901234"
+                              maxLength={14}
+                              {...field}
+                              className="h-11 rounded-xl border-slate-200 focus:border-blue-500 font-mono"
+                            />
+                          </FormControl>
+                          <p className="text-xs text-slate-400 mt-1">
+                            14 chiffres - Sécurise la plateforme pour les clients
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   {/* CGV */}

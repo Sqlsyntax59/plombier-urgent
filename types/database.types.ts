@@ -63,6 +63,13 @@ export type Database = {
           google_place_id: string | null
           slug: string | null
           cgv_accepted_at: string | null
+          siret: string | null
+          siret_verified: boolean
+          verification_status: VerificationStatus
+          insurance_provider: string | null
+          insurance_policy_number: string | null
+          insurance_valid_until: string | null
+          insurance_attestation_path: string | null
           created_at: string
           updated_at: string
         }
@@ -88,6 +95,13 @@ export type Database = {
           google_place_id?: string | null
           slug?: string | null
           cgv_accepted_at?: string | null
+          siret?: string | null
+          siret_verified?: boolean
+          verification_status?: VerificationStatus
+          insurance_provider?: string | null
+          insurance_policy_number?: string | null
+          insurance_valid_until?: string | null
+          insurance_attestation_path?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -113,6 +127,13 @@ export type Database = {
           google_place_id?: string | null
           slug?: string | null
           cgv_accepted_at?: string | null
+          siret?: string | null
+          siret_verified?: boolean
+          verification_status?: VerificationStatus
+          insurance_provider?: string | null
+          insurance_policy_number?: string | null
+          insurance_valid_until?: string | null
+          insurance_attestation_path?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -269,6 +290,7 @@ export type ProblemType = 'fuite' | 'wc_bouche' | 'ballon_eau_chaude' | 'canalis
 export type LeadStatus = 'pending' | 'assigned' | 'accepted' | 'completed' | 'cancelled' | 'unassigned'
 export type AssignmentStatus = 'pending' | 'accepted' | 'expired' | 'rejected'
 export type NotificationChannel = 'whatsapp' | 'sms' | 'email'
+export type VerificationStatus = 'registered' | 'pending_verification' | 'verified' | 'suspended'
 
 // Helper types
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
@@ -313,4 +335,12 @@ export const ASSIGNMENT_STATUS_LABELS: Record<AssignmentStatus, string> = {
   accepted: 'Accepté',
   expired: 'Expiré',
   rejected: 'Refusé'
+}
+
+// Labels pour les statuts de vérification
+export const VERIFICATION_STATUS_LABELS: Record<VerificationStatus, string> = {
+  registered: 'Inscrit',
+  pending_verification: 'Vérification en cours',
+  verified: 'Vérifié',
+  suspended: 'Suspendu'
 }
