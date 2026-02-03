@@ -21,15 +21,14 @@ interface WhatsAppMessageData {
       type: "body";
       parameters: Array<{ type: "text"; text: string }>;
     }[];
-    // Données brutes pour personnalisation
-    raw: {
-      artisanFirstName: string;
-      problemTypeLabel: string;
-      city: string;
-      description: string;
-      photoUrl: string | null;
-      acceptUrl: string;
-    };
+    // Données pour personnalisation n8n
+    artisanFirstName: string;
+    problemTypeLabel: string;
+    city: string;
+    description: string;
+    photoUrl: string | null;
+    acceptUrl: string;
+    assignmentId: string;
   };
   error?: string;
 }
@@ -139,14 +138,14 @@ export async function prepareWhatsAppNotification(
           ],
         },
       ],
-      raw: {
-        artisanFirstName: artisan.first_name || "Artisan",
-        problemTypeLabel,
-        city,
-        description: lead.description,
-        photoUrl: lead.photo_url,
-        acceptUrl,
-      },
+      // Données directes pour n8n (sans nested raw)
+      artisanFirstName: artisan.first_name || "Artisan",
+      problemTypeLabel,
+      city,
+      description: lead.description,
+      photoUrl: lead.photo_url,
+      acceptUrl,
+      assignmentId,
     },
   };
 }
