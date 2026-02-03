@@ -53,6 +53,7 @@ export async function middleware(request: NextRequest) {
     "/api/leads/accept",
     "/api/leads/assign",
     "/api/lead/accept",
+    "/api/lead/accept-simple",
     "/api/notifications/prepare",
     "/api/webhooks",
   ];
