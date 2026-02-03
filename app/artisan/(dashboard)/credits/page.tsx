@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Check,
   CreditCard,
@@ -11,6 +12,7 @@ import {
   Shield,
   Clock,
   ArrowRight,
+  History,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -97,13 +99,21 @@ export default function CreditsPage() {
   return (
     <div className="space-y-8 max-w-5xl">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-          Acheter des crédits
-        </h1>
-        <p className="text-slate-500 mt-1">
-          1 crédit = 1 lead accepté. Choisissez le pack adapté à votre activité.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Acheter des crédits
+          </h1>
+          <p className="text-slate-500 mt-1">
+            1 crédit = 1 lead accepté. Choisissez le pack adapté à votre activité.
+          </p>
+        </div>
+        <Button asChild variant="outline" className="sm:self-start">
+          <Link href="/artisan/credits/history">
+            <History className="h-4 w-4 mr-2" />
+            Historique
+          </Link>
+        </Button>
       </div>
 
       {/* Solde actuel */}
