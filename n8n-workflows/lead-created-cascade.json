@@ -175,6 +175,12 @@
               "type": "string"
             },
             {
+              "id": "accept-url",
+              "name": "acceptUrl",
+              "value": "={{ $json.data.accept_url }}",
+              "type": "string"
+            },
+            {
               "id": "artisan-id",
               "name": "artisanId",
               "value": "={{ $('Find Artisan #1').item.json.data.artisan.artisan_id }}",
@@ -205,7 +211,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Generer URL d'acceptation simple (sans JWT pour simplifier)\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\n// URL de production Vercel\nconst baseUrl = 'https://plombier-urgent.vercel.app';\nconst acceptUrl = `${baseUrl}/api/lead/accept-simple?assignmentId=${artisan.assignmentId}&artisanId=${artisan.artisanId}`;\n\nreturn {\n  ...artisan,\n  acceptUrl,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  fieldSummary: setVars.fieldSummary,\n  isUrgent: setVars.isUrgent,\n  urgencyReason: setVars.urgencyReason,\n  clientCity: setVars.clientCity\n};"
+        "jsCode": "// Construire les donnees du message avec l'URL securisee JWT\nconst setVars = $('Set Variables').first().json;\nconst artisan = $('Set Artisan Data #1').first().json;\n\nreturn {\n  ...artisan,\n  leadId: setVars.leadId,\n  problemType: setVars.problemType,\n  description: setVars.description,\n  fieldSummary: setVars.fieldSummary,\n  isUrgent: setVars.isUrgent,\n  urgencyReason: setVars.urgencyReason,\n  clientCity: setVars.clientCity\n};"
       },
       "id": "code-build-message-1",
       "name": "Build Message Data #1",

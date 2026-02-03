@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { generateAcceptUrl } from "@/lib/actions/assignment";
 
 // Client Supabase avec service_role pour bypasser RLS
 const supabaseAdmin = createClient(
@@ -87,7 +88,16 @@ export async function POST(request: NextRequest) {
         });
 
         if (error) throw error;
-        result = { assignment_id: data };
+
+        // Generer URL securisee avec JWT pour acceptation
+        const assignmentId = data as string;
+        const acceptUrl = await generateAcceptUrl(
+          assignmentId,
+          artisan_id,
+          process.env.NEXT_PUBLIC_APP_URL || "https://plombier-urgent.vercel.app"
+        );
+
+        result = { assignment_id: assignmentId, accept_url: acceptUrl };
         break;
       }
 

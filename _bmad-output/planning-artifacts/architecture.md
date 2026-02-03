@@ -149,6 +149,41 @@ npx create-next-app@latest -e with-supabase
 | Sessions | Cookies SSR | Hydration Next.js compatible |
 | Webhooks | Signature vérification | LemonSqueezy, n8n |
 
+### Verification & Anti-Fraud (Anti-Travail Dissimulé)
+
+| Aspect | Décision | Rationale |
+|--------|----------|-----------|
+| SIRET obligatoire | 14 chiffres, Zod client+serveur | Légalité, confiance client |
+| Vérification SIRET | API INSEE Sirene côté serveur | Source officielle française |
+| Mode dégradé | Si API down : compte créé, siret_verified=false | Zéro friction bloquante |
+| Statuts artisan | registered → pending_verification → verified → suspended | Contrôle progressif |
+| Assurance | Post-inscription, formulaire dédié | Anti-abandon à l'inscription |
+| Stockage attestations | Supabase Storage bucket privé | Sécurité documents sensibles |
+| Guards verified | Server-side check avant actions payantes | Pas de confiance client |
+
+**Statuts de Vérification :**
+
+| Statut | Signification | Droits |
+|--------|---------------|--------|
+| `registered` | SIRET renseigné (validé ou mode dégradé) | Dashboard, voir leads (sans coords) |
+| `pending_verification` | Assurance soumise, en attente validation | Idem registered |
+| `verified` | Validation admin OK | Accès complet : leads, crédits, coordonnées |
+| `suspended` | Compte bloqué | Aucun accès |
+
+**API INSEE Sirene :**
+
+```
+Endpoint: GET https://api.insee.fr/entreprises/sirene/V3.11/siret/{siret}
+Auth: Bearer INSEE_SIRENE_TOKEN
+Vérification: etablissement.periodesEtablissement[0].etatAdministratifEtablissement === "A"
+Fallback: 429/503/timeout → mode dégradé (pas de blocage)
+```
+
+**Règle Non Négociable :**
+- ❌ Ne JAMAIS rollback un user Supabase Auth déjà créé
+- ❌ Ne JAMAIS bloquer l'inscription pour une API externe down
+- ✅ Toujours créer le compte, puis traiter la vérification
+
 ### API & Communication Patterns
 
 | Aspect | Décision | Rationale |

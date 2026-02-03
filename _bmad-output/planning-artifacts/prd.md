@@ -517,6 +517,24 @@ classification:
 - **FR37:** Artisan peut voir le lien vers sa fiche Google sur sa page publique
 - **FR38:** Artisan peut se connecter via magic link ou mot de passe
 
+### Vérification Artisan (Anti-Travail Dissimulé)
+
+- **FR33b:** Artisan doit renseigner son SIRET (14 chiffres) lors de l'inscription
+- **FR33c:** Système vérifie le SIRET via API INSEE Sirene (existence + entreprise active)
+- **FR33d:** Si API Sirene indisponible, compte créé en mode dégradé (siret_verified=false)
+- **FR33e:** Artisan possède un statut de vérification : registered | pending_verification | verified | suspended
+- **FR33f:** Artisan peut compléter sa vérification post-inscription (assurance) via `/artisan/verification`
+- **FR33g:** Artisan doit renseigner son assurance : assureur, numéro de police, date validité
+
+### Règles d'Accès par Statut Vérification
+
+- **FR33h:** Artisan `registered` peut accéder au dashboard et voir les leads (sans coordonnées)
+- **FR33i:** Artisan `registered` ou `pending_verification` ne peut PAS accepter de lead
+- **FR33j:** Artisan `registered` ou `pending_verification` ne peut PAS acheter de crédits
+- **FR33k:** Artisan `verified` uniquement peut voir les coordonnées client et accepter les leads
+- **FR33l:** Toute action bloquée affiche un CTA "Compléter ma vérification"
+- **FR33m:** Admin peut manuellement passer un artisan en `verified` après validation assurance
+
 ### Administration
 
 - **FR39:** Admin peut consulter le dashboard avec métriques du jour (leads, taux réponse, artisans actifs)
@@ -580,6 +598,8 @@ classification:
 | NFR-I4 | n8n : workflows avec monitoring erreurs et alertes |
 | NFR-I5 | SMS gateway : support opérateurs FR (SFR, Orange, Bouygues, Free) |
 | NFR-I6 | APIs externes : timeout 10s, circuit breaker après 3 échecs |
+| NFR-I7 | API INSEE Sirene : vérification SIRET avec mode dégradé si 429/503 |
+| NFR-I8 | Supabase Storage : bucket privé pour attestations assurance |
 
 ### Scalability
 

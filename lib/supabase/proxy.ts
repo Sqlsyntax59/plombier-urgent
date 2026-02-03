@@ -59,7 +59,7 @@ export async function updateSession(request: NextRequest) {
     "/demande",
     "/cgv",
     "/api/n8n",
-    "/api/lead/accept-simple",
+    "/api/leads/accept", // Endpoint sécurisé avec JWT token
   ];
 
   // Routes artisan protégées (dashboard)
