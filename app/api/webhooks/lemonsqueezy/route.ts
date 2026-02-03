@@ -146,39 +146,34 @@ async function handleOrderCreated(
     );
   }
 
-  // Ajouter credits au profil artisan
-  const { error: updateError } = await supabase.rpc("credit_artisan_simple", {
+  // Ajouter credits au profil artisan (atomique avec log transaction)
+  const { data: rpcResult, error: rpcError } = await supabase.rpc("credit_artisan_simple", {
     p_artisan_id: artisanId,
     p_credits: credits,
+    p_metadata: {
+      source: "lemonsqueezy",
+      order_id: String(attrs.order_number),
+      pack_name: packName,
+      amount_cents: attrs.total,
+      currency: attrs.currency,
+    },
   });
 
-  // Fallback si RPC n'existe pas
-  if (updateError) {
-    const { error: directError } = await supabase
-      .from("profiles")
-      .update({
-        credits: supabase.rpc("increment_credits", { amount: credits }),
-      })
-      .eq("id", artisanId);
+  if (rpcError || !rpcResult?.success) {
+    console.error("Webhook: erreur ajout credits", rpcError || rpcResult?.error);
+    // Marquer l'achat comme failed pour retry manuel
+    await supabase
+      .from("credit_purchases")
+      .update({ status: "failed", metadata: { error: rpcError?.message || rpcResult?.error } })
+      .eq("lemonsqueezy_order_id", String(attrs.order_number));
 
-    // Dernier fallback: lecture + ecriture
-    if (directError) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("credits")
-        .eq("id", artisanId)
-        .single();
-
-      if (profile) {
-        await supabase
-          .from("profiles")
-          .update({ credits: (profile.credits || 0) + credits })
-          .eq("id", artisanId);
-      }
-    }
+    return NextResponse.json(
+      { error: "Credit addition failed", details: rpcError?.message || rpcResult?.error },
+      { status: 500 }
+    );
   }
 
-  console.log(`Credits ajoutes: ${credits} pour artisan ${artisanId}`);
+  console.log(`Credits ajoutes: ${credits} pour artisan ${artisanId} (nouveau solde: ${rpcResult.new_balance})`);
 
   return NextResponse.json({
     received: true,
@@ -212,32 +207,37 @@ async function handleOrderRefunded(
     return NextResponse.json({ received: true, already_refunded: true });
   }
 
+  // Retirer les credits de maniere atomique avec log
+  const { data: refundResult, error: refundError } = await supabase.rpc("refund_artisan_credits", {
+    p_artisan_id: purchase.artisan_id,
+    p_credits: purchase.credits_purchased,
+    p_metadata: {
+      source: "lemonsqueezy_refund",
+      order_id: String(attrs.order_number),
+      original_purchase_id: purchase.id,
+    },
+  });
+
+  if (refundError) {
+    console.error("Webhook refund: erreur retrait credits", refundError);
+    return NextResponse.json(
+      { error: "Refund credit removal failed" },
+      { status: 500 }
+    );
+  }
+
   // Marquer comme rembourse
   await supabase
     .from("credit_purchases")
     .update({ status: "refunded" })
     .eq("id", purchase.id);
 
-  // Retirer les credits (si possible)
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits")
-    .eq("id", purchase.artisan_id)
-    .single();
-
-  if (profile) {
-    const newCredits = Math.max(0, (profile.credits || 0) - purchase.credits_purchased);
-    await supabase
-      .from("profiles")
-      .update({ credits: newCredits })
-      .eq("id", purchase.artisan_id);
-  }
-
-  console.log(`Refund traite: ${purchase.credits_purchased} credits retires pour ${purchase.artisan_id}`);
+  console.log(`Refund traite: ${refundResult?.credits_removed} credits retires pour ${purchase.artisan_id}`);
 
   return NextResponse.json({
     received: true,
     status: "refunded",
-    credits_removed: purchase.credits_purchased,
+    credits_removed: refundResult?.credits_removed ?? purchase.credits_purchased,
+    new_balance: refundResult?.new_balance,
   });
 }

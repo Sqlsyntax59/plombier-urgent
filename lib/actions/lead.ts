@@ -84,8 +84,7 @@ export async function createLead(
   }
 
   // Déclencher le workflow n8n pour notification artisan
-  // Note: On n'attend pas le résultat pour ne pas bloquer le client
-  triggerLeadWorkflow({
+  const workflowResult = await triggerLeadWorkflow({
     leadId: lead.id,
     clientPhone: normalizedPhone,
     clientCity: clientCity || undefined,
@@ -95,10 +94,34 @@ export async function createLead(
     fieldSummary,
     isUrgent: urgency.isUrgent,
     urgencyReason: urgency.reason,
-  }).catch((err) => {
-    console.error("Erreur trigger n8n workflow:", err);
   });
 
+  // Mettre a jour le statut notification du lead
+  if (workflowResult.success) {
+    await supabase
+      .from("leads")
+      .update({
+        notification_status: "sent",
+        notification_attempts: 1,
+        notification_last_attempt: new Date().toISOString(),
+      })
+      .eq("id", lead.id);
+  } else {
+    // Marquer comme echoue pour retry ulterieur
+    console.error("Echec workflow n8n pour lead:", lead.id, workflowResult.error);
+    await supabase
+      .from("leads")
+      .update({
+        notification_status: "failed",
+        notification_error: workflowResult.error || "Erreur inconnue",
+        notification_attempts: 1,
+        notification_last_attempt: new Date().toISOString(),
+      })
+      .eq("id", lead.id);
+  }
+
+  // On retourne success au client meme si n8n a echoue
+  // Le lead est cree, la notification sera retentee
   return {
     success: true,
     leadId: lead.id,

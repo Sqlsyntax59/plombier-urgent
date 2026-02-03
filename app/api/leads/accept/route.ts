@@ -77,14 +77,27 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // 5. Vérifier que l'artisan a des crédits
+  // 5. Vérifier que l'artisan a des crédits ET est vérifié
   const { data: artisan, error: artisanError } = await supabase
     .from("profiles")
-    .select("credits")
+    .select("credits, verification_status")
     .eq("id", assignment.artisan_id)
     .single();
 
-  if (artisanError || !artisan || artisan.credits < 1) {
+  if (artisanError || !artisan) {
+    return NextResponse.redirect(
+      new URL("/artisan/leads?error=artisan_not_found", request.url)
+    );
+  }
+
+  // Guard: artisan doit être vérifié
+  if (artisan.verification_status !== "verified") {
+    return NextResponse.redirect(
+      new URL("/artisan/leads?error=not_verified", request.url)
+    );
+  }
+
+  if (artisan.credits < 1) {
     return NextResponse.redirect(
       new URL("/artisan/leads?error=no_credits", request.url)
     );
@@ -239,14 +252,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier crédits
+    // Vérifier crédits ET statut vérifié
     const { data: artisan } = await supabase
       .from("profiles")
-      .select("credits")
+      .select("credits, verification_status")
       .eq("id", assignment.artisan_id)
       .single();
 
-    if (!artisan || artisan.credits < 1) {
+    if (!artisan) {
+      return NextResponse.json(
+        { success: false, error: "Artisan non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    // Guard: artisan doit être vérifié
+    if (artisan.verification_status !== "verified") {
+      return NextResponse.json(
+        { success: false, error: "Compte non vérifié", notVerified: true },
+        { status: 403 }
+      );
+    }
+
+    if (artisan.credits < 1) {
       return NextResponse.json(
         { success: false, error: "Crédits insuffisants", noCredits: true },
         { status: 400 }
