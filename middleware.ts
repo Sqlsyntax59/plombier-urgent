@@ -51,7 +51,9 @@ export async function middleware(request: NextRequest) {
   const publicApiRoutes = [
     "/api/n8n",
     "/api/leads/accept",
+    "/api/leads/assign",
     "/api/lead/accept",
+    "/api/notifications/prepare",
     "/api/webhooks",
   ];
 
