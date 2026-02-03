@@ -16,6 +16,7 @@ Plateforme de mise en relation entre clients et artisans plombiers pour interven
 ## Fonctionnalités
 
 ### Client
+- **Landing page premium** (dark theme, animations, images HD)
 - Formulaire de demande d'intervention (wizard multi-étapes)
 - Description guidée par type de panne
 - Upload photos

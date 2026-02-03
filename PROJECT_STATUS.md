@@ -40,12 +40,24 @@
 
 ---
 
-## UI/UX - Version 3
+## UI/UX - Version 4 (Dark Premium)
 
-**Status:** ✅ Déployé (PR #1 mergée le 30/01/2026)
+**Status:** ✅ Déployé le 03/02/2026
 
-### Pages redesignées
-- [x] Landing page (hero gradient, stats animées, témoignages)
+### Landing Page - Redesign complet
+- [x] Theme dark premium (`#0a0f1a`)
+- [x] Background animé (orbes gradient + grid pattern)
+- [x] Hero avec gradient animé "2 minutes"
+- [x] Stats avec compteurs animés au scroll (IntersectionObserver)
+- [x] Cards services avec images Unsplash HD
+- [x] Hover effects (lift, zoom, glow)
+- [x] Timeline "Comment ça marche" avec connexion visuelle
+- [x] Carousel témoignages avec avatars
+- [x] CTA final avec badge "disponible maintenant"
+- [x] Header glassmorphism avec backdrop-blur
+- [x] Footer premium avec sections organisées
+
+### Autres pages (V3)
 - [x] Formulaire demande (wizard multi-étapes, icônes colorées)
 - [x] Dashboard artisan (sidebar responsive, header glassmorphism)
 - [x] Page leads (cards avec icônes, badges statut)
@@ -54,18 +66,30 @@
 - [x] Login artisan (tabs password/magic link)
 - [x] Inscription artisan (sections avec icônes, avantages)
 
-### Design tokens
-- Background: `gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white`
-- Cards: `bg-white/90 backdrop-blur border-slate-200/80`
-- Shadows: `shadow-lg shadow-slate-900/[0.08]`
+### Design tokens Landing
+- Background: `bg-[#0a0f1a]` (dark)
+- Gradients: `from-blue-500 to-cyan-400`, `from-orange-500 to-red-500`
+- Cards: `bg-white/[0.08] border-white/10`
+- Glow: `blur-xl opacity-50`
 
 ---
 
 ## Features Récentes
 
 ### 3 février 2026
+- ✅ **Landing Page V4 - Dark Premium Redesign**
+  - Theme sombre professionnel (#0a0f1a)
+  - Background avec orbes gradient animés + grid pattern
+  - Compteurs stats animés au scroll (500+, 2min, 98%, 24/7)
+  - Cards services avec images Unsplash HD (6 types de pannes)
+  - Hover effects: lift, zoom image, glow blur
+  - Timeline "Comment ça marche" connectée
+  - Carousel témoignages avec avatars et dates
+  - Header/Footer glassmorphism premium
+  - Commits: `f834c3b`, `c2b5d6b`, `651b4a4`, `4019757`
+- ✅ Fix API INSEE (nouveau portail, header `X-INSEE-Api-Key-Integration`)
+- ✅ Story 2.1: Vérification SIRET + assurance artisan
 - ✅ Audit complet du projet (PRD, architecture, epics)
-- ✅ README.md mis à jour avec documentation complète
 - ✅ Migration WhatsApp Cloud API avancée
   - Workflow n8n complet (`01-lead-created-whatsapp.json`)
   - Template `lead_notification` soumis à Meta Business
@@ -176,6 +200,9 @@
 - [x] Gestion réclamations clients
 
 ### P2 - Améliorations
+- [x] Landing page V4 dark premium (redesign complet)
+- [x] Images HD services (Unsplash)
+- [x] Animations scroll (compteurs, hover effects)
 - [ ] Lead scoring (urgence, photo, description)
 - [ ] Badge "Artisan Réactif"
 - [x] Alertes artisan (3 leads manqués = suspension auto)
