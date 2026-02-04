@@ -28,7 +28,8 @@ type CallbackAction =
   | "create_assignment"
   | "expire_assignment"
   | "get_lead_details"
-  | "check_lead_status";
+  | "check_lead_status"
+  | "mark_lead_unassigned";
 
 interface CallbackRequest {
   action: CallbackAction;
@@ -134,6 +135,23 @@ export async function POST(request: NextRequest) {
 
         if (error) throw error;
         result = data;
+        break;
+      }
+
+      case "mark_lead_unassigned": {
+        const { lead_id } = params as { lead_id: string };
+
+        // Marquer le lead comme non assigné (aucun artisan disponible)
+        const { error } = await supabaseAdmin
+          .from("leads")
+          .update({
+            status: "unassigned",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", lead_id);
+
+        if (error) throw error;
+        result = { lead_id, status: "unassigned" };
         break;
       }
 

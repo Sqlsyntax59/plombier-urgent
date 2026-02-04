@@ -1,0 +1,412 @@
+{
+  "name": "[PlombierUrgent] Lead Created - WhatsApp Cascade",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-created-cascade",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "lead-created-cascade-whatsapp"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {"id": "lead-id", "name": "leadId", "value": "={{ $json.body.leadId }}", "type": "string"},
+            {"id": "app-url", "name": "appUrl", "value": "={{ $json.body.appUrl || 'https://plombier-urgent.vercel.app' }}", "type": "string"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-vars",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.appUrl }}/api/leads/assign",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ leadId: $json.leadId, mode: 'first' }) }}",
+        "options": {}
+      },
+      "id": "find-artisan-1",
+      "name": "Find Artisan #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "found-1", "leftValue": "={{ $json.success }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-found-1",
+      "name": "Found #1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/notifications/send-whatsapp",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ assignmentId: $json.assignmentId }) }}",
+        "options": {}
+      },
+      "id": "send-whatsapp-1",
+      "name": "Send WhatsApp #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 200]
+    },
+    {
+      "parameters": {"amount": 2, "unit": "minutes"},
+      "id": "wait-1",
+      "name": "Wait 2min #1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1100, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/n8n/callback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
+        "options": {}
+      },
+      "id": "check-status-1",
+      "name": "Check Status #1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "accepted-1", "leftValue": "={{ $json.data.is_accepted }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-accepted-1",
+      "name": "Accepted #1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1540, 200]
+    },
+    {
+      "parameters": {},
+      "id": "end-accepted",
+      "name": "Lead Accepted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1760, 100]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/leads/assign",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ leadId: $('Set Variables').item.json.leadId, mode: 'next' }) }}",
+        "options": {}
+      },
+      "id": "find-artisan-2",
+      "name": "Find Artisan #2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "found-2", "leftValue": "={{ $json.success }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-found-2",
+      "name": "Found #2?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1980, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/notifications/send-whatsapp",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ assignmentId: $json.assignmentId }) }}",
+        "options": {}
+      },
+      "id": "send-whatsapp-2",
+      "name": "Send WhatsApp #2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 200]
+    },
+    {
+      "parameters": {"amount": 2, "unit": "minutes"},
+      "id": "wait-2",
+      "name": "Wait 2min #2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2420, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/n8n/callback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
+        "options": {}
+      },
+      "id": "check-status-2",
+      "name": "Check Status #2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2640, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "accepted-2", "leftValue": "={{ $json.data.is_accepted }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-accepted-2",
+      "name": "Accepted #2?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2860, 200]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/leads/assign",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ leadId: $('Set Variables').item.json.leadId, mode: 'next' }) }}",
+        "options": {}
+      },
+      "id": "find-artisan-3",
+      "name": "Find Artisan #3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3080, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "found-3", "leftValue": "={{ $json.success }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-found-3",
+      "name": "Found #3?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3300, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/notifications/send-whatsapp",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ assignmentId: $json.assignmentId }) }}",
+        "options": {}
+      },
+      "id": "send-whatsapp-3",
+      "name": "Send WhatsApp #3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3520, 200]
+    },
+    {
+      "parameters": {"amount": 2, "unit": "minutes"},
+      "id": "wait-3",
+      "name": "Wait 2min #3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [3740, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/n8n/callback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
+        "options": {}
+      },
+      "id": "check-status-3",
+      "name": "Check Status #3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3960, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "typeValidation": "loose"},
+          "conditions": [{"id": "accepted-3", "leftValue": "={{ $json.data.is_accepted }}", "rightValue": true, "operator": {"type": "boolean", "operation": "equals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-accepted-3",
+      "name": "Accepted #3?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [4180, 200]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Variables').item.json.appUrl }}/api/n8n/callback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: 'mark_lead_unassigned', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
+        "options": {}
+      },
+      "id": "mark-unassigned",
+      "name": "Mark Unassigned",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4400, 400]
+    },
+    {
+      "parameters": {},
+      "id": "no-artisans",
+      "name": "No Artisans",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [880, 500]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{"node": "Set Variables", "type": "main", "index": 0}]]
+    },
+    "Set Variables": {
+      "main": [[{"node": "Find Artisan #1", "type": "main", "index": 0}]]
+    },
+    "Find Artisan #1": {
+      "main": [[{"node": "Found #1?", "type": "main", "index": 0}]]
+    },
+    "Found #1?": {
+      "main": [
+        [{"node": "Send WhatsApp #1", "type": "main", "index": 0}],
+        [{"node": "No Artisans", "type": "main", "index": 0}]
+      ]
+    },
+    "Send WhatsApp #1": {
+      "main": [[{"node": "Wait 2min #1", "type": "main", "index": 0}]]
+    },
+    "Wait 2min #1": {
+      "main": [[{"node": "Check Status #1", "type": "main", "index": 0}]]
+    },
+    "Check Status #1": {
+      "main": [[{"node": "Accepted #1?", "type": "main", "index": 0}]]
+    },
+    "Accepted #1?": {
+      "main": [
+        [{"node": "Lead Accepted", "type": "main", "index": 0}],
+        [{"node": "Find Artisan #2", "type": "main", "index": 0}]
+      ]
+    },
+    "Find Artisan #2": {
+      "main": [[{"node": "Found #2?", "type": "main", "index": 0}]]
+    },
+    "Found #2?": {
+      "main": [
+        [{"node": "Send WhatsApp #2", "type": "main", "index": 0}],
+        [{"node": "Mark Unassigned", "type": "main", "index": 0}]
+      ]
+    },
+    "Send WhatsApp #2": {
+      "main": [[{"node": "Wait 2min #2", "type": "main", "index": 0}]]
+    },
+    "Wait 2min #2": {
+      "main": [[{"node": "Check Status #2", "type": "main", "index": 0}]]
+    },
+    "Check Status #2": {
+      "main": [[{"node": "Accepted #2?", "type": "main", "index": 0}]]
+    },
+    "Accepted #2?": {
+      "main": [
+        [{"node": "Lead Accepted", "type": "main", "index": 0}],
+        [{"node": "Find Artisan #3", "type": "main", "index": 0}]
+      ]
+    },
+    "Find Artisan #3": {
+      "main": [[{"node": "Found #3?", "type": "main", "index": 0}]]
+    },
+    "Found #3?": {
+      "main": [
+        [{"node": "Send WhatsApp #3", "type": "main", "index": 0}],
+        [{"node": "Mark Unassigned", "type": "main", "index": 0}]
+      ]
+    },
+    "Send WhatsApp #3": {
+      "main": [[{"node": "Wait 2min #3", "type": "main", "index": 0}]]
+    },
+    "Wait 2min #3": {
+      "main": [[{"node": "Check Status #3", "type": "main", "index": 0}]]
+    },
+    "Check Status #3": {
+      "main": [[{"node": "Accepted #3?", "type": "main", "index": 0}]]
+    },
+    "Accepted #3?": {
+      "main": [
+        [{"node": "Lead Accepted", "type": "main", "index": 0}],
+        [{"node": "Mark Unassigned", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["plombier-urgent", "whatsapp", "cascade", "production"],
+  "meta": {
+    "notes": "Cascade WhatsApp: 3 artisans max, 2 min timeout chacun"
+  }
+}
