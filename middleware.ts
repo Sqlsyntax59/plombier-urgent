@@ -55,6 +55,7 @@ export async function middleware(request: NextRequest) {
     "/api/lead/accept",
     "/api/lead/accept-simple",
     "/api/notifications/prepare",
+    "/api/notifications/send-whatsapp",
     "/api/webhooks",
   ];
 
