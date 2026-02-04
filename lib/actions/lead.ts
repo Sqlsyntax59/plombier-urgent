@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import {
   leadSubmitSchema,
   type LeadSubmitInput,
@@ -45,7 +45,7 @@ export async function createLead(
   const urgency = checkUrgency(problemType, guidedAnswers);
   const fieldSummary = generateFieldSummary(problemType, guidedAnswers, description);
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Normaliser le numero de telephone (supprimer espaces et tirets)
   const normalizedPhone = clientPhone.replace(/[\s.-]/g, "");
