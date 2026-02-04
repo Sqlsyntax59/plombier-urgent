@@ -2,7 +2,7 @@
 
 Plateforme de mise en relation entre clients et artisans plombiers pour interventions urgentes.
 
-**Version:** v1.2.0 | **Statut:** MVP 89% | **Production:** https://plombier-urgent.vercel.app
+**Version:** v1.2.1 | **Statut:** MVP 85% | **Production:** https://plombier-urgent.vercel.app
 
 ## Métriques Projet
 
@@ -132,6 +132,25 @@ npm run lint     # Linting ESLint
 ## Statut
 
 Voir [PROJECT_STATUS.md](PROJECT_STATUS.md) pour le suivi détaillé des epics et features.
+
+## Roadmap (Epic 10 - Planifié)
+
+### Phase 1 : Géocodage
+- API BAN (adresse.data.gouv.fr) pour conversion code postal → lat/lng
+- Table cache pour éviter appels répétés
+
+### Phase 2 : Lead Scoring
+- Score 0-100 basé sur urgence, photo, description
+- Classification : low / medium / high / premium
+
+### Phase 3 : Badge Artisan Réactif
+- Badge pour artisans répondant < 2min avec taux > 80%
+- Fenêtre glissante 30 jours, minimum 20 offres
+
+### Phase 4 : Attribution Multi-Artisans
+- Sélection des 3 artisans les plus proches
+- Notification simultanée (remplace cascade séquentielle)
+- Premier accepte gagne
 
 ## Licence
 

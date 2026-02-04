@@ -1,6 +1,6 @@
 # Suivi d'Avancement - SaaS Artisans Urgents
 
-> Dernière mise à jour : 2026-02-03
+> Dernière mise à jour : 2026-02-04
 
 ## Statut Global
 
@@ -9,14 +9,54 @@
 | 1 | Setup Projet & Fondations | ✅ Complete | 100% |
 | 2 | Inscription & Profil Artisan | ✅ Complete | 100% |
 | 3 | Soumission Demande Client | ✅ Complete | 100% |
-| 4 | Notification & Attribution Leads | ✅ Complete | 100% |
+| 4 | Notification & Attribution Leads | ⚠️ Bugs identifiés | 85% |
 | 5 | Dashboard Artisan | ✅ Complete | 100% |
 | 6 | Paiement & Crédits | ✅ Complete | 100% |
-| 7 | Suivi Client J+3 | ✅ Complete | 100% |
+| 7 | Suivi Client J+3 | ⚠️ Non déclenché | 70% |
 | 8 | Dashboard Admin | ✅ Complete | 100% |
 | 9 | Multi-Tenant & Verticales | ⏳ Backlog | 10% |
+| **10** | **Lead Scoring + Badge Réactif + Géolocalisation** | 🆕 Planifié | 0% |
 
-**Progress global:** 89% (8/9 Epics complets)
+**Progress global:** 85% (7/9 Epics complets, 2 avec bugs)
+
+---
+
+## 🔴 Bugs Critiques Identifiés (Audit 04/02)
+
+| Bug | Sévérité | Impact | Fichier |
+|-----|----------|--------|---------|
+| **Race condition accept_lead** | CRITIQUE | 2 artisans peuvent accepter le même lead | `RPC accept_lead()` |
+| **Workflow cascade #3 manquant** | CRITIQUE | n8n n'a que 2 artisans, pas 3 | `lead-created-cascade.json` |
+| **Auto-consommation inexistante** | HIGH | Leads restent en `accepted` indéfiniment | Aucun timer |
+| **Période de grâce inexistante** | HIGH | Crédit débité immédiatement, pas de remboursement | `accept_lead()` |
+| **Relance J+3 non déclenchée** | MEDIUM | Workflow existe mais aucun cron/trigger | `03-followup-j3-feedback.json` |
+| **Notifications failed jamais retry** | MEDIUM | Leads orphelins si n8n down | Pas de cron retry |
+
+---
+
+## 🆕 Epic 10 : Lead Scoring + Badge Réactif + Géolocalisation (Planifié)
+
+### Phase 1 : Géocodage (fondation)
+- [ ] Table `geocode_cache`
+- [ ] Helper `lib/geo/geocode.ts` (API BAN adresse.data.gouv.fr)
+- [ ] Intégration dans création lead
+
+### Phase 2 : Lead Scoring
+- [ ] Colonnes `lead_score`, `lead_quality`, `scoring_factors` sur leads
+- [ ] Table `lead_events` (audit trail)
+- [ ] Service `lib/services/scoring.ts`
+- [ ] Règles : +25 urgence, +15 photo, +10 adresse, -30 description courte
+
+### Phase 3 : Badge Artisan Réactif
+- [ ] Colonnes `is_reactive`, `reactive_score` sur profiles
+- [ ] Colonne `response_ms` sur lead_assignments
+- [ ] RPC `recompute_reactive_score()` (fenêtre 30 jours, min 20 offres)
+- [ ] Cron nightly recalcul global
+
+### Phase 4 : Attribution Multi-Artisans
+- [ ] RPC `select_artisans_for_lead(lead_id, limit=3)`
+- [ ] Envoi simultané à 3 artisans (remplace cascade séquentielle)
+- [ ] Nouveau workflow n8n parallèle
 
 ---
 
@@ -103,14 +143,15 @@
 
 | Date | Commit | Description |
 |------|--------|-------------|
+| 04/02 | `c18ba25` | fix(api): use responded_at instead of accepted_at |
+| 04/02 | `4f95b27` | feat(api): add /api/lead/accept-simple route for WhatsApp |
+| 04/02 | `cc54e6d` | fix(notification): flatten WhatsApp data structure for n8n |
+| 04/02 | `e2ed4db` | fix: use cascade_order column name (matches DB schema) |
+| 04/02 | `451b91c` | fix: use admin client for n8n API routes (bypass RLS) |
+| 04/02 | `3766cb2` | fix: add n8n API routes to public middleware |
+| 03/02 | `883bdb5` | test: add unit tests with Vitest (169 tests, 52% coverage) |
 | 03/02 | `94c0748` | docs: update sprint status and add audit results |
 | 03/02 | `bb34d17` | feat(credits): add purchase history and receipt generation |
-| 03/02 | `37659c4` | chore: cleanup legacy files and add prod audit scripts |
-| 03/02 | `3fd3270` | fix(security): audit sprint 2 - RLS, headers CSP, verification guards |
-| 03/02 | `68a9dbd` | docs: update project status with landing V4 redesign |
-| 03/02 | `4019757` | fix(landing): use plumbing-specific Unsplash images |
-| 03/02 | `f834c3b` | style(landing): dark premium redesign with animations |
-| 02/02 | `05b72a8` | fix(sirene): update API endpoint and auth header for new INSEE portal |
 
 ---
 
@@ -144,7 +185,7 @@
 | Supabase | ✅ Actif | Auth + DB + RLS (23 migrations) |
 | Vercel | ✅ Actif | Déploiement auto sur push master |
 | Telegram | ⏸️ Désactivé | Remplacé par WhatsApp |
-| WhatsApp Cloud | ⏳ En attente | Template soumis à Meta |
+| WhatsApp Cloud | ✅ Actif | Template validé par Meta |
 | n8n | ✅ Actif | 6 workflows configurés |
 | LemonSqueezy | ⚠️ À vérifier | Webhooks à tester en prod |
 | Firebase Storage | ✅ Actif | Upload photos clients |
@@ -187,7 +228,7 @@ Glow: blur-xl opacity-50
 ## Tests
 
 ### Couverture Actuelle
-- **Tests unitaires**: ❌ 0% (à créer)
+- **Tests unitaires**: ✅ 169 tests (52% coverage) - Vitest
 - **Tests E2E**: Playwright configuré (audit prod)
 - **Audit production**: ✅ Passé (100% routes OK)
 
@@ -204,17 +245,24 @@ Glow: blur-xl opacity-50
 
 ## Prochaines Étapes
 
-### P0 - Bloqueurs Production
-- [ ] Validation template WhatsApp Meta (en attente)
+### P0 - Bugs Critiques (URGENT)
+- [ ] Fix race condition `accept_lead()` (ajout FOR UPDATE lock)
+- [ ] Fix workflow n8n cascade #3 manquant
 - [ ] Test achat LemonSqueezy en production réel
-- [ ] Tests E2E flow critique (lead → notif → accept)
 
-### P1 - Améliorations
-- [ ] Tests unitaires (lib/services, lib/actions)
-- [ ] Lead scoring (urgence + photo + description)
-- [ ] Badge "Artisan Réactif" (taux réponse > 80%)
+### P1 - Epic 10 (Planifié)
+- [ ] Phase 1 : Géocodage API BAN + cache
+- [ ] Phase 2 : Lead scoring (urgence + photo + description)
+- [ ] Phase 3 : Badge "Artisan Réactif" (taux réponse > 80%, < 2min)
+- [ ] Phase 4 : Attribution multi-artisans (3 simultanés)
 
-### P2 - Growth (Post-MVP)
+### P2 - Stabilisation
+- [ ] Auto-consommation (status `completed` après X jours)
+- [ ] Période de grâce (annulation/remboursement 30min)
+- [ ] Cron retry notifications failed
+- [ ] Cron déclencher feedback J+3
+
+### P3 - Growth (Post-MVP)
 - [ ] Multi-verticales (électricien, serrurier, vitrier)
 - [ ] App mobile artisans (React Native)
 - [ ] Chatbot WhatsApp conversationnel
@@ -230,4 +278,4 @@ Glow: blur-xl opacity-50
 
 ---
 
-*Document mis à jour le 2026-02-03*
+*Document mis à jour le 2026-02-04*

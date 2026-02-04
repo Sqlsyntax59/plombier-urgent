@@ -288,24 +288,38 @@ classification:
 | CRM (Crisp/Intercom) | Support client/artisan | Growth |
 | Lead scoring AI | Priorisation intelligente | Vision |
 
-### Lead Scoring (Growth)
+### Lead Scoring (Phase 2 - Epic 10) ✅ SPEC FINALISÉE
 
-| Critère Client | Score |
-|----------------|-------|
-| Heure soir/weekend (urgence) | +20 pts |
-| Photo ajoutée | +10 pts |
-| Description > 30 mots | +15 pts |
-| Ville centre dense | +10 pts |
-| Récidiviste (même tel/email) | -50 pts |
+| Critère Client | Score | Implémentation |
+|----------------|-------|----------------|
+| Urgence haute (fuite active, inondation) | +25 pts | `problem_type` + réponses guidées |
+| Photo jointe | +15 pts | `photo_url IS NOT NULL` |
+| Adresse géocodée | +10 pts | `latitude IS NOT NULL` |
+| Description riche (> 100 chars) | +5 pts | `LENGTH(description) > 100` |
+| Description pauvre (< 20 chars) | -30 pts | `LENGTH(description) < 20` |
+| Base (plancher) | +30 pts | Toujours appliqué |
 
-### Alertes Intelligentes Artisan (Growth)
+**Classification :**
+- `low` : 0-39 pts
+- `medium` : 40-69 pts
+- `high` : 70-89 pts
+- `premium` : 90-100 pts
 
-| Alerte | Action |
-|--------|--------|
-| 3 leads ratés d'affilée | Désactivation temporaire |
-| 100% taux réponse | Badge "Réactif" + bonus visibilité |
-| Lead non accepté > 4 min | Envoi exceptionnel à 4e artisan |
-| Artisan inactif 7 jours | Notification "Vous nous manquez" |
+### Alertes Intelligentes Artisan (Phase 2 - Epic 10) ✅ SPEC FINALISÉE
+
+| Alerte | Action | Statut |
+|--------|--------|--------|
+| 3 leads ratés d'affilée | Désactivation temporaire (suspension) | ✅ IMPLÉMENTÉ |
+| Taux réponse ≥ 80% + réponse < 2min ≥ 80% | Badge "Réactif" | 🆕 PLANIFIÉ |
+| Lead non accepté > 5 min (3 artisans) | Sélection nouvelle vague de 3 artisans | 🆕 PLANIFIÉ |
+| Artisan inactif 7 jours | Notification "Vous nous manquez" | ⏳ BACKLOG |
+
+**Badge Artisan Réactif (FR57-FR61) :**
+- Fenêtre glissante : 30 jours
+- Minimum offres : 20
+- Seuil taux réponse : 80%
+- Seuil réponse rapide (< 2min) : 80%
+- Recalcul : Cron nightly
 
 ### Automatisation IA (Vision)
 
@@ -368,11 +382,52 @@ classification:
 
 ### Post-MVP Features
 
-**Phase 2 - Growth (Mois 2-3) :**
+**Phase 2 - Growth (Mois 2-3) : Epic 10 - Lead Scoring + Badge + Géolocalisation**
 
-- Lead scoring (urgence, photo, description)
-- Alertes intelligentes artisans (3 ratés = pause)
-- Badge "Artisan Réactif"
+#### 2.1 Géocodage (Fondation)
+- **FR50:** Système convertit le code postal client en coordonnées lat/lng via API BAN (adresse.data.gouv.fr)
+- **FR51:** Système cache les résultats de géocodage (table `geocode_cache`, TTL 30 jours)
+- **FR52:** Système utilise les coordonnées pour calculer la distance artisan-client
+
+#### 2.2 Lead Scoring
+- **FR53:** Système calcule un score 0-100 pour chaque lead basé sur :
+  - +25 pts si urgence haute (fuite active, inondation)
+  - +15 pts si photo jointe
+  - +10 pts si adresse géocodée avec succès
+  - +5 pts si description > 100 caractères
+  - -30 pts si description < 20 caractères
+  - +30 pts base (plancher)
+- **FR54:** Système classe les leads en qualité : low (0-39), medium (40-69), high (70-89), premium (90-100)
+- **FR55:** Système enregistre les facteurs de scoring dans `scoring_factors` (JSONB)
+- **FR56:** Système trace les événements lead dans table `lead_events` (audit trail)
+
+#### 2.3 Badge Artisan Réactif
+- **FR57:** Système calcule un score de réactivité 0-100 pour chaque artisan sur fenêtre glissante 30 jours
+- **FR58:** Artisan obtient le badge "Réactif" si :
+  - Minimum 20 offres reçues sur 30 jours
+  - Taux de réponse ≥ 80%
+  - Taux de réponses rapides (< 2 min) ≥ 80%
+- **FR59:** Score réactivité = 100 × (responded/offers) × (fast/responded)
+- **FR60:** Système recalcule les scores nightly via cron
+- **FR61:** Badge visible sur dashboard artisan (pas exposé au client pour éviter court-circuit)
+
+#### 2.4 Attribution Multi-Artisans (Remplace Cascade)
+- **FR62:** Système sélectionne les 3 artisans les plus proches avec coordonnées valides
+- **FR63:** Tri par : distance ASC, puis reactive_score DESC, puis crédits DESC
+- **FR64:** Système envoie notification simultanée aux 3 artisans (pas de cascade séquentielle)
+- **FR65:** Premier artisan qui accepte gagne le lead (lock transactionnel)
+- **FR66:** Autres artisans reçoivent "Lead déjà attribué" s'ils cliquent après
+- **FR67:** Si aucun artisan n'accepte après 5 min, système sélectionne 3 nouveaux artisans
+
+#### Contraintes Phase 2
+- Client ne voit jamais la fiche artisan (anti-court-circuit)
+- Email client contient uniquement prénom + téléphone artisan
+- Données artisan (email, entreprise, slug) non exposées au client
+
+---
+
+**Phase 2 (suite) - Améliorations UX :**
+- Alertes intelligentes artisans (3 ratés = pause) ✅ IMPLÉMENTÉ
 - Notes Google affichées (API scraping)
 - Photo obligatoire
 - Dashboard stats enrichi
