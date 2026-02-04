@@ -23,43 +23,57 @@ export interface LeadData {
 
 /**
  * Déclenche le workflow n8n pour traiter un nouveau lead.
- * Envoie toutes les données nécessaires pour la notification Telegram.
+ * Fallback: appelle directement /api/leads/assign si webhook n8n échoue.
  */
 export async function triggerLeadWorkflow(data: LeadData): Promise<TriggerResult> {
-  if (!N8N_WEBHOOK_URL) {
-    console.warn("N8N_WEBHOOK_URL non configuré - workflow non déclenché");
-    return { success: true }; // Silently succeed in dev
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://plombier-urgent.vercel.app";
+
+  // Essai 1: Webhook n8n
+  if (N8N_WEBHOOK_URL) {
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: data.leadId, appUrl }),
+      });
+
+      if (response.ok) {
+        return { success: true };
+      }
+      console.warn("n8n webhook failed, using fallback:", response.status);
+    } catch (error) {
+      console.warn("n8n webhook error, using fallback:", error);
+    }
   }
 
+  // Fallback: Appel direct à l'API d'attribution
   try {
-    const response = await fetch(N8N_WEBHOOK_URL, {
+    const assignResponse = await fetch(`${appUrl}/api/leads/assign`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        leadId: data.leadId,
-        phone: data.clientPhone,
-        address: data.clientCity || "Non précisée",
-        urgencyType: data.problemType,
-        description: data.description,
-        // Données enrichies pour la synthèse terrain
-        fieldSummary: data.fieldSummary || data.description,
-        isUrgent: data.isUrgent || false,
-        urgencyReason: data.urgencyReason || null,
-        timestamp: new Date().toISOString(),
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ leadId: data.leadId, mode: "first" }),
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Erreur n8n webhook:", response.status, text);
-      return { success: false, error: `n8n error: ${response.status}` };
+    if (!assignResponse.ok) {
+      const text = await assignResponse.text();
+      console.error("Erreur assign fallback:", assignResponse.status, text);
+      return { success: false, error: `assign error: ${assignResponse.status}` };
+    }
+
+    const assignResult = await assignResponse.json();
+
+    // Si artisan trouvé, envoyer WhatsApp
+    if (assignResult.success && assignResult.assignmentId) {
+      await fetch(`${appUrl}/api/notifications/send-whatsapp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignmentId: assignResult.assignmentId }),
+      }).catch(err => console.error("WhatsApp notification error:", err));
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Erreur appel n8n:", error);
+    console.error("Erreur fallback:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Erreur inconnue",
