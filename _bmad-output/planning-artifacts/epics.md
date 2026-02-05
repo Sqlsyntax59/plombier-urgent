@@ -2,8 +2,9 @@
 stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics', 'step-03-create-stories', 'step-04-final-validation']
 status: 'complete'
 completedAt: '2026-01-27'
-totalEpics: 9
-totalStories: 51
+totalEpics: 10
+totalStories: 55
+updatedAt: '2026-02-06'
 frCoverage: '100%'
 inputDocuments: ['prd.md', 'architecture.md', 'ux_design.md']
 workflowType: 'epics-and-stories'
@@ -258,6 +259,24 @@ This document provides the complete epic and story breakdown for SaaS Artisans U
 | FR47 | Epic 9 | Artisan appartient à verticale |
 | FR48 | Epic 9 | Leads isolés par verticale |
 | FR49 | Epic 9 | Grille tarifaire par verticale |
+| FR50 | Epic 10 | Géocodage code postal → lat/lng (API BAN) |
+| FR51 | Epic 10 | Cache géocodage (TTL 30j) |
+| FR52 | Epic 10 | Calcul distance artisan-client |
+| FR53 | Epic 10 | Score lead 0-100 (critères multiples) |
+| FR54 | Epic 10 | Classification qualité lead (low/medium/high/premium) |
+| FR55 | Epic 10 | Scoring factors en JSONB |
+| FR56 | Epic 10 | Audit trail lead_events |
+| FR57 | Epic 10 | Score réactivité artisan 0-100 |
+| FR58 | Epic 10 | Badge "Réactif" (conditions seuils) |
+| FR59 | Epic 10 | Formule score réactivité |
+| FR60 | Epic 10 | Recalcul nightly cron |
+| FR61 | Epic 10 | Badge visible dashboard artisan |
+| FR62 | Epic 10 | Sélection 3 artisans proches |
+| FR63 | Epic 10 | Tri distance/reactive_score/crédits |
+| FR64 | Epic 10 | Notification simultanée 3 artisans |
+| FR65 | Epic 10 | Premier accepte gagne (lock) |
+| FR66 | Epic 10 | "Lead déjà attribué" autres |
+| FR67 | Epic 10 | Nouvelle vague après 5min |
 
 ## Epic List
 
@@ -1204,3 +1223,100 @@ Le système gère plusieurs verticales métiers.
 **Then** chaque type de panne a une fourchette min/max par verticale
 **And** les prix s'affichent automatiquement dans le formulaire client
 **And** les prix des crédits peuvent aussi varier par verticale (futur)
+
+---
+
+## Epic 10: Lead Scoring + Badge Réactif + Géolocalisation (Phase 2)
+
+Système intelligent de scoring des leads, badge de réactivité artisan, géocodage des adresses, et attribution multi-artisans simultanée remplaçant la cascade séquentielle.
+
+**FRs couverts:** FR50, FR51, FR52, FR53, FR54, FR55, FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR63, FR64, FR65, FR66, FR67
+
+---
+
+### Story 10.1: Géocodage API BAN
+
+**As a** système,
+**I want** convertir les codes postaux clients en coordonnées géographiques,
+**So that** je puisse calculer les distances artisan-client.
+
+**Acceptance Criteria:**
+
+**Given** un lead avec un code postal ou une adresse
+**When** le lead est créé
+**Then** le système appelle l'API BAN (adresse.data.gouv.fr) pour obtenir lat/lng
+**And** les résultats sont stockés dans `leads.latitude` et `leads.longitude`
+**And** un cache `geocode_cache` avec TTL 30 jours évite les appels redondants
+**And** la distance artisan-client est calculable via `calculate_distance()`
+**And** si l'API BAN est indisponible, le lead est créé sans coordonnées
+
+**FRs:** FR50, FR51, FR52
+
+---
+
+### Story 10.2: Lead Scoring
+
+**As a** système,
+**I want** calculer un score de qualité pour chaque lead,
+**So that** les artisans reçoivent les leads les plus qualifiés en priorité.
+
+**Acceptance Criteria:**
+
+**Given** un nouveau lead soumis
+**When** le lead est créé
+**Then** le système calcule un score 0-100 basé sur :
+- +25 pts si urgence haute (fuite active, inondation)
+- +15 pts si photo jointe
+- +10 pts si adresse géocodée avec succès
+- +5 pts si description > 100 caractères
+- -30 pts si description < 20 caractères
+- +30 pts base (plancher)
+**And** le lead est classé en qualité : low (0-39), medium (40-69), high (70-89), premium (90-100)
+**And** les facteurs de scoring sont enregistrés dans `scoring_factors` (JSONB)
+**And** les événements sont tracés dans la table `lead_events`
+
+**FRs:** FR53, FR54, FR55, FR56
+
+---
+
+### Story 10.3: Badge Artisan Réactif
+
+**As a** artisan,
+**I want** obtenir un badge "Réactif" si je réponds rapidement aux leads,
+**So that** je sois priorisé dans l'attribution des leads.
+
+**Acceptance Criteria:**
+
+**Given** un artisan avec un historique d'au moins 20 offres sur 30 jours
+**When** le système recalcule les scores (cron nightly)
+**Then** le score réactivité est calculé : 100 × (responded/offers) × (fast/responded)
+**And** le badge "Réactif" est attribué si :
+- Taux de réponse ≥ 80%
+- Taux de réponses rapides (< 2 min) ≥ 80%
+**And** les colonnes `is_reactive` et `reactive_score` sont mises à jour sur `profiles`
+**And** le badge est visible sur le dashboard artisan (pas exposé au client)
+**And** le `response_ms` est tracé sur chaque `lead_assignment`
+
+**FRs:** FR57, FR58, FR59, FR60, FR61
+
+---
+
+### Story 10.4: Attribution Multi-Artisans Simultanée
+
+**As a** système,
+**I want** notifier 3 artisans simultanément au lieu d'une cascade séquentielle,
+**So that** le temps de réponse soit réduit et le lead soit attribué plus vite.
+
+**Acceptance Criteria:**
+
+**Given** un nouveau lead avec coordonnées géographiques
+**When** le système cherche des artisans
+**Then** il sélectionne les 3 artisans les plus proches avec coordonnées valides
+**And** le tri est : distance ASC, puis reactive_score DESC, puis crédits DESC
+**And** les 3 artisans reçoivent la notification simultanément (pas de cascade)
+**And** le premier artisan qui accepte gagne le lead (lock transactionnel `FOR UPDATE`)
+**And** les autres artisans reçoivent "Lead déjà attribué" s'ils cliquent après
+**And** si aucun artisan n'accepte après 5 min, le système sélectionne 3 nouveaux artisans
+**And** le workflow n8n est adapté pour l'envoi parallèle
+
+**FRs:** FR62, FR63, FR64, FR65, FR66, FR67

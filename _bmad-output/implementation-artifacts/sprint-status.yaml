@@ -34,6 +34,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-01-28
+updated: 2026-02-06
 project: SaaS Artisans Urgents
 project_key: artisans-urgents
 tracking_system: file-system
@@ -127,3 +128,35 @@ development_status:
   9-3-isolation-leads-verticale: backlog
   9-4-grille-tarifaire-verticale: backlog
   epic-9-retrospective: optional
+
+  # Epic 10: Lead Scoring + Badge Réactif + Géolocalisation (Phase 2)
+  epic-10: backlog
+  10-1-geocodage-api-ban: backlog
+  10-2-lead-scoring: backlog
+  10-3-badge-artisan-reactif: backlog
+  10-4-attribution-multi-artisans-simultanee: backlog
+  epic-10-retrospective: optional
+
+# =============================================
+# FEATURES HORS-EPIC (ajoutées post-Bmad freeze)
+# =============================================
+post_bmad_features:
+  siret-verification-assurance: done        # FR33b-33m
+  guided-intake-questions: done             # FR6.1-6.6
+  landing-v4-dark-premium-redesign: done
+  whatsapp-cloud-api-workflow: done
+  unit-tests-vitest-169-tests: done         # 52% coverage
+  accept-simple-whatsapp-route: done
+  receipt-generation: done
+  admin-retry-notifications: done
+
+# =============================================
+# BUGS CRITIQUES CONNUS (Audit 2026-02-04)
+# =============================================
+known_bugs:
+  race-condition-accept-lead: fixed         # P0 - toutes les routes utilisent RPC accept_lead (FOR UPDATE)
+  cascade-workflow-3-artisans: fixed        # P0 - corrigé commit 59516b6
+  auto-completion-leads: open               # P1 - leads restent en accepted indéfiniment
+  grace-period-credit: open                 # P1 - pas de fenêtre annulation 30min
+  relance-j3-cron: open                     # P2 - pas de cron trigger
+  notifications-retry: open                 # P2 - pas de retry automatique

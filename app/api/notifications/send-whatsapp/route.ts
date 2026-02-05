@@ -52,10 +52,17 @@ export async function POST(request: NextRequest) {
 
     const msg = prepareResult.message;
 
-    // 2. Construire le payload WhatsApp Cloud API
+    // 2. Formater le numéro (doit inclure indicatif pays sans +)
+    let phoneNumber = msg.to.replace(/[^0-9]/g, "");
+    // Si commence par 0, remplacer par 33 (France)
+    if (phoneNumber.startsWith("0")) {
+      phoneNumber = "33" + phoneNumber.substring(1);
+    }
+
+    // 3. Construire le payload WhatsApp Cloud API
     const whatsappPayload = {
       messaging_product: "whatsapp",
-      to: msg.to.replace(/[^0-9]/g, ""), // Garder uniquement les chiffres
+      to: phoneNumber,
       type: "template",
       template: {
         name: msg.templateName,
@@ -70,11 +77,11 @@ export async function POST(request: NextRequest) {
           {
             type: "button",
             sub_type: "url",
-            index: "0",
+            index: 0,
             parameters: [
               {
                 type: "text",
-                text: assignmentId, // Paramètre dynamique pour le bouton URL
+                text: assignmentId,
               },
             ],
           },
@@ -82,7 +89,9 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // 3. Envoyer via WhatsApp Cloud API
+    console.log("WhatsApp payload:", JSON.stringify(whatsappPayload, null, 2));
+
+    // 4. Envoyer via WhatsApp Cloud API
     const whatsappResponse = await fetch(
       `https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_ID}/messages`,
       {
