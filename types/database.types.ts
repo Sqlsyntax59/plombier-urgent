@@ -70,6 +70,8 @@ export type Database = {
           insurance_policy_number: string | null
           insurance_valid_until: string | null
           insurance_attestation_path: string | null
+          is_reactive: boolean
+          reactive_score: number
           created_at: string
           updated_at: string
         }
@@ -102,6 +104,8 @@ export type Database = {
           insurance_policy_number?: string | null
           insurance_valid_until?: string | null
           insurance_attestation_path?: string | null
+          is_reactive?: boolean
+          reactive_score?: number
           created_at?: string
           updated_at?: string
         }
@@ -134,6 +138,8 @@ export type Database = {
           insurance_policy_number?: string | null
           insurance_valid_until?: string | null
           insurance_attestation_path?: string | null
+          is_reactive?: boolean
+          reactive_score?: number
           created_at?: string
           updated_at?: string
         }
@@ -163,6 +169,9 @@ export type Database = {
           status: LeadStatus
           cascade_count: number
           satisfaction: string | null
+          lead_score: number
+          lead_quality: LeadQuality | null
+          scoring_factors: Json
           created_at: string
           updated_at: string
         }
@@ -181,6 +190,9 @@ export type Database = {
           status?: LeadStatus
           cascade_count?: number
           satisfaction?: string | null
+          lead_score?: number
+          lead_quality?: LeadQuality | null
+          scoring_factors?: Json
           created_at?: string
           updated_at?: string
         }
@@ -199,6 +211,9 @@ export type Database = {
           status?: LeadStatus
           cascade_count?: number
           satisfaction?: string | null
+          lead_score?: number
+          lead_quality?: LeadQuality | null
+          scoring_factors?: Json
           created_at?: string
           updated_at?: string
         }
@@ -225,6 +240,8 @@ export type Database = {
           notified_at: string
           responded_at: string | null
           expires_at: string | null
+          response_ms: number | null
+          wave_number: number
         }
         Insert: {
           id?: string
@@ -238,6 +255,8 @@ export type Database = {
           notified_at?: string
           responded_at?: string | null
           expires_at?: string | null
+          response_ms?: number | null
+          wave_number?: number
         }
         Update: {
           id?: string
@@ -251,6 +270,8 @@ export type Database = {
           notified_at?: string
           responded_at?: string | null
           expires_at?: string | null
+          response_ms?: number | null
+          wave_number?: number
         }
         Relationships: [
           {
@@ -269,6 +290,68 @@ export type Database = {
           }
         ]
       }
+      geocode_cache: {
+        Row: {
+          id: string
+          postal_code: string
+          city_name: string | null
+          latitude: number
+          longitude: number
+          created_at: string
+          expires_at: string
+        }
+        Insert: {
+          id?: string
+          postal_code: string
+          city_name?: string | null
+          latitude: number
+          longitude: number
+          created_at?: string
+          expires_at?: string
+        }
+        Update: {
+          id?: string
+          postal_code?: string
+          city_name?: string | null
+          latitude?: number
+          longitude?: number
+          created_at?: string
+          expires_at?: string
+        }
+        Relationships: []
+      }
+      lead_events: {
+        Row: {
+          id: string
+          lead_id: string
+          event_type: string
+          payload: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          lead_id: string
+          event_type: string
+          payload?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          lead_id?: string
+          event_type?: string
+          payload?: Json
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_events_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -279,6 +362,7 @@ export type Database = {
     Enums: {
       problem_type: ProblemType
       lead_status: LeadStatus
+      lead_quality: LeadQuality
       assignment_status: AssignmentStatus
       notification_channel: NotificationChannel
     }
@@ -290,6 +374,7 @@ export type ProblemType = 'fuite' | 'wc_bouche' | 'ballon_eau_chaude' | 'canalis
 export type LeadStatus = 'pending' | 'assigned' | 'accepted' | 'completed' | 'cancelled' | 'unassigned'
 export type AssignmentStatus = 'pending' | 'accepted' | 'expired' | 'rejected'
 export type NotificationChannel = 'whatsapp' | 'sms' | 'email'
+export type LeadQuality = 'low' | 'medium' | 'high' | 'premium'
 export type VerificationStatus = 'registered' | 'pending_verification' | 'verified' | 'suspended'
 
 // Helper types
@@ -303,6 +388,8 @@ export type Profile = Tables<'profiles'>
 export type ProfileRole = Profile['role']
 export type Lead = Tables<'leads'>
 export type LeadAssignment = Tables<'lead_assignments'>
+export type GeocodeCache = Tables<'geocode_cache'>
+export type LeadEvent = Tables<'lead_events'>
 
 // Lead avec assignment pour dashboard artisan
 export type LeadWithAssignment = Lead & {

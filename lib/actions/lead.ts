@@ -9,6 +9,8 @@ import {
   generateFieldSummary,
 } from "@/lib/validations/lead";
 import { triggerLeadWorkflow } from "@/lib/n8n/trigger";
+import { geocodePostalCode, recordLeadEvent } from "@/lib/services/geocoding";
+import { calculateLeadScore } from "@/lib/services/scoring";
 
 export type LeadResult = {
   success: boolean;
@@ -81,6 +83,57 @@ export async function createLead(
       success: false,
       error: "Erreur lors de la soumission. Veuillez reessayer.",
     };
+  }
+
+  // Enrichissement asynchrone (ne bloque pas la création du lead)
+  let isGeocoded = false;
+  try {
+    // Géocodage via API BAN
+    if (clientCity) {
+      const geocodeResult = await geocodePostalCode(clientCity);
+      if (geocodeResult.success && geocodeResult.latitude && geocodeResult.longitude) {
+        isGeocoded = true;
+        await supabase
+          .from("leads")
+          .update({
+            latitude: geocodeResult.latitude,
+            longitude: geocodeResult.longitude,
+          })
+          .eq("id", lead.id);
+        await recordLeadEvent(lead.id, "lead_geocoded", {
+          source: geocodeResult.source,
+          latitude: geocodeResult.latitude,
+          longitude: geocodeResult.longitude,
+          cityName: geocodeResult.cityName,
+        });
+      }
+    }
+
+    // Scoring du lead
+    const scoreResult = calculateLeadScore({
+      problemType,
+      description,
+      photoUrl: photoUrl || null,
+      isUrgent: urgency.isUrgent,
+      isGeocoded,
+    });
+
+    await supabase
+      .from("leads")
+      .update({
+        lead_score: scoreResult.score,
+        lead_quality: scoreResult.quality,
+        scoring_factors: scoreResult.factors,
+      })
+      .eq("id", lead.id);
+
+    await recordLeadEvent(lead.id, "lead_scored", {
+      score: scoreResult.score,
+      quality: scoreResult.quality,
+      factors: scoreResult.factors,
+    });
+  } catch (enrichErr) {
+    console.error("Erreur enrichissement lead:", lead.id, enrichErr);
   }
 
   // Déclencher le workflow n8n pour notification artisan

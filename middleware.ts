@@ -57,6 +57,7 @@ export async function middleware(request: NextRequest) {
     "/api/notifications/prepare",
     "/api/notifications/send-whatsapp",
     "/api/webhooks",
+    "/api/cron",
   ];
 
   const isPublicRoute = publicRoutes.some(

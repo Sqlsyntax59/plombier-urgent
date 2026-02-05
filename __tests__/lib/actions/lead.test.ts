@@ -10,6 +10,19 @@ vi.mock('@/lib/n8n/trigger', () => ({
   triggerLeadWorkflow: vi.fn(),
 }))
 
+vi.mock('@/lib/services/geocoding', () => ({
+  geocodePostalCode: vi.fn().mockResolvedValue({ success: false, source: 'none' }),
+  recordLeadEvent: vi.fn().mockResolvedValue(undefined),
+}))
+
+vi.mock('@/lib/services/scoring', () => ({
+  calculateLeadScore: vi.fn().mockReturnValue({
+    score: 30,
+    quality: 'low',
+    factors: { base: 30, urgency: 0, photo: 0, geocoded: 0, description: 0 },
+  }),
+}))
+
 import { createClient } from '@/lib/supabase/server'
 import { triggerLeadWorkflow } from '@/lib/n8n/trigger'
 

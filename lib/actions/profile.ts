@@ -110,7 +110,7 @@ export async function getPublicProfile(
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
-      "first_name, city, trade, radius_km, google_business_url, average_rating, total_reviews"
+      "first_name, city, trade, radius_km, google_business_url, average_rating, total_reviews, is_reactive, reactive_score"
     )
     .eq("slug", slug)
     .eq("role", "artisan")
@@ -120,12 +120,10 @@ export async function getPublicProfile(
     return null;
   }
 
-  // Pour l'instant, placeholder pour les metriques de reactivite
-  // Sera calcule depuis la table leads dans une story future
   return {
     ...profile,
-    is_reactive: true, // Placeholder
-    response_time_avg: null, // Sera calcule depuis leads
+    is_reactive: profile.is_reactive ?? false,
+    response_time_avg: null,
     average_rating: profile.average_rating || null,
     total_reviews: profile.total_reviews || 0,
   };

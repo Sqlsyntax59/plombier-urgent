@@ -25,6 +25,7 @@ function verifyN8nSecret(request: NextRequest): boolean {
 
 type CallbackAction =
   | "find_artisan"
+  | "find_artisans_multi"
   | "create_assignment"
   | "expire_assignment"
   | "get_lead_details"
@@ -72,6 +73,87 @@ export async function POST(request: NextRequest) {
 
         if (error) throw error;
         result = { artisan: data?.[0] || null };
+        break;
+      }
+
+      case "find_artisans_multi": {
+        const { lead_id, vertical_id, wave, limit } = params as {
+          lead_id: string;
+          vertical_id?: string;
+          wave?: number;
+          limit?: number;
+        };
+
+        const waveNumber = wave || 1;
+        const artisanLimit = limit || 3;
+
+        // Trouver N artisans via RPC
+        const { data: artisansData, error: artisansError } = await supabaseAdmin.rpc(
+          "find_available_artisans",
+          {
+            p_lead_id: lead_id,
+            p_vertical_id: vertical_id || null,
+            p_limit: artisanLimit,
+          }
+        );
+
+        if (artisansError) throw artisansError;
+
+        if (!artisansData || artisansData.length === 0) {
+          result = { artisans: [], wave: waveNumber, no_artisan_available: true };
+          break;
+        }
+
+        // Créer les assignments et générer les URLs
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://plombier-urgent.vercel.app";
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+        const artisanResults = [];
+
+        for (let i = 0; i < artisansData.length; i++) {
+          const a = artisansData[i];
+          const cascadeOrder = (waveNumber - 1) * artisanLimit + (i + 1);
+
+          const { data: assignData, error: assignErr } = await supabaseAdmin
+            .from("lead_assignments")
+            .insert({
+              lead_id,
+              artisan_id: a.artisan_id,
+              cascade_order: cascadeOrder,
+              wave_number: waveNumber,
+              status: "pending",
+              notified_at: new Date().toISOString(),
+              expires_at: expiresAt,
+            })
+            .select("id")
+            .single();
+
+          if (assignErr) {
+            console.error("Erreur assignment multi:", assignErr);
+            continue;
+          }
+
+          const acceptUrl = await generateAcceptUrl(assignData.id, a.artisan_id, baseUrl);
+
+          artisanResults.push({
+            artisan_id: a.artisan_id,
+            artisan_name: a.artisan_name,
+            whatsapp_phone: a.whatsapp_phone,
+            phone: a.phone,
+            distance_km: a.distance_km,
+            assignment_id: assignData.id,
+            accept_url: acceptUrl,
+          });
+        }
+
+        // Mettre à jour le lead
+        if (artisanResults.length > 0) {
+          await supabaseAdmin
+            .from("leads")
+            .update({ status: "assigned", cascade_count: waveNumber })
+            .eq("id", lead_id);
+        }
+
+        result = { artisans: artisanResults, wave: waveNumber };
         break;
       }
 

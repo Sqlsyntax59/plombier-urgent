@@ -90,6 +90,8 @@ export async function getArtisanLeads(statusFilter?: AssignmentStatus): Promise<
         notified_at: assignment.notified_at,
         expires_at: assignment.expires_at,
         responded_at: assignment.responded_at,
+        response_ms: assignment.response_ms ?? null,
+        wave_number: assignment.wave_number ?? 1,
       },
     }));
 
@@ -153,6 +155,8 @@ export async function getLeadDetail(assignmentId: string): Promise<{
         notified_at: assignment.notified_at,
         expires_at: assignment.expires_at,
         responded_at: assignment.responded_at,
+        response_ms: assignment.response_ms ?? null,
+        wave_number: assignment.wave_number ?? 1,
       },
     },
     error: null,
