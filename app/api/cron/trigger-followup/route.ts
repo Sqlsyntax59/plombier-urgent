@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     const { data: eligibleLeads, error: fetchError } = await supabaseAdmin
       .from("leads")
       .select(`
-        id, client_phone, client_email, client_name, problem_type,
+        id, client_phone, client_email, problem_type,
         assigned_artisan_id,
         profiles!leads_assigned_artisan_id_fkey(first_name, last_name)
       `)
