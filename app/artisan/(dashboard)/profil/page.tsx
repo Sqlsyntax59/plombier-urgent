@@ -15,6 +15,12 @@ import {
   Target,
   CheckCircle2,
   Lightbulb,
+  Shield,
+  Building2,
+  FileText,
+  Calendar,
+  AlertCircle,
+  Clock,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -51,6 +57,15 @@ export default function ProfilPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [slug, setSlug] = useState<string | null>(null);
+  const [proInfo, setProInfo] = useState<{
+    siret: string | null;
+    siret_verified: boolean;
+    company_name: string | null;
+    verification_status: string | null;
+    insurance_provider: string | null;
+    insurance_policy_number: string | null;
+    insurance_valid_until: string | null;
+  } | null>(null);
 
   const form = useForm<ProfileUpdateInput>({
     resolver: zodResolver(profileUpdateSchema),
@@ -79,6 +94,15 @@ export default function ProfilPage() {
           googleBusinessUrl: profile.google_business_url || "",
         });
         setSlug(profile.slug);
+        setProInfo({
+          siret: profile.siret || null,
+          siret_verified: profile.siret_verified || false,
+          company_name: profile.company_name || null,
+          verification_status: profile.verification_status || null,
+          insurance_provider: profile.insurance_provider || null,
+          insurance_policy_number: profile.insurance_policy_number || null,
+          insurance_valid_until: profile.insurance_valid_until || null,
+        });
       }
       setIsFetching(false);
     }
@@ -351,6 +375,108 @@ export default function ProfilPage() {
             </Form>
           </CardContent>
         </Card>
+
+        {/* Informations professionnelles (lecture seule) */}
+        {proInfo && (proInfo.siret || proInfo.insurance_provider || proInfo.verification_status) && (
+          <Card className="lg:col-span-2 bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-lg shadow-slate-900/[0.08]">
+            <CardContent className="p-6 space-y-6">
+              {/* Statut de vérification */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                    <Shield className="h-4 w-4 text-indigo-700" />
+                  </div>
+                  <h3 className="font-semibold text-slate-800">Statut du compte</h3>
+                  {proInfo.verification_status === "verified" && (
+                    <span className="ml-auto inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+                      <CheckCircle2 className="h-3 w-3" /> Vérifié
+                    </span>
+                  )}
+                  {proInfo.verification_status === "pending_verification" && (
+                    <span className="ml-auto inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">
+                      <Clock className="h-3 w-3" /> En cours de vérification
+                    </span>
+                  )}
+                  {proInfo.verification_status === "registered" && (
+                    <span className="ml-auto inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                      <AlertCircle className="h-3 w-3" /> Non vérifié
+                    </span>
+                  )}
+                  {proInfo.verification_status === "suspended" && (
+                    <span className="ml-auto inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+                      <AlertCircle className="h-3 w-3" /> Suspendu
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* SIRET / Entreprise */}
+              {(proInfo.siret || proInfo.company_name) && (
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                      <Building2 className="h-4 w-4 text-slate-700" />
+                    </div>
+                    <h3 className="font-semibold text-slate-800">Entreprise</h3>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {proInfo.siret && (
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">SIRET</p>
+                        <p className="text-sm text-slate-700 font-mono flex items-center gap-2">
+                          {proInfo.siret}
+                          {proInfo.siret_verified && (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {proInfo.company_name && (
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Raison sociale</p>
+                        <p className="text-sm text-slate-700">{proInfo.company_name}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Assurance */}
+              {proInfo.insurance_provider && (
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-cyan-700" />
+                    </div>
+                    <h3 className="font-semibold text-slate-800">Assurance RC Pro</h3>
+                  </div>
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-xs text-slate-400 mb-1">Assureur</p>
+                      <p className="text-sm text-slate-700">{proInfo.insurance_provider}</p>
+                    </div>
+                    {proInfo.insurance_policy_number && (
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">N° de police</p>
+                        <p className="text-sm text-slate-700 font-mono">{proInfo.insurance_policy_number}</p>
+                      </div>
+                    )}
+                    {proInfo.insurance_valid_until && (
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1 flex items-center gap-1">
+                          <Calendar className="h-3 w-3" /> Valide jusqu&apos;au
+                        </p>
+                        <p className="text-sm text-slate-700">
+                          {new Date(proInfo.insurance_valid_until).toLocaleDateString("fr-FR")}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Sidebar */}
         <div className="space-y-4">
