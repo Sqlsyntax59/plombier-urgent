@@ -33,6 +33,9 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
 
   const supabase = await createClient();
 
+  // 0. Deconnecter toute session existante avant inscription
+  await supabase.auth.signOut();
+
   // 1. Creer le compte Supabase Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
