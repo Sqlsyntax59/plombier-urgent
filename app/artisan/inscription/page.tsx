@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -54,6 +54,27 @@ const BENEFITS = [
   { icon: Shield, text: "Paiement sécurisé" },
 ];
 
+const PASSWORD_LEVELS = [
+  { label: "Faible", color: "bg-red-500", textColor: "text-red-600" },
+  { label: "Moyen", color: "bg-orange-500", textColor: "text-orange-600" },
+  { label: "Bon", color: "bg-yellow-500", textColor: "text-yellow-600" },
+  { label: "Fort", color: "bg-green-500", textColor: "text-green-600" },
+];
+
+function getPasswordStrength(password: string): number {
+  if (!password) return -1;
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
+  if (score <= 1) return 0;
+  if (score <= 2) return 1;
+  if (score <= 3) return 2;
+  return 3;
+}
+
 export default function InscriptionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +109,8 @@ export default function InscriptionPage() {
 
   const selectedTrade = form.watch("trade");
   const availableSpecs = selectedTrade ? SPECIALIZATIONS[selectedTrade] : [];
+  const watchedPassword = form.watch("password");
+  const passwordStrength = useMemo(() => getPasswordStrength(watchedPassword), [watchedPassword]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 via-purple-50/30 to-white flex flex-col">
@@ -156,6 +179,7 @@ export default function InscriptionPage() {
                             <FormControl>
                               <Input
                                 placeholder="Jean"
+                                autoComplete="given-name"
                                 {...field}
                                 className="h-11 rounded-xl border-slate-200 focus:border-blue-500"
                               />
@@ -173,6 +197,7 @@ export default function InscriptionPage() {
                             <FormControl>
                               <Input
                                 placeholder="Dupont"
+                                autoComplete="family-name"
                                 {...field}
                                 className="h-11 rounded-xl border-slate-200 focus:border-blue-500"
                               />
@@ -203,6 +228,7 @@ export default function InscriptionPage() {
                               <Input
                                 type="email"
                                 placeholder="jean.dupont@email.com"
+                                autoComplete="email"
                                 {...field}
                                 className="h-11 rounded-xl border-slate-200 focus:border-blue-500"
                               />
@@ -224,6 +250,7 @@ export default function InscriptionPage() {
                               <Input
                                 type="tel"
                                 placeholder="06 12 34 56 78"
+                                autoComplete="tel"
                                 {...field}
                                 className="h-11 rounded-xl border-slate-200 focus:border-blue-500"
                               />
@@ -253,10 +280,30 @@ export default function InscriptionPage() {
                             <Input
                               type="password"
                               placeholder="8 caractères minimum"
+                              autoComplete="new-password"
                               {...field}
                               className="h-11 rounded-xl border-slate-200 focus:border-blue-500"
                             />
                           </FormControl>
+                          {passwordStrength >= 0 && (
+                            <div className="space-y-1.5 pt-1">
+                              <div className="flex gap-1">
+                                {[0, 1, 2, 3].map((i) => (
+                                  <div
+                                    key={i}
+                                    className={`h-1.5 flex-1 rounded-full transition-colors ${
+                                      i <= passwordStrength
+                                        ? PASSWORD_LEVELS[passwordStrength].color
+                                        : "bg-slate-200"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              <p className={`text-xs ${PASSWORD_LEVELS[passwordStrength].textColor}`}>
+                                {PASSWORD_LEVELS[passwordStrength].label}
+                              </p>
+                            </div>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}
