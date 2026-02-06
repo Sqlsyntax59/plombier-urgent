@@ -43,3 +43,7 @@ vercel.env
 next-env.d.ts
 .claude/
 .mcp.json
+_backup_tokens/
+nul
+supabase/.temp/
+/CLAUDE.md
