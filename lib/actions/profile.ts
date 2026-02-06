@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import {
   whatsappConfigSchema,
   profileUpdateSchema,
@@ -102,10 +102,11 @@ export type PublicProfile = {
 };
 
 // Recuperer le profil public d'un artisan par son slug
+// Utilise createAdminClient car la page publique est accessible sans auth
 export async function getPublicProfile(
   slug: string
 ): Promise<PublicProfile | null> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: profile, error } = await supabase
     .from("profiles")
