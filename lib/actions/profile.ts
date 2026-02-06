@@ -92,11 +92,10 @@ export type PublicProfile = {
   city: string | null;
   trade: string | null;
   radius_km: number | null;
-  google_business_url: string | null;
   // Metriques calculees
   is_reactive: boolean;
   response_time_avg: number | null;
-  // Ratings Epic 7
+  // Ratings (defaults tant que colonnes pas en prod)
   average_rating: number | null;
   total_reviews: number;
 };
@@ -111,7 +110,7 @@ export async function getPublicProfile(
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
-      "first_name, city, trade, radius_km, google_business_url, average_rating, total_reviews, is_reactive, reactive_score"
+      "first_name, city, trade, radius_km, average_rating, total_reviews, is_reactive, reactive_score"
     )
     .eq("slug", slug)
     .eq("role", "artisan")
