@@ -42,7 +42,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ action: 'find_artisans_multi', params: { lead_id: $('Set Variables').item.json.leadId, wave: 1, limit: $('Set Variables').item.json.artisanLimit } }) }}",
-        "options": {"timeout": 30000}
+        "options": {"timeout": 30000},
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "Bearer n8n-callback-secret-plombier-2026"}]}
       },
       "id": "find-w1",
       "name": "Find Artisans W1",
@@ -92,7 +94,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
-        "options": {"timeout": 30000}
+        "options": {"timeout": 30000},
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "Bearer n8n-callback-secret-plombier-2026"}]}
       },
       "id": "check-w1",
       "name": "Check Status W1",
@@ -123,7 +127,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ action: 'find_artisans_multi', params: { lead_id: $('Set Variables').item.json.leadId, wave: 2, limit: $('Set Variables').item.json.artisanLimit } }) }}",
-        "options": {"timeout": 30000}
+        "options": {"timeout": 30000},
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "Bearer n8n-callback-secret-plombier-2026"}]}
       },
       "id": "find-w2",
       "name": "Find Artisans W2",
@@ -173,7 +179,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ action: 'check_lead_status', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
-        "options": {"timeout": 30000}
+        "options": {"timeout": 30000},
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "Bearer n8n-callback-secret-plombier-2026"}]}
       },
       "id": "check-w2",
       "name": "Check Status W2",
@@ -204,7 +212,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ action: 'mark_lead_unassigned', params: { lead_id: $('Set Variables').item.json.leadId } }) }}",
-        "options": {"timeout": 30000}
+        "options": {"timeout": 30000},
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "Bearer n8n-callback-secret-plombier-2026"}]}
       },
       "id": "mark-unassigned",
       "name": "Mark Unassigned",

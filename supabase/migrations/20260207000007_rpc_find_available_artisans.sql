@@ -1,6 +1,8 @@
 -- Epic 10 / Story 10.4 : RPC find_available_artisans (pluriel, multi-artisans)
 -- Remplace find_available_artisan (singulier) pour le mode multi-attribution
 
+DROP FUNCTION IF EXISTS find_available_artisans(UUID, UUID, INTEGER);
+
 CREATE OR REPLACE FUNCTION find_available_artisans(
   p_lead_id UUID,
   p_vertical_id UUID DEFAULT NULL,
@@ -11,7 +13,7 @@ RETURNS TABLE (
   artisan_name TEXT,
   whatsapp_phone TEXT,
   phone TEXT,
-  distance_km DECIMAL,
+  distance_km DOUBLE PRECISION,
   reactive_score INTEGER
 )
 LANGUAGE plpgsql
@@ -50,7 +52,7 @@ BEGIN
           ))
         )
       )
-      ELSE 9999
+      ELSE 9999.0
     END AS distance_km,
     COALESCE(p.reactive_score, 0) AS reactive_score
   FROM profiles p

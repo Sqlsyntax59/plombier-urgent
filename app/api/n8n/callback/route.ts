@@ -250,7 +250,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : (error as Record<string, unknown>)?.message || JSON.stringify(error),
       },
       { status: 500 }
     );

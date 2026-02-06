@@ -12,12 +12,12 @@
 | 4 | Notification & Attribution Leads | ✅ Complete | 100% |
 | 5 | Dashboard Artisan | ✅ Complete | 100% |
 | 6 | Paiement & Crédits | ✅ Complete | 100% |
-| 7 | Suivi Client J+3 | ⚠️ Cron à activer | 85% |
+| 7 | Suivi Client J+3 | ✅ Complete | 100% |
 | 8 | Dashboard Admin | ✅ Complete | 100% |
 | 9 | Multi-Tenant & Verticales | ⏳ Backlog | 10% |
 | **10** | **Lead Scoring + Badge Réactif + Multi-Artisan** | ✅ Complete | 100% |
 
-**Progress global:** 90% (9/10 Epics complets, 1 backlog)
+**Progress global:** 95% (9/10 Epics complets + P2 stabilisation, Epic 9 backlog)
 
 ---
 
@@ -27,10 +27,10 @@
 |-----|----------|--------|--------|
 | **Race condition accept_lead** | CRITIQUE | 2 artisans peuvent accepter le même lead | ✅ Fixé (migration `20260204000001` — FOR UPDATE lock) |
 | **Workflow cascade #3 manquant** | CRITIQUE | n8n n'a que 2 artisans, pas 3 | ✅ Remplacé par multi-artisan simultané (workflow n8n `6tTzHp4lV0FeKRp8`) |
-| **Auto-consommation inexistante** | HIGH | Leads restent en `accepted` indéfiniment | 🔧 En cours (P2) |
-| **Période de grâce inexistante** | HIGH | Crédit débité immédiatement, pas de remboursement | `accept_lead()` |
-| **Relance J+3 non déclenchée** | MEDIUM | Workflow existe mais aucun cron/trigger | `03-followup-j3-feedback.json` |
-| **Notifications failed jamais retry** | MEDIUM | Leads orphelins si n8n down | Pas de cron retry |
+| **Auto-consommation inexistante** | HIGH | Leads restent en `accepted` indéfiniment | ✅ Fixé — RPC `auto_consume_stale_leads()` + cron `0 4 * * *` |
+| **Période de grâce inexistante** | HIGH | Crédit débité immédiatement, pas de remboursement | ✅ Fixé — RPC `cancel_lead_acceptance()` + route `/api/lead/cancel` |
+| **Relance J+3 non déclenchée** | MEDIUM | Workflow existe mais aucun cron/trigger | ✅ Fixé — cron `/api/cron/trigger-followup` `0 10 * * *` |
+| **Notifications failed jamais retry** | MEDIUM | Leads orphelins si n8n down | ✅ Fixé — cron `/api/cron/retry-notifications` `0 6 * * *` |
 
 ---
 
@@ -278,4 +278,4 @@ Glow: blur-xl opacity-50
 
 ---
 
-*Document mis à jour le 2026-02-04*
+*Document mis à jour le 2026-02-06*
