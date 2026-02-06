@@ -21,5 +21,22 @@
       ]
     }
   ],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/cron/recalculate-scores",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/auto-consume",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/retry-notifications",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/trigger-followup",
+      "schedule": "0 10 * * *"
+    }
+  ]
 }

@@ -54,6 +54,7 @@ export async function middleware(request: NextRequest) {
     "/api/leads/assign",
     "/api/lead/accept",
     "/api/lead/accept-simple",
+    "/api/lead/cancel",
     "/api/notifications/prepare",
     "/api/notifications/send-whatsapp",
     "/api/webhooks",
