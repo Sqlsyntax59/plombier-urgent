@@ -21,6 +21,7 @@ import {
   Calendar,
   AlertCircle,
   Clock,
+  Download,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -506,6 +507,25 @@ export default function ProfilPage() {
                   Enregistrez votre profil pour générer votre page publique.
                 </p>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Export RGPD */}
+          <Card className="border border-slate-200/60 shadow-lg shadow-slate-900/[0.05]">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Download className="h-5 w-5 text-slate-500" />
+                <h3 className="font-semibold text-slate-800">Mes données</h3>
+              </div>
+              <p className="text-sm text-slate-500 mb-4">
+                Téléchargez toutes vos données personnelles (RGPD).
+              </p>
+              <Button variant="outline" className="w-full gap-2 rounded-xl" asChild>
+                <a href="/api/artisan/export" download>
+                  <Download className="h-4 w-4" />
+                  Exporter mes données
+                </a>
+              </Button>
             </CardContent>
           </Card>
 
