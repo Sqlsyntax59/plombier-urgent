@@ -195,9 +195,9 @@
 | Contrainte | PRD ligne | Statut | Detail |
 |------------|-----------|--------|--------|
 | Badge pas expose au client | 412 | Done | `is_reactive` interne dashboard |
-| Client ne voit jamais fiche artisan | 423 | **A verifier** | Donnees n8n callback exposent whatsapp/phone |
-| Email client = prenom + telephone seulement | 424 | A verifier | Template n8n |
-| Slug/email/entreprise non exposes | 425 | A verifier | Routes API publiques |
+| Client ne voit jamais fiche artisan | 423 | Done | Routes notification protegees par secret n8n (commit `ba266ac`) |
+| Email client = prenom + telephone seulement | 424 | Done | Template WhatsApp n'expose que prenom artisan |
+| Slug/email/entreprise non exposes | 425 | Done | Page `/artisan/[slug]` = prenom/ville/metier uniquement, APIs protegees |
 
 ---
 
