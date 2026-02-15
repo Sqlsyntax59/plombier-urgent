@@ -17,7 +17,7 @@
 | 9 | Multi-Tenant & Verticales | ⏳ Backlog | 10% |
 | **10** | **Lead Scoring + Badge Réactif + Multi-Artisan** | ✅ Complete | 100% |
 
-**Progress global:** 95% (9/10 Epics complets + P2 stabilisation, Epic 9 backlog)
+**Progress global:** 97% (9/10 Epics complets + P2 stabilisation + P2.5 sécurité/RGPD, Epic 9 backlog, NFRs 33/33)
 
 ---
 
@@ -262,6 +262,12 @@ Glow: blur-xl opacity-50
 - [x] Cron retry notifications : `/api/cron/retry-notifications` (max 3 tentatives)
 - [x] Cron déclencher feedback J+3 : `/api/cron/trigger-followup`
 
+### P2.5 - Sécurité & RGPD ✅
+- [x] Consentement RGPD obligatoire sur formulaire demande (commit `0024202`)
+- [x] Export données personnelles artisan : API + UI `/artisan/profil` (commit `a6b3ded`)
+- [x] Monitoring crons : table `cron_runs` + page `/admin/crons` (commit `0ee73e9`)
+- [x] 2FA Admin TOTP : middleware AAL2 + pages setup/verify (commit `0d84948`)
+
 ### P3 - Growth (Post-MVP)
 - [ ] Multi-verticales (électricien, serrurier, vitrier)
 - [ ] App mobile artisans (React Native)
@@ -273,9 +279,9 @@ Glow: blur-xl opacity-50
 
 | Email | Role | Notes |
 |-------|------|-------|
-| graous@gmail.com | artisan | Compte principal |
+| graous@gmail.com | admin | Compte principal (2FA TOTP actif) |
 | maleocokesix@gmail.com | artisan | Test |
 
 ---
 
-*Document mis à jour le 2026-02-06*
+*Document mis à jour le 2026-02-15*

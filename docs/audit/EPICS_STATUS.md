@@ -13,7 +13,7 @@
 | FRs dans PRD | 67 (FR1-FR67) |
 | FRs implementees | 66/67 (98.5%) |
 | Bonus hors PRD | 12 |
-| NFRs respectees | 32/33 (97%) |
+| NFRs respectees | 33/33 (100%) |
 
 ---
 
@@ -212,9 +212,9 @@
 | NFR-P5 | Cascade < 6min | Done (multi-artisan ~30s) |
 | NFR-S1 | Encryption at rest | Done (Supabase) |
 | NFR-S2 | HTTPS obligatoire | Done (Vercel) |
-| NFR-S5 | RGPD | Partial (export non automatise) |
+| NFR-S5 | RGPD | Done (export `/api/artisan/data-export`, consentement formulaire) |
 | NFR-S6 | PCI-DSS | Done (LemonSqueezy) |
-| NFR-S7 | **2FA admin** | **Non implemente** |
+| NFR-S7 | 2FA admin | Done (TOTP via Supabase MFA, middleware AAL2) |
 | NFR-R2 | Fallback WhatsApp→SMS→Email | Done |
 | NFR-I7 | API INSEE timeout + mode degrade | Done |
 
