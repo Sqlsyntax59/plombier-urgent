@@ -22,7 +22,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"from\": \"Plombier Urgent <noreply@resend.dev>\",\n  \"to\": \"{{ $json.client_email }}\",\n  \"subject\": \"Un plombier a accepté votre demande !\",\n  \"html\": \"<h2>Bonne nouvelle !</h2><p>Un artisan plombier a accepté de prendre en charge votre demande urgente.</p><h3>Coordonnées de l'artisan :</h3><ul><li><strong>Nom :</strong> {{ $json.artisan_name }}</li><li><strong>Téléphone :</strong> {{ $json.artisan_phone }}</li><li><strong>Email :</strong> {{ $json.artisan_email }}</li></ul><p>L'artisan vous contactera dans les plus brefs délais.</p><br><p>Cordialement,<br>L'équipe Plombier Urgent</p>\"\n}",
+        "jsonBody": "={\n  \"from\": \"Plombier Urgent <noreply@resend.dev>\",\n  \"to\": \"{{ $json.client_email }}\",\n  \"subject\": \"Un plombier a accepté votre demande !\",\n  \"html\": \"<h2>Bonne nouvelle !</h2><p>Un artisan plombier a accepté de prendre en charge votre demande urgente.</p><h3>Coordonnées de l'artisan :</h3><ul><li><strong>Prénom :</strong> {{ $json.artisan_name }}</li><li><strong>Téléphone :</strong> {{ $json.artisan_phone }}</li></ul><p>L'artisan vous contactera dans les plus brefs délais.</p><br><p>Cordialement,<br>L'équipe Plombier Urgent</p>\"\n}",
         "options": {}
       },
       "id": "http-resend",

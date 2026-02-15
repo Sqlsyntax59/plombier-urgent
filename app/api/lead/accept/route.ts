@@ -1,50 +1,84 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAcceptToken, acceptLead } from "@/lib/actions/assignment";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
-// GET: Pour liens cliquables Telegram (redirige vers page de resultat)
+// GET: Route canonique d'acceptation lead (token JWT ou assignmentId)
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
+  const assignmentId = request.nextUrl.searchParams.get("assignmentId");
 
-  if (!token) {
-    return NextResponse.redirect(
-      new URL("/artisan/lead-error?code=MISSING_TOKEN", request.url)
+  // Methode 1: Via token JWT (securise, pour liens WhatsApp/SMS/Email)
+  if (token) {
+    const verification = await verifyAcceptToken(token);
+
+    if (!verification.valid) {
+      return NextResponse.redirect(
+        new URL(
+          `/artisan/lead-error?code=INVALID_TOKEN&message=${encodeURIComponent(verification.error || "")}`,
+          request.url
+        )
+      );
+    }
+
+    const result = await acceptLead(
+      verification.assignmentId!,
+      verification.artisanId!
     );
-  }
 
-  // Verifier le token
-  const verification = await verifyAcceptToken(token);
+    if (!result.success) {
+      return NextResponse.redirect(
+        new URL(
+          `/artisan/lead-error?code=${result.errorCode}&message=${encodeURIComponent(result.error || "")}`,
+          request.url
+        )
+      );
+    }
 
-  if (!verification.valid) {
     return NextResponse.redirect(
       new URL(
-        `/artisan/lead-error?code=INVALID_TOKEN&message=${encodeURIComponent(verification.error || "")}`,
+        `/artisan/lead-accepted?leadId=${result.leadId}&balance=${result.newBalance}`,
         request.url
       )
     );
   }
 
-  // Tenter d'accepter le lead
-  const result = await acceptLead(
-    verification.assignmentId!,
-    verification.artisanId!
-  );
+  // Methode 2: Via assignmentId (pour dashboard authentifie)
+  if (assignmentId) {
+    const supabase = createAdminClient();
+    const { data: assignment } = await supabase
+      .from("lead_assignments")
+      .select("artisan_id")
+      .eq("id", assignmentId)
+      .single();
 
-  if (!result.success) {
+    if (!assignment) {
+      return NextResponse.redirect(
+        new URL("/artisan/lead-error?code=ASSIGNMENT_NOT_FOUND", request.url)
+      );
+    }
+
+    const result = await acceptLead(assignmentId, assignment.artisan_id);
+
+    if (!result.success) {
+      return NextResponse.redirect(
+        new URL(
+          `/artisan/lead-error?code=${result.errorCode}&message=${encodeURIComponent(result.error || "")}`,
+          request.url
+        )
+      );
+    }
+
     return NextResponse.redirect(
       new URL(
-        `/artisan/lead-error?code=${result.errorCode}&message=${encodeURIComponent(result.error || "")}`,
+        `/artisan/lead-accepted?leadId=${result.leadId}&balance=${result.newBalance}`,
         request.url
       )
     );
   }
 
-  // Succes: rediriger vers page de confirmation
   return NextResponse.redirect(
-    new URL(
-      `/artisan/lead-accepted?leadId=${result.leadId}&balance=${result.newBalance}`,
-      request.url
-    )
+    new URL("/artisan/lead-error?code=MISSING_TOKEN", request.url)
   );
 }
 

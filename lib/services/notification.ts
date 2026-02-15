@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/server";
+import { generateAcceptUrl } from "@/lib/actions/assignment";
 import type { ProblemType } from "@/types/database.types";
 
 // Labels français pour les types de panne
@@ -118,8 +119,8 @@ export async function prepareWhatsAppNotification(
       ? lead.description.substring(0, 97) + "..."
       : lead.description;
 
-  // URL d'acceptation avec token
-  const acceptUrl = `${baseUrl}/api/leads/accept?assignmentId=${assignmentId}`;
+  // URL d'acceptation sécurisée avec token JWT
+  const acceptUrl = await generateAcceptUrl(assignmentId, assignment.artisan_id, baseUrl);
 
   return {
     success: true,
@@ -164,6 +165,7 @@ export async function prepareSMSNotification(
     .select(
       `
       id,
+      artisan_id,
       leads (
         problem_type,
         client_city
@@ -197,7 +199,7 @@ export async function prepareSMSNotification(
 
   const problemTypeLabel = PROBLEM_TYPE_LABELS[lead.problem_type] || lead.problem_type;
   const city = lead.client_city || "";
-  const acceptUrl = `${baseUrl}/api/leads/accept?assignmentId=${assignmentId}`;
+  const acceptUrl = await generateAcceptUrl(assignmentId, assignment.artisan_id, baseUrl);
 
   // SMS court et concis
   const body = `Nouveau lead ${problemTypeLabel}${city ? ` à ${city}` : ""}. Acceptez vite: ${acceptUrl}`;
@@ -267,7 +269,7 @@ export async function prepareEmailNotification(
   };
 
   const problemTypeLabel = PROBLEM_TYPE_LABELS[lead.problem_type] || lead.problem_type;
-  const acceptUrl = `${baseUrl}/api/leads/accept?assignmentId=${assignmentId}`;
+  const acceptUrl = await generateAcceptUrl(assignmentId, assignment.artisan_id, baseUrl);
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

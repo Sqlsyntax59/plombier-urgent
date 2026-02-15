@@ -136,9 +136,6 @@ export async function POST(request: NextRequest) {
 
           artisanResults.push({
             artisan_id: a.artisan_id,
-            artisan_name: a.artisan_name,
-            whatsapp_phone: a.whatsapp_phone,
-            phone: a.phone,
             distance_km: a.distance_km,
             assignment_id: assignData.id,
             accept_url: acceptUrl,

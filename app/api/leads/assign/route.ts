@@ -83,9 +83,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Anti court-circuit: ne pas exposer les données artisan (PRD ligne 423)
+    // n8n utilise /api/notifications/send-whatsapp avec assignmentId pour notifier
     return NextResponse.json({
       success: true,
-      artisan: result.artisan,
+      artisan_id: result.artisan?.id,
       assignmentId: result.assignmentId,
     });
   } catch (error) {

@@ -273,7 +273,7 @@ export default function LeadDetailPage() {
             <p className="text-sm text-orange-700">
               Acceptez ce lead pour accéder aux coordonnées du client.
             </p>
-            <Link href={`/api/leads/accept?assignmentId=${assignmentId}`}>
+            <Link href={`/api/lead/accept?assignmentId=${assignmentId}`}>
               <Button className="w-full bg-orange-600 hover:bg-orange-700">
                 Accepter ce lead
               </Button>
