@@ -64,9 +64,13 @@ export async function triggerLeadWorkflow(data: LeadData): Promise<TriggerResult
 
     // Si artisan trouvé, envoyer WhatsApp
     if (assignResult.success && assignResult.assignmentId) {
+      const n8nSecret = process.env.N8N_CALLBACK_SECRET;
       await fetch(`${appUrl}/api/notifications/send-whatsapp`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(n8nSecret ? { Authorization: `Bearer ${n8nSecret}` } : {}),
+        },
         body: JSON.stringify({ assignmentId: assignResult.assignmentId }),
       }).catch(err => console.error("WhatsApp notification error:", err));
     }

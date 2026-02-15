@@ -15,7 +15,19 @@ import {
  *   channel: 'whatsapp' | 'sms' | 'email'
  * }
  */
+function verifyN8nSecret(request: NextRequest): boolean {
+  const authHeader = request.headers.get("authorization");
+  const expectedSecret = process.env.N8N_CALLBACK_SECRET;
+  if (!expectedSecret) return false;
+  const tokenWithBearer = `Bearer ${expectedSecret}`;
+  return authHeader === tokenWithBearer || authHeader === expectedSecret;
+}
+
 export async function POST(request: NextRequest) {
+  if (!verifyN8nSecret(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { assignmentId, channel } = body;
