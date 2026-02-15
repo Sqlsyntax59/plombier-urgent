@@ -71,6 +71,12 @@ async function verifyAdmin() {
     return { supabase: null, error: "Acces non autorise" };
   }
 
+  // Verifier MFA (AAL2) pour les admins
+  const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (!aalData || aalData.currentLevel !== "aal2") {
+    return { supabase: null, error: "MFA requis — veuillez verifier votre code 2FA" };
+  }
+
   return { supabase, error: null };
 }
 

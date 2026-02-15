@@ -154,7 +154,7 @@ export async function loginWithPassword(
       .single();
 
     if (profile?.role === "admin" || profile?.role === "super_admin") {
-      redirect("/admin/dashboard");
+      redirect("/admin/mfa-verify");
     }
   }
 

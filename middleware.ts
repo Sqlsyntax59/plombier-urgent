@@ -136,15 +136,27 @@ export async function middleware(request: NextRequest) {
 
   const userRole = profile?.role;
 
-  // Routes ADMIN: requiert role admin
+  // Routes ADMIN: requiert role admin + MFA (2FA TOTP)
   if (pathname.startsWith("/admin")) {
     if (userRole !== "admin") {
       console.warn(`Access denied: user ${user.id} (${userRole}) tried to access ${pathname}`);
-      // Rediriger vers la page appropriee selon le role
       if (userRole === "artisan") {
         return NextResponse.redirect(new URL("/artisan/dashboard", request.url));
       }
       return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // Pages MFA exclues du check AAL2 (sinon boucle infinie)
+    const mfaExcludedPaths = ["/admin/mfa-verify", "/admin/mfa-setup"];
+    const isMfaPage = mfaExcludedPaths.some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    );
+
+    if (!isMfaPage) {
+      const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aalData && aalData.currentLevel !== "aal2") {
+        return NextResponse.redirect(new URL("/admin/mfa-verify", request.url));
+      }
     }
   }
 
