@@ -66,6 +66,7 @@ export default function DemandePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [consentRGPD, setConsentRGPD] = useState(false);
 
   const handleSelectProblemType = (type: string) => {
     setFormData({ ...formData, problemType: type, guidedAnswers: {} });
@@ -154,7 +155,7 @@ export default function DemandePage() {
 
   const canSubmit = () => {
     const phoneRegex = /^(?:(?:\+|00)33|0)\s*[67](?:[\s.-]*\d{2}){4}$/;
-    return phoneRegex.test(formData.clientPhone) && !phoneError && !emailError;
+    return phoneRegex.test(formData.clientPhone) && !phoneError && !emailError && consentRGPD;
   };
 
   const getSelectedProblemLabel = () => {
@@ -499,6 +500,23 @@ export default function DemandePage() {
                   className="h-12 rounded-xl border-2 border-slate-200 focus:border-blue-500"
                 />
               </div>
+
+              {/* Consentement RGPD */}
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={consentRGPD}
+                  onChange={(e) => setConsentRGPD(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-xs text-slate-500 leading-relaxed">
+                  J'accepte que mes coordonnées soient transmises à un artisan
+                  partenaire pour me recontacter.{" "}
+                  <Link href="/cgv" className="text-blue-600 underline hover:text-blue-800" target="_blank">
+                    Politique de confidentialité
+                  </Link>
+                </span>
+              </label>
 
               {submitError && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm text-center">
