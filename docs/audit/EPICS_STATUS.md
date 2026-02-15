@@ -228,3 +228,16 @@
 | Periode de grace 30min | RPC + route `/api/lead/cancel` | `dd3ac1b` |
 | Retry notifications | Cron `0 6 * * *` (max 3 tentatives) | `dd3ac1b` |
 | Followup J+3 | Cron `0 10 * * *` | `dd3ac1b` |
+
+---
+
+## P3 Bugfixes & Automatisation (15/02) — 100%
+
+| Feature | Preuve | Commit |
+|---------|--------|--------|
+| Protection routes notification | `verifyN8nSecret()` sur prepare + send-whatsapp | `ba266ac` |
+| Fix token WhatsApp accept | Bouton envoie JWT token via `?t=` | `947d323` |
+| Fix geocodage noms de ville | `geocodePostalCode()` accepte ville + CP | `bb3e7e9` |
+| Fix N8N_WEBHOOK_URL | `lead-created` → `lead-created-multi` | Vercel env |
+| Lien mot de passe oublie | Page login artisan → `/auth/forgot-password` | `54ec30c` |
+| Flow E2E teste OK | Demande → n8n → WhatsApp → acceptation ~3s | Prod |

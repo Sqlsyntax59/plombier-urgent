@@ -1,6 +1,6 @@
 # Suivi d'Avancement - SaaS Artisans Urgents
 
-> Dernière mise à jour : 2026-02-06
+> Dernière mise à jour : 2026-02-15
 
 ## Statut Global
 
@@ -17,7 +17,7 @@
 | 9 | Multi-Tenant & Verticales | ⏳ Backlog | 10% |
 | **10** | **Lead Scoring + Badge Réactif + Multi-Artisan** | ✅ Complete | 100% |
 
-**Progress global:** 97% (9/10 Epics complets + P2 stabilisation + P2.5 sécurité/RGPD, Epic 9 backlog, NFRs 33/33)
+**Progress global:** 98% (9/10 Epics complets + P2 + P2.5 + P3 bugfixes, Epic 9 backlog, NFRs 33/33)
 
 ---
 
@@ -143,6 +143,12 @@
 
 | Date | Commit | Description |
 |------|--------|-------------|
+| 15/02 | `54ec30c` | fix(ui): add forgot password link on artisan login page |
+| 15/02 | `bb3e7e9` | fix(geocoding): accept city names, not just postal codes |
+| 15/02 | `947d323` | fix(whatsapp): send JWT token instead of assignmentId in button URL |
+| 15/02 | `b704b18` | docs: mark data leak constraints as verified and fixed |
+| 15/02 | `ba266ac` | fix(security): protect notification routes with n8n secret |
+| 15/02 | `e387886` | chore: update tracking files after 2FA implementation |
 | 04/02 | `c18ba25` | fix(api): use responded_at instead of accepted_at |
 | 04/02 | `4f95b27` | feat(api): add /api/lead/accept-simple route for WhatsApp |
 | 04/02 | `cc54e6d` | fix(notification): flatten WhatsApp data structure for n8n |
@@ -267,11 +273,21 @@ Glow: blur-xl opacity-50
 - [x] Export données personnelles artisan : API + UI `/artisan/profil` (commit `a6b3ded`)
 - [x] Monitoring crons : table `cron_runs` + page `/admin/crons` (commit `0ee73e9`)
 - [x] 2FA Admin TOTP : middleware AAL2 + pages setup/verify (commit `0d84948`)
+- [x] Routes notification protégées par secret n8n (commit `ba266ac`)
 
-### P3 - Growth (Post-MVP)
+### P3 - Bugfixes & Automatisation (15/02) ✅
+- [x] Fix WhatsApp token JWT : bouton "Accepter" envoyait `assignmentId` au lieu du token JWT (commit `947d323`)
+- [x] Fix géocodage : `geocodePostalCode()` accepte maintenant noms de ville, pas uniquement codes postaux (commit `bb3e7e9`)
+- [x] Fix N8N_WEBHOOK_URL : corrigé `lead-created` → `lead-created-multi` sur Vercel
+- [x] Fix artisans sans `vertical_id` : RPC `find_available_artisans()` ne trouvait personne
+- [x] Lien "Mot de passe oublié" ajouté sur page login artisan (commit `54ec30c`)
+- [x] Flow end-to-end testé OK : demande → n8n → WhatsApp → acceptation
+
+### P4 - Growth (Post-MVP)
 - [ ] Multi-verticales (électricien, serrurier, vitrier)
 - [ ] App mobile artisans (React Native)
 - [ ] Chatbot WhatsApp conversationnel
+- [ ] Numéro WhatsApp Business permanent (SIM dédiée)
 
 ---
 
