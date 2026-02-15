@@ -209,6 +209,15 @@ export default function LoginPage() {
                               </>
                             )}
                           </Button>
+
+                          <div className="text-center">
+                            <Link
+                              href="/auth/forgot-password"
+                              className="text-sm text-slate-500 hover:text-blue-600 transition-colors"
+                            >
+                              Mot de passe oublié ?
+                            </Link>
+                          </div>
                         </form>
                       </Form>
                     </TabsContent>
