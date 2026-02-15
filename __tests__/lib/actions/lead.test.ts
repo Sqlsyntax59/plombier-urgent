@@ -4,6 +4,7 @@ import { createLead } from '@/lib/actions/lead'
 // Mock dependencies
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+  createAdminClient: vi.fn(),
 }))
 
 vi.mock('@/lib/n8n/trigger', () => ({
@@ -23,7 +24,7 @@ vi.mock('@/lib/services/scoring', () => ({
   }),
 }))
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { triggerLeadWorkflow } from '@/lib/n8n/trigger'
 
 const validLeadData = {
@@ -66,9 +67,10 @@ describe('createLead', () => {
     mockFrom
       .mockReturnValueOnce(verticalQuery) // verticals
       .mockReturnValueOnce(insertQuery)   // leads insert
-      .mockReturnValueOnce(updateQuery)   // leads update
+      .mockReturnValueOnce(updateQuery)   // leads update (scoring)
+      .mockReturnValueOnce(updateQuery)   // leads update (notification status)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
     vi.mocked(triggerLeadWorkflow).mockResolvedValue({ success: true })
 
     const result = await createLead(validLeadData)
@@ -127,9 +129,10 @@ describe('createLead', () => {
     mockFrom
       .mockReturnValueOnce(verticalQuery)
       .mockReturnValueOnce(insertQuery)
-      .mockReturnValueOnce(updateQuery)
+      .mockReturnValueOnce(updateQuery)   // scoring
+      .mockReturnValueOnce(updateQuery)   // notification status
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
     vi.mocked(triggerLeadWorkflow).mockResolvedValue({ success: true })
 
     await createLead({
@@ -168,9 +171,10 @@ describe('createLead', () => {
     mockFrom
       .mockReturnValueOnce(verticalQuery)
       .mockReturnValueOnce(insertQuery)
-      .mockReturnValueOnce(updateQuery)
+      .mockReturnValueOnce(updateQuery)   // scoring
+      .mockReturnValueOnce(updateQuery)   // notification status
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
     vi.mocked(triggerLeadWorkflow).mockResolvedValue({ success: false, error: 'Webhook failed' })
 
     const result = await createLead(validLeadData)
@@ -200,7 +204,7 @@ describe('createLead', () => {
       .mockReturnValueOnce(verticalQuery)
       .mockReturnValueOnce(insertQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await createLead(validLeadData)
 
@@ -232,9 +236,10 @@ describe('createLead', () => {
     mockFrom
       .mockReturnValueOnce(verticalQuery)
       .mockReturnValueOnce(insertQuery)
-      .mockReturnValueOnce(updateQuery)
+      .mockReturnValueOnce(updateQuery)   // scoring
+      .mockReturnValueOnce(updateQuery)   // notification status
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
     vi.mocked(triggerLeadWorkflow).mockResolvedValue({ success: true })
 
     await createLead({
@@ -277,9 +282,10 @@ describe('createLead', () => {
     mockFrom
       .mockReturnValueOnce(verticalQuery)
       .mockReturnValueOnce(insertQuery)
-      .mockReturnValueOnce(updateQuery)
+      .mockReturnValueOnce(updateQuery)   // scoring
+      .mockReturnValueOnce(updateQuery)   // notification status
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
     vi.mocked(triggerLeadWorkflow).mockResolvedValue({ success: true })
 
     await createLead({

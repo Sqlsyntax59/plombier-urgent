@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // Mock dependencies BEFORE importing the module
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+  createAdminClient: vi.fn(),
 }))
 
 vi.mock('@/lib/services/sirene', () => ({
@@ -89,6 +90,7 @@ describe('signUpArtisan', () => {
   it('retourne erreur si email déjà utilisé', async () => {
     const mockSupabase = {
       auth: {
+        signOut: vi.fn().mockResolvedValue({ error: null }),
         signUp: vi.fn().mockResolvedValue({
           data: { user: null },
           error: { message: 'User already registered' },
@@ -106,6 +108,7 @@ describe('signUpArtisan', () => {
   it('retourne erreur si création user échoue', async () => {
     const mockSupabase = {
       auth: {
+        signOut: vi.fn().mockResolvedValue({ error: null }),
         signUp: vi.fn().mockResolvedValue({
           data: { user: null },
           error: null,
@@ -123,6 +126,7 @@ describe('signUpArtisan', () => {
   it('crée le compte et redirige vers /artisan/whatsapp', async () => {
     const mockSupabase = {
       auth: {
+        signOut: vi.fn().mockResolvedValue({ error: null }),
         signUp: vi.fn().mockResolvedValue({
           data: { user: { id: 'user-123' } },
           error: null,
@@ -150,6 +154,7 @@ describe('signUpArtisan', () => {
   it('continue même si SIRET en mode dégradé', async () => {
     const mockSupabase = {
       auth: {
+        signOut: vi.fn().mockResolvedValue({ error: null }),
         signUp: vi.fn().mockResolvedValue({
           data: { user: { id: 'user-123' } },
           error: null,

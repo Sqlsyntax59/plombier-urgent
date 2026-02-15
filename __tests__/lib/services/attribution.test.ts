@@ -8,9 +8,10 @@ import {
 // Mock the Supabase server client
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+  createAdminClient: vi.fn(),
 }))
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 
 const mockArtisan = {
   id: 'artisan-123',
@@ -67,7 +68,7 @@ describe('findBestArtisan', () => {
       .mockReturnValueOnce(insertQuery) // lead_assignments insert
       .mockReturnValueOnce(updateQuery) // leads update
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await findBestArtisan({
       leadId: 'lead-123',
@@ -105,7 +106,7 @@ describe('findBestArtisan', () => {
       .mockReturnValueOnce(existingAssignmentsQuery)
       .mockReturnValueOnce(artisanQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await findBestArtisan({
       leadId: 'lead-123',
@@ -158,7 +159,7 @@ describe('findBestArtisan', () => {
       .mockReturnValueOnce(insertQuery)
       .mockReturnValueOnce(updateQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     await findBestArtisan({
       leadId: 'lead-123',
@@ -193,7 +194,7 @@ describe('findBestArtisan', () => {
       .mockReturnValueOnce(existingAssignmentsQuery)
       .mockReturnValueOnce(artisanQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     await findBestArtisan({
       leadId: 'lead-123',
@@ -234,7 +235,7 @@ describe('findBestArtisan', () => {
       .mockReturnValueOnce(artisanQuery)
       .mockReturnValueOnce(insertQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await findBestArtisan({
       leadId: 'lead-123',
@@ -260,7 +261,7 @@ describe('getNextArtisanInCascade', () => {
         single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Not found' } }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getNextArtisanInCascade('lead-unknown')
 
@@ -279,7 +280,7 @@ describe('getNextArtisanInCascade', () => {
         }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getNextArtisanInCascade('lead-123')
 
@@ -312,7 +313,7 @@ describe('getNextArtisanInCascade', () => {
       .mockReturnValueOnce(selectQuery)
       .mockReturnValueOnce(updateQuery)
 
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getNextArtisanInCascade('lead-123')
 
@@ -343,7 +344,7 @@ describe('expirePendingAssignments', () => {
         }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await expirePendingAssignments()
 
@@ -360,7 +361,7 @@ describe('expirePendingAssignments', () => {
         select: vi.fn().mockResolvedValue({ data: [], error: null }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await expirePendingAssignments()
 
@@ -376,7 +377,7 @@ describe('expirePendingAssignments', () => {
         select: vi.fn().mockResolvedValue({ data: null, error: { message: 'DB error' } }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await expirePendingAssignments()
 

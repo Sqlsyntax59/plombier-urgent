@@ -3,13 +3,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // Mock dependencies BEFORE importing the module
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+  createAdminClient: vi.fn(),
 }))
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }))
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import {
   updateWhatsAppConfig,
@@ -166,7 +167,7 @@ describe('getPublicProfile', () => {
         single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Not found' } }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getPublicProfile('unknown-slug')
 
@@ -182,6 +183,8 @@ describe('getPublicProfile', () => {
       google_business_url: 'https://g.page/jean-plombier',
       average_rating: 4.5,
       total_reviews: 12,
+      is_reactive: true,
+      reactive_score: 80,
     }
     const mockSupabase = {
       from: vi.fn().mockReturnValue({
@@ -190,7 +193,7 @@ describe('getPublicProfile', () => {
         single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getPublicProfile('jean-paris-abc1')
 
@@ -218,7 +221,7 @@ describe('getPublicProfile', () => {
         single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
       }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await getPublicProfile('jean-paris-abc1')
 

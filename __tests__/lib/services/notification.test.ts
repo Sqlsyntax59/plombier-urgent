@@ -8,9 +8,10 @@ import {
 // Mock the Supabase server client
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+  createAdminClient: vi.fn(),
 }))
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 
 const mockAssignmentData = {
   id: 'assignment-123',
@@ -41,7 +42,7 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: mockAssignmentData, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('assignment-123', 'https://app.example.com')
 
@@ -50,10 +51,10 @@ describe('prepareWhatsAppNotification', () => {
     expect(result.message!.to).toBe('06 12 34 56 78')
     expect(result.message!.templateName).toBe('lead_notification')
     expect(result.message!.templateLanguage).toBe('fr')
-    expect(result.message!.raw.artisanFirstName).toBe('Jean')
-    expect(result.message!.raw.problemTypeLabel).toBe("Fuite d'eau")
-    expect(result.message!.raw.city).toBe('Paris')
-    expect(result.message!.raw.acceptUrl).toContain('assignment-123')
+    expect(result.message!.artisanFirstName).toBe('Jean')
+    expect(result.message!.problemTypeLabel).toBe("Fuite d'eau")
+    expect(result.message!.city).toBe('Paris')
+    expect(result.message!.acceptUrl).toContain('/api/lead/accept?token=')
   })
 
   it('retourne error si assignment non trouvé', async () => {
@@ -63,7 +64,7 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Not found' } }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('unknown', 'https://app.example.com')
 
@@ -86,7 +87,7 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataNoPhone, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('assignment-123', 'https://app.example.com')
 
@@ -109,7 +110,7 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataNoWhatsapp, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('assignment-123', 'https://app.example.com')
 
@@ -132,7 +133,7 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataLongDesc, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('assignment-123', 'https://app.example.com')
 
@@ -155,12 +156,12 @@ describe('prepareWhatsAppNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataNoCity, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareWhatsAppNotification('assignment-123', 'https://app.example.com')
 
     expect(result.success).toBe(true)
-    expect(result.message!.raw.city).toBe('Non précisé')
+    expect(result.message!.city).toBe('Non précisé')
   })
 })
 
@@ -176,7 +177,7 @@ describe('prepareSMSNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: mockAssignmentData, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareSMSNotification('assignment-123', 'https://app.example.com')
 
@@ -185,7 +186,7 @@ describe('prepareSMSNotification', () => {
     expect(result.message!.to).toBe('06 98 76 54 32')
     expect(result.message!.body).toContain("Fuite d'eau")
     expect(result.message!.body).toContain('Paris')
-    expect(result.message!.acceptUrl).toContain('assignment-123')
+    expect(result.message!.acceptUrl).toContain('/api/lead/accept?token=')
   })
 
   it('retourne error si artisan sans téléphone', async () => {
@@ -199,7 +200,7 @@ describe('prepareSMSNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataNoPhone, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareSMSNotification('assignment-123', 'https://app.example.com')
 
@@ -218,7 +219,7 @@ describe('prepareSMSNotification', () => {
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: dataNoCity, error: null }),
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareSMSNotification('assignment-123', 'https://app.example.com')
 
@@ -246,7 +247,7 @@ describe('prepareEmailNotification', () => {
         },
       },
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareEmailNotification('assignment-123', 'https://app.example.com')
 
@@ -258,7 +259,7 @@ describe('prepareEmailNotification', () => {
     expect(result.message!.html).toContain('Paris')
     expect(result.message!.html).toContain('Fuite sous le lavabo')
     expect(result.message!.html).toContain('https://example.com/photo.jpg')
-    expect(result.message!.acceptUrl).toContain('assignment-123')
+    expect(result.message!.acceptUrl).toContain('/api/lead/accept?token=')
   })
 
   it('retourne error si artisan sans email', async () => {
@@ -275,7 +276,7 @@ describe('prepareEmailNotification', () => {
         },
       },
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareEmailNotification('assignment-123', 'https://app.example.com')
 
@@ -301,7 +302,7 @@ describe('prepareEmailNotification', () => {
         },
       },
     }
-    vi.mocked(createClient).mockResolvedValue(mockSupabase as never)
+    vi.mocked(createAdminClient).mockReturnValue(mockSupabase as never)
 
     const result = await prepareEmailNotification('assignment-123', 'https://app.example.com')
 

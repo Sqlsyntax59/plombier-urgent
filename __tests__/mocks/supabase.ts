@@ -39,3 +39,4 @@ export function createMockSupabaseClient(overrides: Record<string, unknown> = {}
 
 // Mock for @/lib/supabase/server
 export const mockCreateClient = vi.fn(() => Promise.resolve(createMockSupabaseClient()))
+export const mockCreateAdminClient = vi.fn(() => createMockSupabaseClient())

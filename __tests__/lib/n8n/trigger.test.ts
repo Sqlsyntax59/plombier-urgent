@@ -7,6 +7,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 describe('triggerLeadWorkflow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.resetModules()
   })
 
   it('retourne success si webhook répond 200', async () => {
@@ -29,7 +30,14 @@ describe('triggerLeadWorkflow', () => {
     expect(result.error).toBeUndefined()
   })
 
-  it('retourne error si webhook répond 500', async () => {
+  it('retourne error si webhook ET fallback échouent', async () => {
+    // Webhook n8n échoue (500)
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      text: () => Promise.resolve('Internal Server Error'),
+    } as Response)
+    // Fallback assign aussi échoue
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: false,
       status: 500,
@@ -50,7 +58,10 @@ describe('triggerLeadWorkflow', () => {
   })
 
   it('retourne error en cas d\'exception réseau', async () => {
-    vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'))
+    // Les deux fetch rejettent (webhook + fallback)
+    vi.mocked(fetch)
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockRejectedValueOnce(new Error('Network error'))
 
     const { triggerLeadWorkflow } = await import('@/lib/n8n/trigger')
 
@@ -65,7 +76,7 @@ describe('triggerLeadWorkflow', () => {
     expect(result.error).toBe('Network error')
   })
 
-  it('envoie les données correctement formatées', async () => {
+  it('envoie leadId et appUrl au webhook', async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
       status: 200,
@@ -96,43 +107,48 @@ describe('triggerLeadWorkflow', () => {
     const body = JSON.parse(callArgs[1]?.body as string)
 
     expect(body.leadId).toBe('lead-123')
-    expect(body.phone).toBe('0612345678')
-    expect(body.address).toBe('Paris')
-    expect(body.urgencyType).toBe('fuite')
-    expect(body.description).toBe('Fuite sous lavabo')
-    expect(body.fieldSummary).toBe('📍 Fuite d\'eau')
-    expect(body.isUrgent).toBe(true)
-    expect(body.urgencyReason).toBe('Fuite continue')
-    expect(body.timestamp).toBeDefined()
+    expect(body.appUrl).toBeDefined()
   })
 
-  it('utilise "Non précisée" si pas de ville', async () => {
+  it('utilise le fallback si webhook échoue et retourne success', async () => {
+    // Webhook échoue
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+    } as Response)
+    // Fallback assign réussit
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      status: 200,
+      json: () => Promise.resolve({ success: true, assignmentId: 'assign-1' }),
+    } as unknown as Response)
+    // WhatsApp notification (fire and forget)
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
     } as Response)
 
     const { triggerLeadWorkflow } = await import('@/lib/n8n/trigger')
 
-    await triggerLeadWorkflow({
+    const result = await triggerLeadWorkflow({
       leadId: 'lead-123',
       clientPhone: '0612345678',
       problemType: 'fuite',
       description: 'Fuite',
-      // Pas de clientCity
     })
 
-    const callArgs = vi.mocked(fetch).mock.calls[0]
-    const body = JSON.parse(callArgs[1]?.body as string)
-
-    expect(body.address).toBe('Non précisée')
+    expect(result.success).toBe(true)
   })
 
-  it('utilise description comme fieldSummary par défaut', async () => {
+  it('envoie le leadId au fallback assign', async () => {
+    // Webhook échoue
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+    } as Response)
+    // Fallback assign réussit
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      status: 200,
-    } as Response)
+      json: () => Promise.resolve({ success: false }),
+    } as unknown as Response)
 
     const { triggerLeadWorkflow } = await import('@/lib/n8n/trigger')
 
@@ -141,41 +157,45 @@ describe('triggerLeadWorkflow', () => {
       clientPhone: '0612345678',
       problemType: 'fuite',
       description: 'Ma description',
-      // Pas de fieldSummary
     })
 
-    const callArgs = vi.mocked(fetch).mock.calls[0]
+    // Le 2e appel fetch est le fallback
+    const callArgs = vi.mocked(fetch).mock.calls[1]
     const body = JSON.parse(callArgs[1]?.body as string)
 
-    expect(body.fieldSummary).toBe('Ma description')
+    expect(body.leadId).toBe('lead-123')
+    expect(body.mode).toBe('first')
   })
 
-  it('utilise isUrgent false par défaut', async () => {
+  it('retourne success même si pas d\'artisan disponible dans le fallback', async () => {
+    // Webhook échoue
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+    } as Response)
+    // Fallback assign réussit mais pas d'artisan
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      status: 200,
-    } as Response)
+      json: () => Promise.resolve({ success: false }),
+    } as unknown as Response)
 
     const { triggerLeadWorkflow } = await import('@/lib/n8n/trigger')
 
-    await triggerLeadWorkflow({
+    const result = await triggerLeadWorkflow({
       leadId: 'lead-123',
       clientPhone: '0612345678',
       problemType: 'fuite',
       description: 'Fuite',
     })
 
-    const callArgs = vi.mocked(fetch).mock.calls[0]
-    const body = JSON.parse(callArgs[1]?.body as string)
-
-    expect(body.isUrgent).toBe(false)
-    expect(body.urgencyReason).toBeNull()
+    expect(result.success).toBe(true)
   })
 })
 
 describe('triggerFollowUpWorkflow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.resetModules()
   })
 
   it('envoie l\'événement followup_j3', async () => {
