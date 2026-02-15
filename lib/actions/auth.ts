@@ -105,7 +105,7 @@ export async function signUpArtisan(data: ArtisanSignUpInput): Promise<AuthResul
   } else if (!sireneResult.verified && sireneResult.error) {
     console.warn(`[SignUp] SIRET ${siret} - non verifie: ${sireneResult.error}`);
   } else {
-    console.log(`[SignUp] SIRET ${siret} - verifie OK (${sireneResult.companyName})`);
+    console.info(`[SignUp] SIRET ${siret} - verifie OK (${sireneResult.companyName})`);
   }
 
   // 4. Redirection vers configuration WhatsApp

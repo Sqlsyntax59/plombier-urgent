@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Log sans PII (pas de numéro de téléphone)
-    console.log("WhatsApp send: template=%s, assignmentId=%s", msg.templateName, assignmentId);
+    console.info("WhatsApp send: template=%s, assignmentId=%s", msg.templateName, assignmentId);
 
     // 4. Envoyer via WhatsApp Cloud API
     const whatsappResponse = await fetch(

@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const event: LemonSqueezyWebhookEvent = JSON.parse(rawBody);
     const eventName = event.meta.event_name;
 
-    console.log(`Webhook LemonSqueezy: ${eventName}`, event.data.id);
+    console.info(`Webhook LemonSqueezy: ${eventName}`, event.data.id);
 
     // Client Supabase avec service role pour bypass RLS
     const supabase = createClient(
@@ -94,13 +94,13 @@ async function handleOrderCreated(
     .single();
 
   if (existing) {
-    console.log("Webhook: commande deja traitee", attrs.order_number);
+    console.info("Webhook: commande deja traitee", attrs.order_number);
     return NextResponse.json({ received: true, already_processed: true });
   }
 
   // Verifier statut paiement
   if (attrs.status !== "paid") {
-    console.log("Webhook: paiement non complete", attrs.status);
+    console.info("Webhook: paiement non complete", attrs.status);
 
     // Creer enregistrement pending
     await supabase.from("credit_purchases").insert({
@@ -173,7 +173,7 @@ async function handleOrderCreated(
     );
   }
 
-  console.log(`Credits ajoutes: ${credits} pour artisan ${artisanId} (nouveau solde: ${rpcResult.new_balance})`);
+  console.info(`Credits ajoutes: ${credits} pour artisan ${artisanId}`);
 
   return NextResponse.json({
     received: true,
@@ -198,12 +198,12 @@ async function handleOrderRefunded(
     .single();
 
   if (!purchase) {
-    console.log("Webhook refund: achat non trouve", attrs.order_number);
+    console.info("Webhook refund: achat non trouve", attrs.order_number);
     return NextResponse.json({ received: true });
   }
 
   if (purchase.status === "refunded") {
-    console.log("Webhook refund: deja rembourse", attrs.order_number);
+    console.info("Webhook refund: deja rembourse", attrs.order_number);
     return NextResponse.json({ received: true, already_refunded: true });
   }
 
@@ -232,7 +232,7 @@ async function handleOrderRefunded(
     .update({ status: "refunded" })
     .eq("id", purchase.id);
 
-  console.log(`Refund traite: ${refundResult?.credits_removed} credits retires pour ${purchase.artisan_id}`);
+  console.info(`Refund traite: ${refundResult?.credits_removed} credits retires pour artisan ${purchase.artisan_id}`);
 
   return NextResponse.json({
     received: true,
