@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * DEPRECATED — Redirect vers la route canonique /api/lead/accept
- * Conservé pour rétrocompatibilité avec d'éventuels anciens liens WhatsApp.
+ * Redirect vers la route canonique /api/lead/accept
+ * Le template WhatsApp envoie le token JWT via ?t=
  */
 export async function GET(request: NextRequest) {
-  console.warn("[DEPRECATED] /api/lead/accept-simple called — migrate to /api/lead/accept");
-  const assignmentId = request.nextUrl.searchParams.get("t");
+  const t = request.nextUrl.searchParams.get("t");
   const target = new URL("/api/lead/accept", request.url);
-  if (assignmentId) target.searchParams.set("assignmentId", assignmentId);
+  if (t) target.searchParams.set("token", t);
   return NextResponse.redirect(target, 307);
 }

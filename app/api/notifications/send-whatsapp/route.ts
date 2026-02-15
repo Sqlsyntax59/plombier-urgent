@@ -71,7 +71,10 @@ export async function POST(request: NextRequest) {
       phoneNumber = "33" + phoneNumber.substring(1);
     }
 
-    // 3. Construire le payload WhatsApp Cloud API
+    // 3. Extraire le token JWT de l'acceptUrl pour le bouton dynamique
+    const acceptToken = new URL(msg.acceptUrl).searchParams.get("token") || assignmentId;
+
+    // 4. Construire le payload WhatsApp Cloud API
     const whatsappPayload = {
       messaging_product: "whatsapp",
       to: phoneNumber,
@@ -93,7 +96,7 @@ export async function POST(request: NextRequest) {
             parameters: [
               {
                 type: "text",
-                text: assignmentId,
+                text: acceptToken,
               },
             ],
           },
