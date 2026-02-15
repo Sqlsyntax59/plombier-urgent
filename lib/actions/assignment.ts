@@ -9,9 +9,14 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "default-secret-change-me"
-);
+function getJwtSecret(): Uint8Array {
+  if (!process.env.JWT_SECRET) {
+    throw new Error(
+      "JWT_SECRET environment variable is required. Generate one with: openssl rand -base64 32"
+    );
+  }
+  return new TextEncoder().encode(process.env.JWT_SECRET);
+}
 
 export type AcceptLeadResult = {
   success: boolean;
@@ -34,7 +39,7 @@ export async function generateAcceptToken(
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("5m") // Expire dans 5 minutes (marge sur les 2min)
     .setIssuedAt()
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 
   return token;
 }
@@ -47,7 +52,7 @@ export async function verifyAcceptToken(token: string): Promise<{
   error?: string;
 }> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
 
     if (payload.type !== "lead_accept") {
       return { valid: false, error: "Invalid token type" };

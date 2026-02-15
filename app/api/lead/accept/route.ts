@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAcceptToken, acceptLead } from "@/lib/actions/assignment";
+import { createClient } from "@/lib/supabase/server";
 
 // GET: Pour liens cliquables Telegram (redirige vers page de resultat)
 export async function GET(request: NextRequest) {
@@ -76,8 +77,17 @@ export async function POST(request: NextRequest) {
 
     // Methode 2: Via IDs directs (pour dashboard authentifie)
     if (assignmentId && artisanId) {
-      // TODO: Verifier que l'utilisateur authentifie est bien l'artisan
-      // Pour l'instant, cette methode n'est pas utilisee
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user || user.id !== artisanId) {
+        return NextResponse.json(
+          { success: false, error: "Non autorise", code: "UNAUTHORIZED" },
+          { status: 403 }
+        );
+      }
 
       const result = await acceptLead(assignmentId, artisanId);
 
