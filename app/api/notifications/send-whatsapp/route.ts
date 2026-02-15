@@ -89,7 +89,8 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    console.log("WhatsApp payload:", JSON.stringify(whatsappPayload, null, 2));
+    // Log sans PII (pas de numéro de téléphone)
+    console.log("WhatsApp send: template=%s, assignmentId=%s", msg.templateName, assignmentId);
 
     // 4. Envoyer via WhatsApp Cloud API
     const whatsappResponse = await fetch(
@@ -118,13 +119,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Anti court-circuit: ne pas exposer PII artisan dans la réponse
     return NextResponse.json({
       success: true,
       messageId: whatsappResult.messages?.[0]?.id,
-      artisan: {
-        name: msg.artisanFirstName,
-        phone: msg.to,
-      },
     });
   } catch (error) {
     console.error("Erreur send-whatsapp:", error);

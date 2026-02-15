@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
  * Conservé pour rétrocompatibilité avec d'éventuels anciens liens.
  */
 export async function GET(request: NextRequest) {
+  console.warn("[DEPRECATED] /api/leads/accept called — migrate to /api/lead/accept");
   const assignmentId = request.nextUrl.searchParams.get("assignmentId");
   const target = new URL("/api/lead/accept", request.url);
   if (assignmentId) target.searchParams.set("assignmentId", assignmentId);

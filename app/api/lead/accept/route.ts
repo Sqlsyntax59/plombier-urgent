@@ -43,8 +43,19 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Methode 2: Via assignmentId (pour dashboard authentifie)
+  // Methode 2: Via assignmentId (pour dashboard authentifie — session obligatoire)
   if (assignmentId) {
+    const userSupabase = await createClient();
+    const {
+      data: { user },
+    } = await userSupabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(
+        new URL("/artisan/lead-error?code=UNAUTHORIZED", request.url)
+      );
+    }
+
     const supabase = createAdminClient();
     const { data: assignment } = await supabase
       .from("lead_assignments")
@@ -52,9 +63,9 @@ export async function GET(request: NextRequest) {
       .eq("id", assignmentId)
       .single();
 
-    if (!assignment) {
+    if (!assignment || assignment.artisan_id !== user.id) {
       return NextResponse.redirect(
-        new URL("/artisan/lead-error?code=ASSIGNMENT_NOT_FOUND", request.url)
+        new URL("/artisan/lead-error?code=UNAUTHORIZED", request.url)
       );
     }
 

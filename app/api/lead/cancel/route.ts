@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 // POST /api/lead/cancel
 // Annule un lead pendant la période de grâce (30 min) avec remboursement
@@ -19,6 +15,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Vérifier que l'utilisateur connecté est bien l'artisan
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user || user.id !== artisanId) {
+      return NextResponse.json(
+        { success: false, error: "Non autorisé" },
+        { status: 403 }
+      );
+    }
+
+    const supabaseAdmin = createAdminClient();
     const { data, error } = await supabaseAdmin.rpc("cancel_lead_acceptance", {
       p_assignment_id: assignmentId,
       p_artisan_id: artisanId,
