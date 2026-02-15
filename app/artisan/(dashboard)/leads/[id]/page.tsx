@@ -177,19 +177,19 @@ export default function LeadDetailPage() {
             </span>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 overflow-hidden">
           {/* Synthèse terrain (si disponible) */}
           {lead.field_summary ? (
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Détails du problème</h3>
-              <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-line text-gray-900">
+              <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-line break-words text-gray-900">
                 {lead.field_summary}
               </div>
             </div>
           ) : (
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Description</h3>
-              <p className="text-gray-900">{lead.description}</p>
+              <p className="text-gray-900 break-words">{lead.description}</p>
             </div>
           )}
 
