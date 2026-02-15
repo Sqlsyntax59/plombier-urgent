@@ -8,6 +8,7 @@ import {
   FileText,
   AlertTriangle,
   Layers,
+  Clock,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,11 @@ const navItems = [
     href: "/admin/verticales",
     label: "Verticales",
     icon: Layers,
+  },
+  {
+    href: "/admin/crons",
+    label: "Crons",
+    icon: Clock,
   },
 ];
 
