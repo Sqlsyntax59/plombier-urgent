@@ -22,23 +22,24 @@ const BAN_API_URL = "https://api-adresse.data.gouv.fr/search";
 const BAN_TIMEOUT_MS = 5000;
 
 /**
- * Géocode un code postal via API BAN avec cache Supabase (TTL 30j).
+ * Géocode un code postal ou nom de ville via API BAN avec cache Supabase (TTL 30j).
  */
 export async function geocodePostalCode(
-  postalCode: string
+  location: string
 ): Promise<GeocodingResult> {
-  const normalized = postalCode?.trim();
-  if (!normalized || !/^\d{5}$/.test(normalized)) {
-    return { success: false, source: "none", error: "Code postal invalide" };
+  const normalized = location?.trim();
+  if (!normalized || normalized.length < 2) {
+    return { success: false, source: "none", error: "Localisation invalide" };
   }
 
   const supabase = createAdminClient();
+  const cacheKey = normalized.toLowerCase();
 
   // 1. Vérifier le cache
   const { data: cached } = await supabase
     .from("geocode_cache")
     .select("latitude, longitude, city_name")
-    .eq("postal_code", normalized)
+    .eq("postal_code", cacheKey)
     .gt("expires_at", new Date().toISOString())
     .single();
 
@@ -57,7 +58,8 @@ export async function geocodePostalCode(
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), BAN_TIMEOUT_MS);
 
-    const url = `${BAN_API_URL}?q=${normalized}&type=municipality&limit=1`;
+    const isPostalCode = /^\d{5}$/.test(normalized);
+    const url = `${BAN_API_URL}?q=${encodeURIComponent(normalized)}&type=municipality&limit=1${isPostalCode ? "" : ""}`;
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(timeout);
 
@@ -78,7 +80,7 @@ export async function geocodePostalCode(
     // 3. Mettre en cache (upsert)
     await supabase.from("geocode_cache").upsert(
       {
-        postal_code: normalized,
+        postal_code: cacheKey,
         latitude: lat,
         longitude: lng,
         city_name: cityName,
