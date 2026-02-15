@@ -154,7 +154,7 @@ export async function middleware(request: NextRequest) {
 
     if (!isMfaPage) {
       const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      if (aalData && aalData.currentLevel !== "aal2") {
+      if (!aalData || aalData.currentLevel !== "aal2") {
         return NextResponse.redirect(new URL("/admin/mfa-verify", request.url));
       }
     }
